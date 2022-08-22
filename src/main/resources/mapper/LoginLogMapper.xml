@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yiie.common.mapper.LoginLogMapper">
+    <resultMap id="BaseResultMap" type="com.yiie.entity.LoginLog">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="username" jdbcType="VARCHAR" property="username" />
+        <result column="login_time" jdbcType="TIMESTAMP" property="loginTime" />
+        <result column="location" jdbcType="VARCHAR" property="location" />
+        <result column="ip" jdbcType="VARCHAR" property="ip" />
+        <result column="system" jdbcType="VARCHAR" property="system" />
+        <result column="browser" jdbcType="VARCHAR" property="browser" />
+        <result column="status" jdbcType="INTEGER" property="status" />
+        <result column="msg" jdbcType="VARCHAR" property="msg" />
+        <result column="code" jdbcType="INTEGER" property="code" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+    id, username, login_time, location, `status`, ip, system, browser,
+    msg, code
+  </sql>
+    
+    <insert id="saveLoginLog" parameterType="com.yiie.entity.LoginLog">
+        insert into loginlog(username, login_time, location, `status`, ip, system, browser,
+    msg, code) values(#{username},#{loginTime},#{location},#{status},#{ip},#{system},#{browser},#{msg},#{code}
+    )
+    </insert>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"></include>
+        from loginlog
+        <where>
+            <if test="username!=null and username!=''">
+                AND username LIKE concat('%',#{username},'%')
+            </if>
+            <if test="startTime!=null and startTime!=''">
+                AND login_time &gt;= #{startTime}
+            </if>
+            <if test="endTime!=null and endTime!=''">
+                AND login_time &lt;= #{endTime}
+            </if>
+            <if test="status!=null and status!=''">
+                AND status = #{status}
+            </if>
+        </where>
+        order by login_time desc
+    </select>
+
+    <delete id="batchDeletedLog">
+        delete
+        from loginlog
+        where id in
+        <foreach item="item" collection="list" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <select id="getTotalSuccessLoginCnt" resultType="INT">
+        select count(DISTINCT(ip)) successLoginCnt from loginlog WHERE `code` = 0
+    </select>
+
+    <select id="getTodaySuccessLoginCnt" resultType="INT">
+        SELECT COUNT(DISTINCT(ip)) successLoginCnt FROM loginlog where TO_DAYS(login_time)=TO_DAYS(CURDATE()) AND `code` = 0
+    </select>
+
+    <select id="getWeekSuccessLoginCnt" resultType="INT">
+        select count(DISTINCT(ip)) successLoginCnt from loginlog where login_time > DATE_SUB(CURDATE(),INTERVAL 7 DAY) AND `code` = 0
+    </select>
+
+    <select id="getTodayFailLoginCnt" resultType="INT">
+        select count(1) failLoginCnt from loginlog where TO_DAYS(login_time)=TO_DAYS(CURDATE()) AND `code` != 0
+    </select>
+
+    <select id="getTotalFailLoginCnt" resultType="INT">
+        select count(1) failLoginCnt from loginlog where `code` != 0
+    </select>
+
+    <select id="getDateAndCntList" resultType="com.yiie.vo.response.NameAndCntVO">
+        SELECT DATE_FORMAT(login_time,"%Y/%m/%d") date7,count(DISTINCT(ip)) successLoginCnt FROM loginlog where login_time > DATE_SUB(CURDATE(),INTERVAL 7 Day) AND `code` = 0 GROUP BY(DATE_FORMAT(login_time,"%Y/%m/%d")) ORDER BY DATE_FORMAT(login_time,"%Y/%m/%d") DESC
+    </select>
+</mapper>
