@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yiie.common.mapper.BlackUserMapper">
+    <resultMap id="BaseResultMap" type="com.yiie.entity.BlackUser">
+        <id column="id" jdbcType="VARCHAR" property="id" />
+        <result column="identityCard" jdbcType="VARCHAR" property="identityCard" />
+        <result column="username" jdbcType="VARCHAR" property="username" />
+        <result column="phone" jdbcType="VARCHAR" property="phone" />
+        <result column="typeInfo" jdbcType="VARCHAR" property="typeInfo" />
+        <result column="importTime" jdbcType="VARCHAR" property="importTime" />
+        <result column="updateTime" jdbcType="VARCHAR" property="updateTime" />
+        <result column="sex" jdbcType="TINYINT" property="sex" />
+        <result column="deleted" jdbcType="TINYINT" property="deleted" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, identityCard, username, phone, typeInfo, importTime, updateTime, sex, deleted
+    </sql>
+
+    <select id="getBlackUserInfoByName" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"></include>
+        FROM blacklists
+        WHERE username=#{username}
+        AND deleted=1
+    </select>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from blacklists
+        where id = #{id,jdbcType=VARCHAR}
+    </select>
+
+    <select id="getBlackUserInfoByIdentityCard" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"></include>
+        FROM blacklists
+        WHERE identityCard=#{identityCard,jdbcType=VARCHAR}
+        AND deleted=1
+    </select>
+
+    <select id="selectBlackUserByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from blacklists
+        where id = #{id,jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectAllBlackUser" resultMap="BaseResultMap" parameterType="com.yiie.vo.request.BlackUserPageReqVO">
+        select <include refid="Base_Column_List"></include>
+        from blacklists
+        <where>
+            deleted=1
+            <if test="identityCard!=null and identityCard!=''">
+                AND identityCard=#{identityCard}
+            </if>
+            <if test="username!=null and username!=''">
+                AND username=#{username}
+            </if>
+            <if test="phone!=null and phone!='' ">
+                AND phone=#{phone}
+            </if>
+            <if test="typeInfo!=null and typeInfo!=''">
+                AND typeInfo=#{typeInfo}
+            </if>
+            <if test="importTime!=null and importTime!=''">
+                AND importTime=#{importTime}
+            </if>
+            <if test="updateTime!=null and updateTime!=''">
+                AND updateTime=#{updateTime}
+            </if>
+            <if test="sex!=null and sex!='' or sex==0 ">
+                AND sex=#{sex}
+            </if>
+        </where>
+        order by identityCard
+    </select>
+
+    <select id="selectBlackUserInfoByIdentityCards" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"></include>
+        from blacklists
+        where identityCard in
+        <foreach collection="list" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+        and deleted=1
+    </select>
+
+    <select id="getUserListByDeptId" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"></include>
+        from blacklists
+        where identityCard=#{identityCard}
+        and deleted=1
+    </select>
+
+
+    <insert id="insertSelective" parameterType="com.yiie.entity.BlackUser">
+        insert into blacklists
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="identityCard != null">
+                identityCard,
+            </if>
+            <if test="username != null">
+                username,
+            </if>
+            <if test="phone != null">
+                phone,
+            </if>
+            <if test="typeInfo != null">
+                typeInfo,
+            </if>
+            <if test="importTime != null">
+                importTime,
+            </if>
+            <if test="updateTime != null">
+                updateTime,
+            </if>
+            <if test="sex != null">
+                sex,
+            </if>
+            <if test="deleted != null">
+                deleted,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="identityCard != null">
+                #{identityCard},
+            </if>
+            <if test="username != null">
+                #{username,jdbcType=VARCHAR},
+            </if>
+            <if test="phone != null">
+                #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="typeInfo != null">
+                #{typeInfo,jdbcType=VARCHAR},
+            </if>
+            <if test="importTime != null">
+                #{importTime,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=VARCHAR},
+            </if>
+            <if test="sex != null">
+                #{sex,jdbcType=TINYINT},
+            </if>
+            <if test="deleted != null">
+                #{deleted,jdbcType=TINYINT},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.yiie.entity.BlackUser">
+        update blacklists
+        <set>
+            <if test="id != null">
+                id = #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="identityCard != null">
+                identityCard = #{identityCard,jdbcType=VARCHAR},
+            </if>
+            <if test="username != null">
+                username = #{username,jdbcType=VARCHAR},
+            </if>
+            <if test="phone != null">
+                phone = #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="typeInfo != null">
+                typeInfo = #{typeInfo,jdbcType=VARCHAR},
+            </if>
+            <if test="importTime != null">
+                importTime = #{importTime,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null">
+                updateTime = #{updateTime,jdbcType=VARCHAR},
+            </if>
+            <if test="sex != null">
+                sex = #{sex,jdbcType=TINYINT},
+            </if>
+            <if test="deleted != null">
+                deleted = #{deleted,jdbcType=TINYINT},
+            </if>
+        </set>
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
+
+    <update id="deletedBlackUsers" parameterType="com.yiie.entity.BlackUser">
+        update blacklists
+        <set>
+            deleted = 0,
+            <if test="sysUser.updateTime != null">
+                updateTime = #{sysUser.updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id in
+        <foreach collection="list" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+    </update>
+</mapper>

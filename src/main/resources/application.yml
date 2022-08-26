@@ -37,6 +37,7 @@ spring:
     timeout: PT10S
   devtools:
     restart:
+      enabled: true
       poll-interval: 3000ms
       quiet-period: 2999ms
   thymeleaf:

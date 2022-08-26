@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <meta charset="UTF-8">
+    <title>禁入人员名单</title>
+    <link rel="stylesheet" href="/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="/css/form.css">
+    <script src="/layui/layui.all.js"></script>
+    <script src="/js/util.js"></script>
+</head>
+<body>
+<div class="panel panel-default operation_blackuser" hidden>
+    <div class="panel-heading title" style="text-align: center"></div>
+    <div class="layui-card-body">
+        <form class="layui-form " action="" lay-filter="deptInfo" style="width: 700px;margin-top: 10px">
+            <input name="id" hidden/>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">身份证号</label>
+                <div class="layui-input-block">
+                    <input type="identityCard" name="identityCard" placeholder="请输入身份证号" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-form-label ">姓名</div>
+                <div class="layui-input-block">
+                    <input type="username" name="username" placeholder="请输入姓名" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-form-label ">手机号</div>
+                <div class="layui-input-block">
+                    <input type="phone" lay-verify="phone" name="phone" placeholder="请输入手机号" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-form-label ">进入人员类型</div>
+                <div class="layui-input-block">
+                    <input type="typeInfo" lay-verify="typeInfo" name="typeInfo" placeholder="请输入类型" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-form-label ">性别</div>
+                <div class="layui-input-block">
+                    <div class="layui-input-inline layui-form">
+                        <select name="sex">
+                            <option value="">请选择性别</option>
+                            <option value="1">男</option>
+                            <option value="2">女</option>
+                            <option value="3">保密</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button type="submit" class="layui-btn" lay-submit="" lay-filter="submit">保存</button>
+                    <button class="layui-btn layui-btn-primary" id="btn_cancel">返回</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="blackuser_table_div">
+    <div id="searchParam" shiro:hasPermission="sys:blackusers:list">
+        <!-- 此内所有id 与 searchParam结构体保持一致. -->
+        <div class="layui-form-item">
+            <div class="layui-input-inline">
+                <input type="text" id="username" class="layui-input" autocomplete="off" placeholder="请输入禁入人员姓名">
+            </div>
+            <div class="layui-input-inline">
+                <input type="text" id="identityCard" class="layui-input" autocomplete="off" placeholder="请输入身份证号码">
+            </div>
+            <div class="layui-input-inline layui-form">
+                <select id="sex">
+                    <option value="">请选择性别</option>
+                    <option value="1">男</option>
+                    <option value="2">女</option>
+                    <option value="3">保密</option>
+                </select>
+            </div>
+            <!--<div class="layui-input-inline layui-form">
+                <select class="" id="type">
+                    <option value="">请选择来源</option>
+                    <option value="1">失信人员</option>
+                    <option value="2">犯罪人员</option>
+                    <option value="3">其它</option>
+                </select>
+            </div>-->
+            <div class="layui-input-inline">
+                <input type="text" id="typeInfo" class="layui-input" autocomplete="off" placeholder="请输入人员类型">
+            </div>
+            <div class="layui-input-inline">
+                <input type="text" class="layui-input" id="importTime" placeholder="选择导入的时间区间" style="width: 290px">
+            </div>
+            <div class="layui-input-inline">
+                <input type="text" id="phone" class="layui-input" autocomplete="off" placeholder="请输入电话号码">
+            </div>
+        </div>
+    </div>
+    <table class="layui-hide" id="blackuser_table" lay-filter="blackuser_table"></table>
+    <div id="laypage" class= "$(" .layui-laypage-btn").click();"></div>
+</div>
+<div id="deptTree" style="display: none"></div>
+<div id="roles" class="demo-transfer" style="display: none"></div>
+</body>
+<script type="text/html" id="toolbar">
+    <div class="layui-btn-group" id="search">
+        <button type="button" class="layui-btn" lay-event="search" >
+            <i class="layui-icon">&#xe615;</i> 开始检索
+        </button>
+    </div>
+    <div class="layui-btn-group">
+        <button type="button" class="layui-btn layui-btn-danger" lay-event="batchDeleted"
+                shiro:hasPermission="sys:blackusers:deleted">
+            <i class="layui-icon">&#xe608;</i> 批量删除
+        </button>
+    </div>
+    <div class="layui-btn-group">
+        <button type="button" class="layui-btn layui-btn-normal" lay-event="addNewBlackUser"
+                shiro:hasPermission="sys:blackusers:add">
+            <i class="layui-icon">&#xe608;</i> 添加禁入人员
+        </button>
+    </div>
+</script>
+<script type="text/html" id="tool">
+    <a class="layui-btn layui-btn-xs" lay-event="edit" shiro:hasPermission="sys:blackusers:update">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del" shiro:hasPermission="sys:blackusers:deleted">删除</a>
+</script>
+<script type="text/html" id="sexTpl">
+    {{#  if(d.sex == 2){ }}
+    <span style="color: #fe5395;">女</span>
+    {{#  } else if(d.sex == 1){ }}
+    <span style="color: #48c202;">男</span>
+    {{#  } else{ }}
+    <span style="color: #17a2b8;">保密</span>
+    {{#  } }}
+</script>
+<!--<script type="text/html" id="sourceTpl">
+    {{#  if(d.type == 1){ }}
+    <span style="color: #0053c6;">失信人员</span>
+    {{#  } else if(d.type == 2){ }}
+    <span style="color: #00d394;">犯罪人员</span>
+    {{#  } else{ }}
+    <span style="color: #c40b53;">其他</span>
+    {{#  } }}
+</script>-->
+<script>
+    var table = layui.table;
+    var laypage = layui.laypage
+    var form = layui.form;
+    var layer = layui.layer;
+    var $ = jQuery = layui.jquery;
+    var laydate = layui.laydate;
+    var tree = layui.tree;
+    var transfer = layui.transfer;
+    layui.use(['table', 'laypage', 'layer', 'laydate', 'tree', 'transfer'], function () {
+        form.render();
+        var searchParam = {
+            id: null,
+            identityCard: null,
+            username: null,
+            phone:null,
+            typeInfo: null,
+            startTime: null,
+            endTime:null,
+            sex:null,
+            pageNum: 1,
+            pageSize: 10
+        }
+
+        CoreUtil.sendAjax("/sys/blackusers", JSON.stringify(searchParam), function (res) {
+            laypageTable(res.data.totalRows, searchParam.pageNum);
+            if (res.data.list != null) {
+                loadTable(res.data.list);
+                // layer.msg("test....");
+                // layer.msg(res.data.list[0].id);
+            }
+        }, "POST", false, function (res) {
+            layer.msg("抱歉！您暂无获取禁入人员列表的权限");
+            var noAuthorityData = [];
+            loadTable(noAuthorityData);
+        });
+
+        var laypageTable = function (count, currentPage) {
+            laypage.render({
+                elem: 'laypage'
+                , count: count
+                , limit: searchParam.pageSize
+                , layout: ['count', 'prev', 'page', 'next', 'limit', 'refresh', 'skip']
+                , curr: location.hash.replace('#!currentPage=', '') //获取起始页
+                , hash: 'currentPage' //自定义hash值
+                , jump: function (obj, first) {
+                    if (!first) {
+                        searchParam.pageNum = obj.curr;
+                        searchParam.pageSize = obj.limit;
+                        CoreUtil.sendAjax("/sys/blackusers", JSON.stringify(searchParam), function (res) {
+                            if (res.data.list != null) {
+                                loadTable(res.data.list);
+
+                                laypageTable(res.data.totalRows, searchParam.pageNum);
+                            }
+                        }, "POST", false, function (res) {
+                            layer.msg("抱歉！您暂无获取禁入人员列表的权限");
+                            var noAuthorityData = [];
+                            loadTable(noAuthorityData);
+                        });
+                    }
+                }
+            });
+        };
+        //渲染table
+        var loadTable = function (data) {
+            table.render({
+                elem: '#blackuser_table'
+                , cols: [
+                    [
+                        {type: 'checkbox', fixed: 'left'},
+                        {field: 'username', align: 'center', title: '姓名', width: 110},
+                        {field: 'identityCard', align: 'center', title: '身份证号码', width: 360},
+                        {field: 'typeInfo', align: 'center', title: '类型', width: 170, templet: '#sourceTpl'},
+                        {field: 'phone', align: 'center', title: '手机号', width: 250},
+
+                        {field: 'sex', title: '性别', align: 'center', width: 60, templet: '#sexTpl'},
+                        {
+                            field: 'importTime', align: 'center', title: '创建时间', width: 170, templet: function (item) {
+                                return CoreUtil.formattime(item.importTime);
+                            }
+                        },
+                        {width: 300, align: 'center', toolbar: "#tool", title: '操作'}
+                    ]
+                ]
+                , data: data
+                , even: true
+                , limit: data.length
+                , limits: [10, 20, 30, 50, 100]
+                , toolbar: '#toolbar'
+            });
+        };
+        laydate.render({
+            elem: '#currentTime'
+            , type: 'datetime'
+            , range: '~'
+            , done: function (value, date, endDate) {
+                if (value != null && value != undefined && value != "") {
+                    searchParam.startTime = value.split("~")[0];
+                    searchParam.endTime = value.split("~")[1];
+                } else {
+                    searchParam.startTime = null;
+                    searchParam.endTime = null;
+                }
+            }
+        });
+
+        table.on('toolbar(blackuser_table)', function (obj) {
+            var checkStatus = table.checkStatus(obj.config.id);
+            // layer.msg("function works!!!");
+            switch (obj.event) {
+                case 'batchDeleted':
+                    var checkStatus = table.checkStatus(obj.config.id);
+                    var data = checkStatus.data;
+                    if (data.length == 0) {
+                        layer.msg("请选择要批量删除的用户");
+                    } else {
+                        var userIds = [];
+                        $(data).each(function (index, item) {
+                            userIds.push(item.id);
+                        });
+                        tipDialog(userIds, "选中的");
+                    }
+                    break;
+                case 'addNewBlackUser':
+                    form.render();
+                    $(".title").html("新增用户");
+                    $(".blackuser_table_div").hide();
+                    $(".operation_blackuser").show();
+                    $(".operation_blackuser input[name=id]").val("");
+                    $(".operation_blackuser input[name=username]").val("");
+                    $(".operation_blackuser input[name=identityCard]").val("");
+                    $(".operation_blackuser input[name=phone]").val("");
+                    $(".operation_blackuser input[name=typeInfo]").val("");
+                    $(".operation_blackuser input[name=sex]").val("");
+                    /*$(".operation_blackuser input[name=status]").attr('checked', 'checked');
+                    $(".operation_blackuser input[name=status]").attr('type', 'hidden').val(1);*/
+                    /*var x = document.getElementsByClassName("layui-unselect layui-form-switch");
+                    x[0].setAttribute("class", "layui-unselect layui-form-switch layui-form-onswitch");
+                    var d = document.getElementsByTagName('em')[0];
+                    d.firstChild.nodeValue = '启用';*/
+                    form.render(); //更新全部
+                    // initTree("");
+                    break;
+                case 'search':
+                    searchParam.userId = $("#id").val();
+                    searchParam.identityCard = $("#identityCard").val();
+                    searchParam.sex = $("#sex").val();
+                    searchParam.phone = $("#phone").val();
+                    searchParam.type = $("#typeInfo").val();
+                    searchParam.username = $("#username").val();
+                    // searchParam.date = $("#importTime").val();
+                    searchParam.pageNum = 1;
+                    CoreUtil.sendAjax("/sys/blackusers", JSON.stringify(searchParam), function (res) {
+                        laypageTable(res.data.totalRows, searchParam.pageNum);
+                        if (res.data.list != null) {
+                            loadTable(res.data.list);
+                        }
+                    }, "POST", false, function (res) {
+                        layer.msg("抱歉！您暂无获取用户列表的权限");
+                        var noAuthorityData = [];
+                        loadTable(noAuthorityData);
+                    });
+                    break;
+            }
+            ;
+        });
+        table.on('tool(blackuser_table)', function (obj) {
+            var data = obj.data;
+            switch (obj.event) {
+                case 'del':
+                    var userIds = [];
+                    userIds.push(data.id);
+                    tipDialog(userIds, data.username);
+                    break;
+                case 'edit':
+                    $(".blackuser_table_div").hide();
+                    $(".operation_blackuser").show();
+                    $(".title").html("编辑用户");
+                    $(".operation_blackuser input[name=id]").val(data.id);
+                    $(".operation_blackuser input[name=identityCard]").val(data.identityCard);
+                    $(".operation_blackuser input[name=username]").val(data.username);
+                    $(".operation_blackuser input[name=sex]").val(data.sex);
+                    $(".operation_blackuser input[name=phone]").val(data.phone);
+                    $(".operation_blackuser input[name=typeInfo]").val(data.typeInfo);
+                    /*if (data.status == 1) {
+                        $(".operation_blackuser input[name=status]").attr('checked', 'checked');
+                        $(".operation_blackuser input[name=status]").attr('type', 'hidden').val(1);
+                        var x = document.getElementsByClassName("layui-unselect layui-form-switch");
+                        x[0].setAttribute("class", "layui-unselect layui-form-switch layui-form-onswitch");
+                        var d = document.getElementsByTagName('em')[0];
+                        d.firstChild.nodeValue = '启用';
+                    } else {
+                        $(".operation_blackuser input[name=status]").attr('type', 'hidden').removeAttr("checked").val(2);
+                        var x = document.getElementsByClassName("layui-unselect layui-form-switch");
+                        x[0].setAttribute("class", "layui-unselect layui-form-switch");
+                        var d = document.getElementsByTagName('em')[0];
+                        d.firstChild.nodeValue = '禁用';
+                    }*/
+                    form.render(); //更新全部
+                    // initTree("");
+                    break;
+                /*case 'operationRole':
+                    CoreUtil.sendAjax("/sys/user/roles/" + data.id, null, function (res) {
+                        initTransfer(res.data);
+                        layer.open({
+                            type: 1,
+                            offset: '50px',
+                            skin: 'layui-layer-molv',
+                            title: "赋予角色",
+                            area: ['500px', '400px'],
+                            shade: 0,
+                            shadeClose: false,
+                            content: jQuery("#roles"),
+                            btn: ['确定', '取消'],
+                            yes: function (index) {
+                                //获得右侧数据
+                                var roleIds = [];
+                                var getData = transfer.getData('ownData');
+                                if (getData.length == 0) {
+                                    layer.msg("请选择要赋予用户的角色");
+                                } else {
+                                    $(getData).each(function (index, item) {
+                                        roleIds.push(item.value);
+                                    });
+                                }
+                                CoreUtil.sendAjax("/sys/user/roles/" + data.id, JSON.stringify(roleIds), function (res) {
+                                    layer.msg(res.msg);
+                                    $(".layui-laypage-btn").click();
+                                }, "PUT", false, function (res) {
+                                    layer.msg("抱歉！您暂无赋予用户角色的权限");
+                                });
+                                layer.close(index);
+                            }
+                        });
+                    }, "GET", false, function (res) {
+                        layer.msg("抱歉！您暂无查询用户所拥有角色列表的权限");
+                    });
+                    break;*/
+            }
+        });
+        $("#btn_cancel").click(function () {
+            $(".blackuser_table_div").show();
+            $(".operation_blackuser").hide();
+            return false;
+        });
+        var tipDialog = function (userIds, username) {
+            if(username=="admin"){
+                layer.msg('不可删除管理员',{icon: 5,time:1000});
+                return;
+            }
+            layer.open({
+                content: '确定要删除' + username + "用户么?",
+                yes: function (index, layero) {
+                    layer.close(index); //如果设定了yes回调，需进行手工关闭
+                    CoreUtil.sendAjax("/sys/blackuser", JSON.stringify(userIds), function (res) {
+                        layer.msg(res.msg);
+                        $(".layui-laypage-btn").click();
+                    }, "DELETE", false, function (res) {
+                        layer.msg("抱歉！您暂无删除用户的权限");
+                    });
+                }
+            });
+        };
+        form.on('switch(switch)', function () {
+            $(".operation_blackuser input[name=status]").attr('type', 'hidden').val(this.checked ? 1 : 2);
+        });
+        form.on('submit(submit)', function (data) {
+            if (data.field.id === undefined || data.field.id === null || data.field.id === "") {
+                CoreUtil.sendAjax("/sys/blackuser", JSON.stringify(data.field), function (res) {
+                    $(".blackuser_table_div").show();
+                    $(".operation_blackuser").hide();
+                    $(".layui-laypage-btn").click();
+                }, "POST", false, function (res) {
+                    layer.msg("抱歉！您暂无新增用户的权限");
+                });
+            } else {
+                CoreUtil.sendAjax("/sys/blackuser", JSON.stringify(data.field), function (res) {
+                    $(".blackuser_table_div").show();
+                    $(".operation_blackuser").hide();
+                    $(".layui-laypage-btn").click();
+                }, "PUT", false, function (res) {
+                    layer.msg("抱歉！您暂无编辑用户的权限");
+                });
+            }
+            return false;
+        });
+        var loadDeptTree = function (data) {
+            tree.render({
+                elem: '#deptTree'
+                , data: data
+                , onlyIconControl: true  //是否仅允许节点左侧图标控制展开收缩
+                , click: function (obj) {
+                    selectNode = obj;
+                    layer.msg(JSON.stringify(selectNode.data.title));
+                }
+            });
+        };
+        $(".operation_blackuser input[name=deptName]").click(function () {
+            layer.open({
+                type: 1,
+                offset: '0px',
+                skin: 'layui-layer-molv',
+                title: "选择部门",
+                area: ['400px', '550px'],
+                shade: 0,
+                shadeClose: false,
+                content: jQuery("#deptTree"),
+                btn: ['确定', '取消'],
+                yes: function (index) {
+                    if (selectNode.data != null) {
+                        //选中回显
+                        $(".operation_blackuser input[name=deptId]").val(selectNode.data.id);
+                        $(".operation_blackuser input[name=deptName]").val(selectNode.data.title);
+                    }
+                    layer.close(index);
+                }
+            });
+        });
+        /*var initTree = function (id) {
+            var param = {deptId: id}
+            CoreUtil.sendAjax("/sys/dept/tree", param, function (res) {
+                loadDeptTree(res.data);
+            }, "GET", false, function (res) {
+                layer.msg("抱歉！您暂无获取部门树的权限");
+                var noAuthorityData = [];
+                loadDeptTree(noAuthorityData);
+            });
+        };*/
+        /* 添加元素后重新加载  */
+        var initTree=function () {
+            CoreUtil.sendAjax("/sys/blackusers/tree",null,function (res) {
+                loadDeptTree(res.data);
+            },"GET",false);
+        };
+        var initTransfer = function (data) {
+            transfer.render({
+                elem: '#roles'
+                , data: data.allRole
+                , title: ['赋予角色', '拥有角色']
+                , showSearch: true
+                , value: data.ownRoles
+                , id: 'ownData'
+                , parseData: function (res) {
+                    return {
+                        "value": res.id //数据值
+                        , "title": res.name //数据标题
+                    }
+                }
+            })
+        }
+    });
+</script>
+</html>

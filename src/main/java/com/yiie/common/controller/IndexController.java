@@ -47,6 +47,11 @@ public class IndexController {
         return "menus/menu_list";
     }
 
+    @GetMapping("/blacklists")
+    public String blackLists(){
+        return "blacklists/blackuser_list";
+    }
+
     @GetMapping("/roles")
     public String roleList(){
         return "roles/role_list";
