@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yiie.common.mapper.CustomerContactMapper">
+    <resultMap id="BaseResultMap" type="com.yiie.entity.CustomerContact">
+        <id column="contact_id" jdbcType="VARCHAR" property="contact_id" />
+        <result column="customer_contacts_id" jdbcType="VARCHAR" property="customer_contacts_id" />
+        <result column="contacter_display_name" jdbcType="VARCHAR" property="contacter_display_name" />
+        <result column="contacter_identity_card" jdbcType="VARCHAR" property="contacter_identity_card" />
+        <result column="contacter_phone" jdbcType="VARCHAR" property="contacter_phone" />
+        <result column="customer_info_deleted" jdbcType="TINYINT" property="customer_info_deleted" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        contact_id, customer_contacts_id, contacter_display_name, contacter_identity_card, contacter_phone, contacter_deleted
+    </sql>
+
+    <select id="selectCustomerContactByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from customer_contact
+        where contact_id = #{contact_id, jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectAllCustomerContacts" resultMap="BaseResultMap" parameterType="com.yiie.vo.request.CustomerContactPageReqVO">
+        select <include refid="Base_Column_List"></include>
+        from customer_contact
+        <where>
+            contacter_deleted=1
+            <if test="contact_id != null and contact_id != '' ">
+                AND contact_id=#{contact_id}
+            </if>
+            <if test="customer_contacts_id!=null and customer_contacts_id!=''">
+                AND customer_contacts_id=#{customer_contacts_id}
+            </if>
+            <if test="contacter_display_name!=null and contacter_display_name!=''">
+                AND contacter_display_name=#{contacter_display_name}
+            </if>
+            <if test="contacter_identity_card!=null and contacter_identity_card!=''">
+                AND contacter_identity_card=#{contacter_identity_card}
+            </if>
+            <if test="contacter_phone!=null and contacter_phone!=''">
+                AND contacter_phone=#{contacter_phone}
+            </if>
+        </where>
+        order by contact_id
+    </select>
+
+    <insert id="insertSelective" parameterType="com.yiie.entity.CustomerContact">
+        insert into customer_contact
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="contact_id != null">
+                contact_id,
+            </if>
+            <if test="customer_contacts_id!=null">
+                AND customer_contacts_id=#{customer_contacts_id}
+            </if>
+            <if test="contacter_display_name!=null">
+                AND contacter_display_name=#{contacter_display_name}
+            </if>
+            <if test="contacter_identity_card!=null">
+                AND contacter_identity_card=#{contacter_identity_card}
+            </if>
+            <if test="contacter_phone!=null and contacter_phone!=''">
+                AND contacter_phone=#{contacter_phone}
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="contact_id != null">
+                #{contact_id,jdbcType=VARCHAR},
+            </if>
+            <if test="customer_contacts_id != null">
+                #{customer_contacts_id,jdbcType=VARCHAR},
+            </if>
+            <if test="contacter_display_name != null">
+                #{contacter_display_name,jdbcType=VARCHAR},
+            </if>
+            <if test="contacter_identity_card != null">
+                #{contacter_identity_card,jdbcType=VARCHAR},
+            </if>
+            <if test="contacter_phone != null">
+                #{contacter_phone,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.yiie.entity.CustomerContact">
+        update customer_contact
+        <set>
+            <if test="contact_id != null">
+                contact_id,
+            </if>
+            <if test="customer_contacts_id!=null">
+                AND customer_contacts_id=#{customer_contacts_id}
+            </if>
+            <if test="contacter_display_name!=null">
+                AND contacter_display_name=#{contacter_display_name}
+            </if>
+            <if test="contacter_identity_card!=null">
+                AND contacter_identity_card=#{contacter_identity_card}
+            </if>
+            <if test="contacter_phone!=null and contacter_phone!=''">
+                AND contacter_phone=#{contacter_phone}
+            </if>
+        </set>
+        where contact_id = #{contact_id,jdbcType=VARCHAR}
+    </update>
+
+    <update id="deletedCustomerContacts" parameterType="com.yiie.entity.CustomerContact">
+        update customer_contact
+        <set>
+            contacter_deleted = 0
+        </set>
+        where contact_id in
+        <foreach collection="list" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+    </update>
+
+    <update id="deletedCustomerContactsByCustomerContactIds" parameterType="com.yiie.entity.CustomerContact">
+        update customer_contact
+        <set>
+            contacter_deleted = 0
+        </set>
+        where customer_contacts_id in
+        <foreach collection="list" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+    </update>
+</mapper>

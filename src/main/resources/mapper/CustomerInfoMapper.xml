@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yiie.common.mapper.CustomerInfoMapper">
+    <resultMap id="BaseResultMap" type="com.yiie.entity.CustomerInfo">
+        <id column="customer_info_id" jdbcType="VARCHAR" property="customer_info_id" />
+        <result column="customer_fitness_point" jdbcType="INTEGER" property="customer_fitness_point" />
+        <result column="customer_credit_point" jdbcType="INTEGER" property="customer_credit_point" />
+        <result column="customer_step_per_day" jdbcType="INTEGER" property="customer_step_per_day" />
+        <result column="customer_info_deleted" jdbcType="TINYINT" property="customer_info_deleted" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        customer_info_id, customer_fitness_point, customer_credit_point, customer_step_per_day
+    </sql>
+
+    <select id="selectCustomerInfoByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from customer_info
+        where customer_info_id = #{customer_info_id, jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectAllCustomersInfo" resultMap="BaseResultMap" parameterType="com.yiie.vo.request.CustomerInfoPageReqVO">
+        select <include refid="Base_Column_List"></include>
+        from customer_info
+        <where>
+            customer_info_deleted=1
+            <if test="customer_info_id != null and customer_info_id != '' ">
+                AND customer_info_id=#{customer_info_id}
+            </if>
+            <if test="customer_fitness_point!=null and customer_fitness_point!=''">
+                AND customer_fitness_point=#{customer_fitness_point}
+            </if>
+            <if test="customer_credit_point!=null and customer_credit_point!=''">
+                AND customer_credit_point=#{customer_credit_point}
+            </if>
+            <if test="customer_step_per_day!=null and customer_step_per_day!=''">
+                AND customer_step_per_day=#{customer_step_per_day}
+            </if>
+        </where>
+        order by customer_info_id
+    </select>
+
+    <insert id="insertSelective" parameterType="com.yiie.entity.CustomerInfo">
+        insert into customer_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="customer_info_id != null">
+                customer_info_id,
+            </if>
+            <if test="customer_fitness_point!=null">
+                AND customer_fitness_point=#{customer_fitness_point}
+            </if>
+            <if test="customer_credit_point!=null">
+                AND customer_credit_point=#{customer_credit_point}
+            </if>
+            <if test="customer_step_per_day!=null">
+                AND customer_step_per_day=#{customer_step_per_day}
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="customer_info_id != null">
+                #{customer_info_id,jdbcType=VARCHAR},
+            </if>
+            <if test="customer_fitness_point != null">
+                #{customer_fitness_point,jdbcType=VARCHAR},
+            </if>
+            <if test="customer_credit_point != null">
+                #{customer_credit_point,jdbcType=VARCHAR},
+            </if>
+            <if test="customer_step_per_day != null">
+                #{customer_step_per_day,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.yiie.entity.CustomerInfo">
+        update customer_info
+        <set>
+            <if test="customer_info_id != null">
+                customer_info_id,
+            </if>
+            <if test="customer_fitness_point!=null">
+                AND customer_fitness_point=#{customer_fitness_point}
+            </if>
+            <if test="customer_credit_point!=null">
+                AND customer_credit_point=#{customer_credit_point}
+            </if>
+            <if test="customer_step_per_day!=null">
+                AND customer_step_per_day=#{customer_step_per_day}
+            </if>
+        </set>
+        where customer_info_id = #{customer_info_id,jdbcType=VARCHAR}
+    </update>
+
+    <update id="deletedCustomersInfo" parameterType="com.yiie.entity.CustomerInfo">
+        update customer_info
+        <set>
+            customer_info_deleted = 0
+        </set>
+        where customer_info_id in
+        <foreach collection="list" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+    </update>
+</mapper>

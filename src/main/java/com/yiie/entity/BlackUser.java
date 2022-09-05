@@ -5,6 +5,10 @@ import java.util.Date;
 
 public class BlackUser implements Serializable {
     private String id;
+    /**
+     *  不同的场馆对应不同的内容.
+     */
+    // private String deptNO;
     private String identityCard;
     private String username;
     private String phone;
