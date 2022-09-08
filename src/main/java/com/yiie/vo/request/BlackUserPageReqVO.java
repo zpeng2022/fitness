@@ -22,6 +22,9 @@ public class BlackUserPageReqVO {
     @ApiModelProperty(value = "身份证号码")
     private String identityCard;
 
+    @ApiModelProperty(value = "部门ID")
+    private String deptID;
+
     @ApiModelProperty(value = "账号")
     private String username;
 

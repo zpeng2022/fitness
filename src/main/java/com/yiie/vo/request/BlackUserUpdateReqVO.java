@@ -17,6 +17,9 @@ public class BlackUserUpdateReqVO {
     @ApiModelProperty(value = "账号")
     private String username;
 
+    @ApiModelProperty(value = "部门ID")
+    private String deptID;
+
     @ApiModelProperty(value = "手机号码")
     private String phone;
 

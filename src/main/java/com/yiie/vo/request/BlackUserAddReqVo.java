@@ -21,6 +21,9 @@ public class BlackUserAddReqVo {
     @NotBlank(message = "身份证号码不能为空")
     private String identityCard;
 
+    @ApiModelProperty(value = "部门ID")
+    private String deptID;
+
     @ApiModelProperty(value = "手机号码")
     private String phone;
 

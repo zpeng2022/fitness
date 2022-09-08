@@ -11,6 +11,8 @@ public class BlackUserInfoRespVO {
     private String identityCard;
     @ApiModelProperty(value = "姓名")
     private String username;
+    @ApiModelProperty(value = "部门ID")
+    private String deptID;
     @ApiModelProperty(value = "手机号")
     private String phone;
     @ApiModelProperty(value = "类型")

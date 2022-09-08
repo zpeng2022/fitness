@@ -2,6 +2,7 @@ package com.yiie.common.controller;
 
 import com.yiie.aop.annotation.LogAnnotation;
 import com.yiie.common.service.BlackUserService;
+import com.yiie.common.service.UserService;
 import com.yiie.constant.Constant;
 import com.yiie.entity.BlackUser;
 import com.yiie.entity.Permission;
@@ -29,12 +30,20 @@ public class BlackUserController {
     @Autowired
     private BlackUserService blackUserService;
 
+    @Autowired
+    private UserService userService;
+
     @PostMapping("/blackusers")
     @ApiOperation(value = "分页获取禁入人员列表接口")
     @LogAnnotation(title = "禁入名单管理",action = "分页获取禁入人员列表")
     @RequiresPermissions("sys:blackusers:list")
-    public DataResult<PageVO<BlackUser>> pageInfo(@RequestBody BlackUserPageReqVO vo){
+    public DataResult<PageVO<BlackUser>> pageInfo(@RequestBody BlackUserPageReqVO vo, HttpServletRequest request){
         DataResult<PageVO<BlackUser>> result= DataResult.success();
+        // we need to set the deptID
+        String userId = JwtTokenUtil.getUserId(request.getHeader(Constant.ACCESS_TOKEN));
+        // get deptId, database will get information that belongs to this deptID.
+        String deptID = userService.getDeptIdFromUserId(userId);
+        vo.setDeptID(deptID);
         result.setData(blackUserService.pageInfo(vo));
         return result;
     }
@@ -53,7 +62,11 @@ public class BlackUserController {
     @ApiOperation(value = "新增禁入人员接口")
     @LogAnnotation(title = "禁入名单管理",action = "新增用户")
     @RequiresPermissions("sys:blackusers:add")
-    public DataResult addBlackUser(@RequestBody @Valid BlackUserAddReqVo vo){
+    public DataResult addBlackUser(@RequestBody @Valid BlackUserAddReqVo vo, HttpServletRequest request){
+        String userId = JwtTokenUtil.getUserId(request.getHeader(Constant.ACCESS_TOKEN));
+        // get deptId, database will get information that belongs to this deptID.
+        String deptID = userService.getDeptIdFromUserId(userId);
+        vo.setDeptID(deptID);
         blackUserService.addBlackUser(vo);
         return DataResult.success();
     }
@@ -64,6 +77,9 @@ public class BlackUserController {
     @RequiresPermissions("sys:blackusers:update")
     public DataResult updateBlackUserInfo(@RequestBody @Valid BlackUserUpdateReqVO vo, HttpServletRequest request){
         String operationId= JwtTokenUtil.getUserId(request.getHeader(Constant.ACCESS_TOKEN));
+        String userId = JwtTokenUtil.getUserId(request.getHeader(Constant.ACCESS_TOKEN));
+        String deptID = userService.getDeptIdFromUserId(userId);
+        vo.setDeptID(deptID);
         blackUserService.updateBlackUserInfo(vo,operationId);
         return DataResult.success();
     }

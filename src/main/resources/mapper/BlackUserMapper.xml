@@ -5,6 +5,7 @@
         <id column="id" jdbcType="VARCHAR" property="id" />
         <result column="identityCard" jdbcType="VARCHAR" property="identityCard" />
         <result column="username" jdbcType="VARCHAR" property="username" />
+        <result column="deptID" jdbcType="VARCHAR" property="deptID" />
         <result column="phone" jdbcType="VARCHAR" property="phone" />
         <result column="typeInfo" jdbcType="VARCHAR" property="typeInfo" />
         <result column="importTime" jdbcType="VARCHAR" property="importTime" />
@@ -14,13 +15,14 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id, identityCard, username, phone, typeInfo, importTime, updateTime, sex, deleted
+        id, identityCard, username, deptID, phone, typeInfo, importTime, updateTime, sex, deleted
     </sql>
 
-    <select id="getBlackUserInfoByName" resultMap="BaseResultMap">
+    <select id="getBlackUserInfoByNameByDeptID" resultMap="BaseResultMap">
         SELECT <include refid="Base_Column_List"></include>
         FROM blacklists
         WHERE username=#{username}
+        AND deptID=#{deptID}
         AND deleted=1
     </select>
 
@@ -31,25 +33,20 @@
         where id = #{id,jdbcType=VARCHAR}
     </select>
 
-    <select id="getBlackUserInfoByIdentityCard" resultMap="BaseResultMap">
+    <select id="getBlackUserInfoByIdentityCardAndDeptID" resultMap="BaseResultMap">
         SELECT <include refid="Base_Column_List"></include>
         FROM blacklists
         WHERE identityCard=#{identityCard,jdbcType=VARCHAR}
+        AND deptID=#{deptID}
         AND deleted=1
     </select>
 
-    <select id="selectBlackUserByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List" />
-        from blacklists
-        where id = #{id,jdbcType=VARCHAR}
-    </select>
-
-    <select id="selectAllBlackUser" resultMap="BaseResultMap" parameterType="com.yiie.vo.request.BlackUserPageReqVO">
+    <select id="selectAllBlackUserWithDeptID" resultMap="BaseResultMap" parameterType="com.yiie.vo.request.BlackUserPageReqVO">
         select <include refid="Base_Column_List"></include>
         from blacklists
         <where>
             deleted=1
+            AND deptID=#{deptID}
             <if test="identityCard!=null and identityCard!=''">
                 AND identityCard=#{identityCard}
             </if>
@@ -82,13 +79,14 @@
         <foreach collection="list" open="(" close=")" separator="," item="item">
             #{item}
         </foreach>
+        and deptID=#{deptID}
         and deleted=1
     </select>
 
     <select id="getUserListByDeptId" resultMap="BaseResultMap">
         select <include refid="Base_Column_List"></include>
         from blacklists
-        where identityCard=#{identityCard}
+        where deptID=#{deptID}
         and deleted=1
     </select>
 
@@ -104,6 +102,9 @@
             </if>
             <if test="username != null">
                 username,
+            </if>
+            <if test="deptID!=null">
+                deptID,
             </if>
             <if test="phone != null">
                 phone,
@@ -134,6 +135,9 @@
             <if test="username != null">
                 #{username,jdbcType=VARCHAR},
             </if>
+            <if test="deptID!=null">
+                #{deptID, jdbcType=VARCHAR},
+            </if>
             <if test="phone != null">
                 #{phone,jdbcType=VARCHAR},
             </if>
@@ -155,6 +159,7 @@
         </trim>
     </insert>
 
+    <!-- when update we don't need to update the deptID -->
     <update id="updateByPrimaryKeySelective" parameterType="com.yiie.entity.BlackUser">
         update blacklists
         <set>

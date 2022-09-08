@@ -7,6 +7,10 @@ public class BlackUser implements Serializable {
     private String id;
     private String identityCard;
     private String username;
+    /**
+     * to distinguish different department's black users.
+     */
+    private String deptID;
     private String phone;
     private String typeInfo;
     private Date importTime;
@@ -47,6 +51,14 @@ public class BlackUser implements Serializable {
 
     public void setIdentityCard(String identityCard) {
         this.identityCard = identityCard == null ? null : identityCard.trim();
+    }
+
+    public String getDeptID() {
+        return deptID;
+    }
+
+    public void setDeptID(String deptID) {
+        this.deptID = deptID;
     }
 
     public String getUsername() {
@@ -93,6 +105,7 @@ public class BlackUser implements Serializable {
     public String toString() {
         return "BlackUser{" +
                 "id='" + id + '\'' +
+                ", deptID='" + deptID + '\'' +
                 ", identityCard='" + identityCard + '\'' +
                 ", username='" + username + '\'' +
                 ", phone='" + phone + '\'' +

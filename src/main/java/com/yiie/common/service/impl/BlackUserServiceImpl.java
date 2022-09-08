@@ -57,7 +57,7 @@ public class BlackUserServiceImpl implements BlackUserService{
     @Override
     public PageVO<BlackUser> pageInfo(BlackUserPageReqVO vo) {
         PageHelper.startPage(vo.getPageNum(),vo.getPageSize());
-        List<BlackUser> sysUsers = blackuserMapper.selectAllBlackUser(vo);
+        List<BlackUser> sysUsers = blackuserMapper.selectAllBlackUserWithDeptID(vo);
         /*for(BlackUser ele : sysUsers){
             System.out.println(ele.toString());
         }*/
@@ -69,6 +69,8 @@ public class BlackUserServiceImpl implements BlackUserService{
         BlackUser sysUser = new BlackUser();
         BeanUtils.copyProperties(vo,sysUser);
         sysUser.setIdentityCard(vo.getIdentityCard());
+        // add information about dept
+        sysUser.setDeptID(vo.getDeptID());
         sysUser.setUsername(vo.getUsername());
         sysUser.setId(UUID.randomUUID().toString());
         sysUser.setImportTime(new Date());
@@ -80,6 +82,12 @@ public class BlackUserServiceImpl implements BlackUserService{
         }
     }
 
+    /**
+     * NOTICE: blackuserMapper.updateByPrimaryKeySelective will not update the deptID
+     * we don't need to update it. it won't change.
+     * @param vo
+     * @param operationId
+     */
     @Override
     public void updateBlackUserInfo(BlackUserUpdateReqVO vo, String operationId) {
         BlackUser sysUser = blackuserMapper.selectByPrimaryKey(vo.getId());
@@ -97,11 +105,10 @@ public class BlackUserServiceImpl implements BlackUserService{
         BeanUtils.copyProperties(vo,sysUser);
         sysUser.setUpdateTime(new Date());
         if(vo.getSex() == null || vo.getSex().equals("")){
-            sysUser.setSex(blackuserMapper.getBlackUserInfoByName(vo.getUsername()).getSex());
+            sysUser.setSex(blackuserMapper.getBlackUserInfoByNameByDeptID(vo.getUsername(), sysUser.getDeptID()).getSex());
         }else {
             sysUser.setSex(vo.getSex());
         }
-        // sysUser.setUpdateId(operationId);
         int count= blackuserMapper.updateByPrimaryKeySelective(sysUser);
         if (count!=1){
             throw new BusinessException(BaseResponseCode.OPERATION_ERRO);

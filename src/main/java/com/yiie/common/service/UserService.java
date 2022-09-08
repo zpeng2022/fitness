@@ -20,7 +20,6 @@ import java.util.List;
  * @version：1.0.0
  */
 public interface UserService {
-
     /**
      * 用户登录接口
      * @param vo
@@ -49,6 +48,8 @@ public interface UserService {
     UserOwnRoleRespVO getUserOwnRole(String userId, HttpServletRequest request);
 
     List<User> getUserListByDeptIds(List<String> deptIds);
+
+    String getDeptIdFromUserId(String userId);
 
     PageVO<User> selectUserInfoByDeptIds(int pageNum, int pageSize,List<String> deptIds);
 

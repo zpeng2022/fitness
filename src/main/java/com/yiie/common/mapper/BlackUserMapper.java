@@ -12,13 +12,12 @@ import java.util.List;
 @Repository
 @Mapper
 public interface BlackUserMapper {
-    BlackUser getBlackUserInfoByName(String username);
-    BlackUser getBlackUserInfoByIdentityCard(String identityCard);
-    BlackUser selectBlackUserByPrimaryKey(String id);
+    BlackUser getBlackUserInfoByNameByDeptID(String username, String deptID);
+    // BlackUser getBlackUserInfoByIdentityCardAndDeptID(String identityCard, String deptID);
     BlackUser selectByPrimaryKey(String id);
-    List<BlackUser> selectAllBlackUser(BlackUserPageReqVO vo);
-    List<BlackUser> selectBlackUserInfoByIdentityCards(List<String> identityCards);
-    List<BlackUser> getUserListByDeptId(List<String> identityCard);
+    // it changed
+    // we get all black users with deptID.
+    List<BlackUser> selectAllBlackUserWithDeptID(BlackUserPageReqVO vo);
     int insertSelective(BlackUser record);
     int updateByPrimaryKeySelective(BlackUser record);
     int deletedBlackUsers(@Param("sysUser") BlackUser sysUser, @Param("list") List<String> list);

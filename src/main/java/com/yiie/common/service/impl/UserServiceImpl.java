@@ -421,6 +421,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public String getDeptIdFromUserId(String userId) {
+        return userMapper.selectByPrimaryKey(userId).getDeptId();
+    }
+
+    @Override
     public PageVO<User> selectUserInfoByDeptIds(int pageNum, int pageSize, List<String> deptIds) {
         PageHelper.startPage(pageNum,pageSize);
         List<User> list=userMapper.selectUserInfoByDeptIds(deptIds);
