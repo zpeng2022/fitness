@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <script src="https://cdn.staticfile.org/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/jquery/3.6.0/jquery.min.map"></script>
+    <link rel="stylesheet" href="https://unpkg.com/layui@2.6.8/dist/css/layui.css">
+    <script src="https://unpkg.com/layui@2.6.8/dist/layui.js"></script>
+    <style>
+        body{padding: 20px;}
+        .file-uploader{margin-bottom: 10px;}
+        .file-list{display: flex;flex-wrap: wrap;}
+        .file-list .file-list-item{margin-right: 10px;margin-top: 10px;}
+        .file-list .file-list-item .img-wrap{width: 100px;height: 100px;overflow: hidden;border-radius: 3px; border: 1px solid #ddd;position: relative;}
+        .file-list .file-list-item .img-wrap .layui-badge{position: absolute;top: 5px;left: 5px;}
+        .file-list .file-list-item img{width: 100%;height: 100%;}
+        .file-list .file-list-item .file-cancel{margin-top: 5px;width: 100%;}
+        #uploader-submit{display: none;}
+    </style>
+</head>
+<body>
+    <button type="button" class="layui-btn file-uploader" id="uploader-choose">
+        <i class="layui-icon">&#xe64a;</i> 选择文件
+    </button>
+    <button type="button" class="layui-btn layui-btn-normal file-uploader" id="uploader-submit">
+        <i class="layui-icon">&#xe67c;</i> 点击上传
+    </button>
+    <!--文件列表-->
+    <div class="file-list"></div>
+</body>
+<script>
+    layui.use('upload', function(){
+        var upload = layui.upload;
+
+        // 上传文件队列
+        var uploadList = {};
+        // 文件列表dom
+        var fileListDom = $('.file-list');
+        //执行实例
+        var uploadInst = upload.render({
+            elem: '#uploader-choose', //绑定元素
+            url: '/index.php/demo/index/upload', //上传接口
+            accept:'images',
+            acceptMime:'image/*',
+            exts:'jpg|png|gif|bmp|jpeg',
+            auto: false,
+            bindAction: '#uploader-submit',
+            multiple: true,
+            number: 10,
+            // 选择文件的回调
+            choose: function(obj){
+                // 展示上传按钮
+                $('#uploader-submit').show();
+                // 将每次选择的文件追加到文件队列
+                uploadList = obj.pushFile();
+
+                const len = fileListDom.find('.file-list-item').length;
+                // 还可以上传的文件数量
+                const limit = 10 - len;
+
+                var number = 0;
+                // 预读本地文件，如果是多文件，则会遍历。(不支持ie8/9)
+                obj.preview(function(index, file, result){
+                    if (number < limit){
+                        number++;
+                        appendFile(index, file.name, result);
+                    }else{
+                        deleteTempFile(index)
+                    }
+                })
+            },
+            // 上传接口请求成功的回调
+            before: function(obj){
+                layer.load(1);
+            },
+            //上传完毕回调
+            done: function(res){
+                fileListDom.find('.file-temp').each(function () {
+                    if (!res.res){
+                        // 若上传失败，则直接移除
+                        $(this).remove();
+                    }else{
+                        // 添加上传返回的数据到对应的文件中
+                        var hidden = '<input type="hidden" name="path[]" value="'+res.path+'"/>';
+                        $(this).append(hidden);
+                        // 修改预览文件样式
+                        $(this).removeClass('file-temp');
+                        $(this).find('.file-cancel').removeClass('layui-btn-primary');
+                        $(this).find('.file-cancel').addClass('layui-btn-danger');
+                        $(this).find('.file-cancel').val('删除');
+                        $(this).find('.layui-badge').remove();
+                    }
+                })
+            },
+            //当文件全部被提交后，才触发
+            allDone: function (obj) {
+                layer.msg("已上传 "+obj.successful+" 个文件");
+                layer.closeAll('loading');
+                deleteTempFile(0)
+            },
+            //请求异常回调
+            error: function(){
+            }
+        });
+
+        // 预览选择的文件
+        function appendFile(index, name, result) {
+            const dom = '<div class="file-list-item file-temp" data-index="'+index+'"><div class="img-wrap"><img src="'+result+'" alt="'+name+'"><span class="layui-badge layui-bg-blue">待上传</span></div>' +
+                '<div><input type="button" class="layui-btn layui-btn-primary layui-btn-sm file-cancel" value="取消"></div></div>';
+            fileListDom.append(dom);
+            fileCancelEvent();
+        }
+
+        // 为待上传文件【取消】按钮添加点击事件
+        function fileCancelEvent() {
+            fileListDom.find('.file-cancel').each(function () {
+                const event = $._data($(this)[0],"events");
+                // 仅对未绑定事件的按钮进行绑定
+                if (!event || !event["click"]){
+                    $(this).click(function () {
+                        var fileDom = $(this).parent().parent();
+                        var index = fileDom.data('index');
+                        if (index){
+                            deleteTempFile(index);
+                        }
+                        fileDom.remove();
+                    })
+                }
+            })
+        }
+
+        // 删除待上传的文件（从文件队列中删除文件）
+        function deleteTempFile(index){
+            if (index === 0){
+                // 清空文件队列中所有数据
+                for (const key in uploadList) {
+                    delete uploadList[key];
+                }
+                // 隐藏上传按钮
+                $('#uploader-submit').hide();
+            }else{
+                delete uploadList[index];
+                var number = Object.keys(uploadList).length;
+                // 若上传文件队列中无数据则隐藏上传按钮
+                if (number <= 0){
+                    $('#uploader-submit').hide();
+                }
+            }
+        }
+    });
+</script>
+</html>

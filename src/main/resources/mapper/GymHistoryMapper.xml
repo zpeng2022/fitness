@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yiie.common.mapper.GymHistoryMapper">
+    <resultMap id="BaseResultMap" type="com.yiie.entity.GymHistory">
+        <id column="historyId" jdbcType="VARCHAR" property="historyId" />
+        <result column="gymId" jdbcType="VARCHAR" property="gymId" />
+        <result column="deptId" jdbcType="VARCHAR" property="deptId" />
+        <result column="customerName" jdbcType="VARCHAR" property="customerName" />
+        <result column="customerPhone" jdbcType="VARCHAR" property="customerPhone" />
+        <result column="customerIdentityCard" jdbcType="VARCHAR" property="customerIdentityCard" />
+        <result column="isBlackUser" jdbcType="TINYINT" property="isBlackUser" />
+        <result column="isOnlineUser" jdbcType="TINYINT" property="isOnlineUser" />
+        <result column="orderStartTime" jdbcType="VARCHAR" property="orderStartTime" />
+        <result column="orderEndTime" jdbcType="VARCHAR" property="orderEndTime" />
+        <result column="exerciseType" jdbcType="VARCHAR" property="exerciseType" />
+        <result column="inTime" jdbcType="VARCHAR" property="inTime" />
+        <result column="outTime" jdbcType="VARCHAR" property="outTime" />
+        <result column="createTime" jdbcType="VARCHAR" property="createTime" />
+        <result column="updateTime" jdbcType="VARCHAR" property="updateTime" />
+        <result column="deleted" jdbcType="TINYINT" property="deleted" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        historyId, gymId, deptId, customerName, customerPhone, customerIdentityCard, isBlackUser, isOnlineUser, orderStartTime, orderEndTime, exerciseType, inTime, outTime, createTime, updateTime, deleted
+    </sql>
+
+    <select id="getAllGymHistoriesByDeptID" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"></include>
+        FROM gym_history
+        AND deptId=#{deptId}
+        AND deleted=1
+    </select>
+
+    <select id="getAllGymCommentsByGymID" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"></include>
+        FROM gym_history
+        AND gymId=#{gymId}
+        AND deleted=1
+    </select>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from gym_history
+        where historyId = #{historyId,jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectAllGymHistoriesByDeptID" resultMap="BaseResultMap" parameterType="com.yiie.vo.request.GymHistoryPageReqVO">
+        select <include refid="Base_Column_List"></include>
+        from gym_history
+        <where>
+            deleted=1
+            AND deptId = #{deptId}
+            <if test="historyId != null and historyId != ''">
+                AND historyId = #{historyId}
+            </if>
+            <if test="gymId != null and gymId != ''">
+                AND gymId = #{gymId}
+            </if>
+            <if test="deptId != null and deptId != ''">
+                AND deptId = #{deptId}
+            </if>
+            <if test="customerName != null and customerName != ''">
+                AND customerName = #{customerName}
+            </if>
+            <if test="customerPhone != null and customerPhone != ''">
+                AND customerPhone = #{customerPhone}
+            </if>
+            <if test="customerIdentityCard != null and customerIdentityCard != ''">
+                AND customerIdentityCard = #{customerIdentityCard}
+            </if>
+            <if test="isBlackUser != null and isBlackUser != ''">
+                AND isBlackUser = #{isBlackUser}
+            </if>
+            <if test="isOnlineUser != null and isOnlineUser != ''">
+                AND isOnlineUser = #{isOnlineUser}
+            </if>
+            <if test="orderStartTime != null and orderStartTime != ''">
+                AND orderStartTime = #{orderStartTime}
+            </if>
+            <if test="orderEndTime != null and orderEndTime != ''">
+                AND orderEndTime = #{orderEndTime}
+            </if>
+            <if test="exerciseType != null and exerciseType != ''">
+                AND exerciseType = #{exerciseType}
+            </if>
+            <if test="inTime != null and inTime != ''">
+                AND inTime = #{inTime}
+            </if>
+            <if test="outTime != null and outTime != ''">
+                AND outTime = #{outTime}
+            </if>
+            <if test="createTime != null and createTime != ''">
+                AND createTime = #{createTime}
+            </if>
+            <if test="updateTime != null and updateTime != ''">
+                AND updateTime = #{updateTime}
+            </if>
+        </where>
+    </select>
+
+    <insert id="insertSelective" parameterType="com.yiie.entity.GymHistory">
+        insert into gym_history
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="historyId != null">
+                historyId,
+            </if>
+            <if test="gymId != null">
+                gymId,
+            </if>
+            <if test="deptId != null">
+                deptId,
+            </if>
+            <if test="customerName != null">
+                customerName,
+            </if>
+            <if test="customerPhone != null">
+                customerPhone,
+            </if>
+            <if test="customerIdentityCard != null">
+                customerIdentityCard,
+            </if>
+            <if test="isBlackUser != null">
+                isBlackUser,
+            </if>
+            <if test="isOnlineUser != null">
+                isOnlineUser,
+            </if>
+            <if test="orderStartTime != null">
+                orderStartTime,
+            </if>
+            <if test="orderEndTime != null">
+                orderEndTime,
+            </if>
+            <if test="exerciseType != null">
+                exerciseType,
+            </if>
+            <if test="inTime != null">
+                inTime,
+            </if>
+            <if test="outTime != null">
+                outTime,
+            </if>
+            <if test="createTime != null">
+                createTime,
+            </if>
+            <if test="updateTime != null">
+                updateTime,
+            </if>
+            <if test="deleted != null">
+                deleted,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="historyId != null">
+                #{historyId,jdbcType=VARCHAR},
+            </if>
+            <if test="gymId != null">
+                #{gymId,jdbcType=VARCHAR},
+            </if>
+            <if test="deptId != null">
+                #{deptId,jdbcType=VARCHAR},
+            </if>
+            <if test="customerName != null">
+                #{customerName,jdbcType=VARCHAR},
+            </if>
+            <if test="customerPhone != null">
+                #{customerPhone,jdbcType=VARCHAR},
+            </if>
+            <if test="customerIdentityCard != null">
+                #{customerIdentityCard,jdbcType=VARCHAR},
+            </if>
+            <if test="isBlackUser != null">
+                #{isBlackUser,jdbcType=TINYINT},
+            </if>
+            <if test="isOnlineUser != null">
+                #{isOnlineUser,jdbcType=TINYINT},
+            </if>
+            <if test="orderStartTime != null">
+                #{orderStartTime,jdbcType=VARCHAR},
+            </if>
+            <if test="orderEndTime != null">
+                #{orderEndTime,jdbcType=VARCHAR},
+            </if>
+            <if test="exerciseType != null">
+                #{exerciseType,jdbcType=VARCHAR},
+            </if>
+            <if test="inTime != null">
+                #{inTime,jdbcType=VARCHAR},
+            </if>
+            <if test="outTime != null">
+                #{outTime,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=VARCHAR},
+            </if>
+            <if test="deleted != null">
+                #{deleted,jdbcType=TINYINT},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.yiie.entity.GymHistory">
+        update gym_history
+        <set>
+            <if test="historyId != null">
+                historyId = #{historyId,jdbcType=VARCHAR},
+            </if>
+            <if test="gymId != null">
+                gymId = #{gymId,jdbcType=VARCHAR},
+            </if>
+            <if test="deptId != null">
+                deptId = #{deptId,jdbcType=VARCHAR},
+            </if>
+            <if test="customerName != null">
+                customerName = #{customerName,jdbcType=VARCHAR},
+            </if>
+            <if test="customerPhone != null">
+                customerPhone = #{customerPhone,jdbcType=VARCHAR},
+            </if>
+            <if test="customerIdentityCard != null">
+                customerIdentityCard = #{customerIdentityCard,jdbcType=VARCHAR},
+            </if>
+            <if test="isBlackUser != null">
+                isBlackUser = #{isBlackUser,jdbcType=TINYINT},
+            </if>
+            <if test="isOnlineUser != null">
+                isOnlineUser = #{isOnlineUser,jdbcType=TINYINT},
+            </if>
+            <if test="orderStartTime != null">
+                #{orderStartTime,jdbcType=VARCHAR},
+            </if>
+            <if test="orderEndTime != null">
+                orderEndTime = #{orderEndTime,jdbcType=VARCHAR},
+            </if>
+            <if test="exerciseType != null">
+                exerciseType = #{exerciseType,jdbcType=VARCHAR},
+            </if>
+            <if test="inTime != null">
+                inTime = #{inTime,jdbcType=VARCHAR},
+            </if>
+            <if test="outTime != null">
+                outTime = #{outTime,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                createTime = #{createTime,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null">
+                updateTime = #{updateTime,jdbcType=VARCHAR},
+            </if>
+            <if test="deleted != null">
+                deleted = #{deleted,jdbcType=TINYINT},
+            </if>
+        </set>
+        where historyId = #{historyId,jdbcType=VARCHAR}
+    </update>
+
+    <update id="deletedGymHistories" parameterType="com.yiie.entity.GymHistory">
+        update gym_history
+        <set>
+            deleted = 0
+        </set>
+        where historyId in
+        <foreach collection="list" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+    </update>
+</mapper>

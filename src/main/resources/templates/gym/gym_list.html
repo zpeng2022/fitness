@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <meta charset="UTF-8">
+    <title>场地列表</title>
+    <link rel="stylesheet" href="/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="/css/form.css">
+    <script src="/layui/layui.all.js"></script>
+    <script src="/js/util.js"></script>
+    <style type="text/css">
+        <!-- 用于显示时分 -->
+        .layui-laydate-content>.layui-laydate-list {
+            padding-bottom: 0px;
+            overflow: hidden;
+        }
+        .layui-laydate-content>.layui-laydate-list>li{
+            width:50%
+        }
+        .merge-box .scrollbox .merge-list {
+            padding-bottom: 5px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="panel panel-default operation_gym" hidden>
+    <div class="panel-heading title" style="text-align: center"></div>
+    <div class="layui-card-body">
+        <form class="layui-form " action="" lay-filter="deptInfo" style="width: 700px;margin-top: 10px">
+            <input name="gymId" hidden/>
+            <input name="deptId" hidden/>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">场馆名称</label>
+                <div class="layui-input-block">
+                    <input type="gymName" name="gymName" placeholder="请输入场馆名称" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-form-label ">场馆电话</div>
+                <div class="layui-input-block">
+                    <input type="gymPhone" lay-verify="required|telephone" name="gymPhone" placeholder="请输入场馆电话" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-form-label ">场馆最大可容纳人数</div>
+                <div class="layui-input-block">
+                    <input type="gymCapacity"  name="gymCapacity" placeholder="请输入最大人数" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+
+            <!-- 上传场馆图片.  -->
+            <!-- todo -->
+
+            <!-- 周一到周天开放的时间 -->
+            <!-- todo -->
+            <div class="layui-form-item">
+                <label class="layui-form-label">周一到周五开放时间</label>
+                <div class="layui-input-block">
+                    <input type="monday" class="layui-input" name="monday" placeholder="周一到周五开放时间: 例如 9:00-11:30 1:00-5:00" autocomplete="off" >
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">周六周天开放时间</label>
+                <div class="layui-input-block">
+                    <input type="saturday" class="layui-input" name="saturday" placeholder="周一到周五开放时间: 例如 9:00-11:30 1:00-5:00,不开放则为不填" autocomplete="off" >
+                </div>
+            </div>
+
+
+            <div class="layui-form-item">
+                <div class="layui-form-label ">节假日是否开放</div>
+                <div class="layui-input-block">
+                    <div class="layui-input-inline layui-form">
+                        <select name="openOnHoliday">
+                            <option value="">请选择</option>
+                            <option value="0">不开放</option>
+                            <option value="1">开放</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <div class="layui-form-label ">场馆类型</div>
+                <div class="layui-input-block">
+                    <input type="gymTypes"  name="gymTypes" placeholder="请输入场馆类型" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <div class="layui-form-label ">场馆地理位置</div>
+                <div class="layui-input-block">
+                    <input type="text" name="gymPosition" placeholder="请输入场馆地理位置" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+
+            <!-- 根据部门名称 拿到部门id -->
+            <div class="layui-form-item">
+                <div class="layui-form-label ">所属部门</div>
+                <div class="layui-input-block">
+                    <input type="deptName" name="deptName" placeholder="请选择所属部门" autocomplete="off" class="layui-input"
+                           readonly="readonly" style="background:#eeeeee!important">
+                </div>
+            </div>
+
+            <!-- gps 地理位置 -->
+            <!-- todo -->
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">场馆描述</label>
+                <div class="layui-input-block">
+                    <input type="text" name="gymDetails" placeholder="请输入场馆描述" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button type="submit" class="layui-btn" lay-submit="" lay-filter="submit">保存</button>
+                    <button class="layui-btn layui-btn-primary" id="btn_cancel">返回</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="gym_table_div">
+    <div id="searchParam" shiro:hasPermission="sys:gym:list">
+        <div class="layui-form-item">
+            <div class="layui-input-inline">
+                <input type="text" id="gymName" class="layui-input" autocomplete="off" placeholder="请输入场地名称">
+            </div>
+            <div class="layui-input-inline">
+                <input type="text" id="gymTypes" class="layui-input" autocomplete="off" placeholder="请输入场地类型">
+            </div>
+            <div class="layui-input-inline layui-form">
+                <select class="" id="openOnHoliday">
+                    <option value="">节假日是否开放</option>
+                    <option value="0">不开放</option>
+                    <option value="1">开放</option>
+                </select>
+            </div>
+            <div class="layui-input-inline">
+                <input type="text" class="layui-input" id="createTime" placeholder="选择创建时间区间" style="width: 290px">
+            </div>
+        </div>
+    </div>
+    <!--changed -->
+    <table class="layui-hide" id="gym_table" lay-filter="gym_table"></table>
+    <div id="laypage" class= "$(" .layui-laypage-btn").click();"></div>
+</div>
+<div id="deptTree" style="display: none"></div>
+<div id="roles" class="demo-transfer" style="display: none"></div>
+</body>
+<script type="text/html" id="toolbar">
+    <div class="layui-btn-group" id="search">
+        <button type="button" class="layui-btn" lay-event="search" >
+            <i class="layui-icon">&#xe615;</i> 开始检索
+        </button>
+    </div>
+    <div class="layui-btn-group">
+        <button type="button" class="layui-btn layui-btn-danger" lay-event="batchDeleted"
+                shiro:hasPermission="sys:gym:deleted">
+            <i class="layui-icon">&#xe608;</i> 批量删除
+        </button>
+    </div>
+    <!--changed -->
+    <div class="layui-btn-group">
+        <button type="button" class="layui-btn layui-btn-normal" lay-event="addNewGym"
+                shiro:hasPermission="sys:gym:add">
+            <i class="layui-icon">&#xe608;</i> 新增场地
+        </button>
+    </div>
+</script>
+<script type="text/html" id="tool">
+    <a class="layui-btn layui-btn-xs" lay-event="edit" shiro:hasPermission="sys:gym:update">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del" shiro:hasPermission="sys:gym:deleted">删除</a>
+</script>
+<script type="text/html" id="sexTpl">
+    {{#  if(d.sex == 2){ }}
+    <span style="color: #fe5395;">女</span>
+    {{#  } else if(d.sex == 1){ }}
+    <span style="color: #48c202;">男</span>
+    {{#  } else{ }}
+    <span style="color: #17a2b8;">保密</span>
+    {{#  } }}
+</script>
+<script type="text/html" id="sourceTpl">
+    {{#  if(d.openOnHoliday == 1){ }}
+    <span style="color: #0053c6;">开放</span>
+    {{#  } else{ }}
+    <span style="color: #c40b53;">不开放</span>
+    {{#  } }}
+</script>
+<script>
+    var table = layui.table;
+    var laypage = layui.laypage
+    var form = layui.form;
+    var layer = layui.layer;
+    var $ = jQuery = layui.jquery;
+    var laydate = layui.laydate;
+    var tree = layui.tree;
+    var transfer = layui.transfer
+    var mobile = /^1[3|4|5|7|8]\d{9}$/,phone = /^0\d{2,3}-?\d{7,8}$/;
+    var upload = layui.upload;
+    // 图片上传..
+    // 上传文件队列
+    var uploadList = {};
+    // 文件列表dom
+    var fileListDom = $('.file-list');
+
+
+    layui.use(['table', 'laypage', 'layer', 'laydate', 'tree', 'transfer'], function () {
+        form.render();
+
+        form.verify({
+            telephone: function(value){
+                var flag = mobile.test(value) || phone.test(value);
+                if(!flag){
+                    return '请输入正确座机号码或手机号';
+                }
+            }
+        });
+
+        var searchParam = {
+            gymName:null,
+            gymTypes:null,
+            openOnHoliday:null,
+            createTime: null,
+            pageNum: 1,
+            pageSize: 10
+        }
+
+        CoreUtil.sendAjax("/sys/gyms", JSON.stringify(searchParam), function (res) {
+            laypageTable(res.data.totalRows, searchParam.pageNum);
+            if (res.data.list != null) {
+                loadTable(res.data.list);
+            }
+        }, "POST", false, function (res) {
+            layer.msg("抱歉！您暂无获取用户列表的权限");
+            var noAuthorityData = [];
+            loadTable(noAuthorityData);
+        });
+
+        var laypageTable = function (count, currentPage) {
+            laypage.render({
+                elem: 'laypage'
+                , count: count
+                , limit: searchParam.pageSize
+                , layout: ['count', 'prev', 'page', 'next', 'limit', 'refresh', 'skip']
+                , curr: location.hash.replace('#!currentPage=', '') //获取起始页
+                , hash: 'currentPage' //自定义hash值
+                , jump: function (obj, first) {
+                    if (!first) {
+                        searchParam.pageNum = obj.curr;
+                        searchParam.pageSize = obj.limit;
+                        CoreUtil.sendAjax("/sys/gyms", JSON.stringify(searchParam), function (res) {
+                            if (res.data.list != null) {
+                                loadTable(res.data.list);
+                                laypageTable(res.data.totalRows, searchParam.pageNum);
+                            }
+                        }, "POST", false, function (res) {
+                            layer.msg("抱歉！您暂无获取用户列表的权限");
+                            var noAuthorityData = [];
+                            loadTable(noAuthorityData);
+                        });
+                    }
+                }
+            });
+        };
+
+        //渲染table
+        var loadTable = function (data) {
+            table.render({
+                elem: '#gym_table'
+                , cols: [
+                    [
+                        {type: 'checkbox', fixed: 'left'},
+                        {field: 'gymName', align: 'center', title: '场地名称', width: 110},
+                        {field: 'deptName', align: 'center', title: '所属部门', width: 90},
+                        {field: 'gymPhone', align: 'center', title: '场地电话号码', width: 90},
+                        {field: 'gymCapacity', align: 'center', title: '最大可容纳人数', width: 120},
+                        {field: 'gymTypes', align: 'center', title: '场地类型', width: 120},
+                        {field: 'openOnHoliday', align: 'center', title: '节假日是否开放', width: 80, templet: '#sourceTpl'},
+                        {field: 'gymPosition', align: 'center', title: '场地地址'},
+                        {field: 'gymDetails', align: 'center', title: '场地描述'},
+                        {field: 'monday', align: 'center', title: '周一至周五开放时间'},
+                        {field: 'saturday', align: 'center', title: '周六周天开放时间'},
+                        {
+                            field: 'createTime', align: 'center', title: '创建时间', width: 170, templet: function (item) {
+                                return CoreUtil.formattime(item.createTime);
+                            }
+                        },
+                        {width: 180, align: 'center', toolbar: "#tool", title: '操作'}
+                    ]
+                ]
+                , data: data
+                , even: true
+                , limit: data.length
+                , limits: [10, 20, 30, 50, 100]
+                , toolbar: '#toolbar'
+            });
+        };
+
+        laydate.render({
+            elem: '#createTime'
+            , type: 'datetime'
+            , range: '~'
+            , done: function (value, date, endDate) {
+                if (value != null && value != undefined && value != "") {
+                    searchParam.startTime = value.split("~")[0];
+                    searchParam.endTime = value.split("~")[1];
+                } else {
+                    searchParam.startTime = null;
+                    searchParam.endTime = null;
+                }
+            }
+        });
+
+        // 执行实例
+        // TODO: 上传图片, 接口需要修改.
+        /*var uploadInst = upload.render({
+            elem: '#uploader-choose', //绑定元素
+            url: '/index.php/demo/index/upload', //上传接口
+            accept:'images',
+            acceptMime:'image/!*',
+            exts:'jpg|png|gif|bmp|jpeg',
+            auto: false,
+            bindAction: '#uploader-submit',
+            multiple: true,
+            number: 10,
+            // 选择文件的回调
+            choose: function(obj){
+                // 展示上传按钮
+                $('#uploader-submit').show();
+                // 将每次选择的文件追加到文件队列
+                uploadList = obj.pushFile();
+
+                const len = fileListDom.find('.file-list-item').length;
+                // 还可以上传的文件数量
+                const limit = 10 - len;
+
+                var number = 0;
+                // 预读本地文件，如果是多文件，则会遍历。(不支持ie8/9)
+                obj.preview(function(index, file, result){
+                    if (number < limit){
+                        number++;
+                        appendFile(index, file.name, result);
+                    }else{
+                        deleteTempFile(index)
+                    }
+                })
+            },
+            // 上传接口请求成功的回调
+            before: function(obj){
+                layer.load(1);
+            },
+            //上传完毕回调
+            done: function(res){
+                fileListDom.find('.file-temp').each(function () {
+                    if (!res.res){
+                        // 若上传失败，则直接移除
+                        $(this).remove();
+                    }else{
+                        // 添加上传返回的数据到对应的文件中
+                        var hidden = '<input type="hidden" name="path[]" value="'+res.path+'"/>';
+                        $(this).append(hidden);
+                        // 修改预览文件样式
+                        $(this).removeClass('file-temp');
+                        $(this).find('.file-cancel').removeClass('layui-btn-primary');
+                        $(this).find('.file-cancel').addClass('layui-btn-danger');
+                        $(this).find('.file-cancel').val('删除');
+                        $(this).find('.layui-badge').remove();
+                    }
+                })
+            },
+            //当文件全部被提交后，才触发
+            allDone: function (obj) {
+                layer.msg("已上传 "+obj.successful+" 个文件");
+                layer.closeAll('loading');
+                deleteTempFile(0)
+            },
+            //请求异常回调
+            error: function(){
+            }
+        });
+
+        // 预览选择的文件
+        function appendFile(index, name, result) {
+            const dom = '<div class="file-list-item file-temp" data-index="'+index+'"><div class="img-wrap"><img src="'+result+'" alt="'+name+'"><span class="layui-badge layui-bg-blue">待上传</span></div>' +
+                '<div><input type="button" class="layui-btn layui-btn-primary layui-btn-sm file-cancel" value="取消"></div></div>';
+            fileListDom.append(dom);
+            fileCancelEvent();
+        }
+
+        // 为待上传文件【取消】按钮添加点击事件
+        function fileCancelEvent() {
+            fileListDom.find('.file-cancel').each(function () {
+                const event = $._data($(this)[0],"events");
+                // 仅对未绑定事件的按钮进行绑定
+                if (!event || !event["click"]){
+                    $(this).click(function () {
+                        var fileDom = $(this).parent().parent();
+                        var index = fileDom.data('index');
+                        if (index){
+                            deleteTempFile(index);
+                        }
+                        fileDom.remove();
+                    })
+                }
+            })
+        }
+
+        // 删除待上传的文件（从文件队列中删除文件）
+        function deleteTempFile(index){
+            if (index === 0){
+                // 清空文件队列中所有数据
+                for (const key in uploadList) {
+                    delete uploadList[key];
+                }
+                // 隐藏上传按钮
+                $('#uploader-submit').hide();
+            }else{
+                delete uploadList[index];
+                var number = Object.keys(uploadList).length;
+                // 若上传文件队列中无数据则隐藏上传按钮
+                if (number <= 0){
+                    $('#uploader-submit').hide();
+                }
+            }
+        }
+    });*/
+
+        /*// 场所开放时间设置, 显示时分.
+        laydate.render({
+            elem: '#Monday'
+            ,type: 'time'
+            ,format: 'HH:mm'
+            ,btns: ['clear', 'confirm']
+            ,ready: formatminutes
+        });
+
+        laydate.render({
+            elem: '#Tuesday'
+            ,type: 'time'
+            ,format: 'HH:mm'
+            ,btns: ['clear', 'confirm']
+            ,ready: formatminutes
+        });
+
+        laydate.render({
+            elem: '#Wednesday'
+            ,type: 'time'
+            ,format: 'HH:mm'
+            ,btns: ['clear', 'confirm']
+            ,ready: formatminutes
+
+        });
+
+        laydate.render({
+            elem: '#Thursday'
+            ,type: 'time'
+            ,format: 'HH:mm'
+            ,btns: ['clear', 'confirm']
+            ,ready: formatminutes
+        });
+
+        laydate.render({
+            elem: '#Friday'
+            ,type: 'time'
+            ,format: 'HH:mm'
+            ,btns: ['clear', 'confirm']
+            ,ready: formatminutes
+        });*/
+
+        /*function  formatminutes(date) {
+            var aa = $(".laydate-time-list li ol")[1];
+            var showtime = $($(".laydate-time-list li ol")[1]).find("li");
+            for (var i = 0; i < showtime.length; i++) {
+                var t00 = showtime[i].innerText;
+                if (t00 != "00" && t00 != "20" && t00 != "30" && t00 != "40" && t00 != "50") {
+                    showtime[i].remove()
+                }
+            }
+            $($(".laydate-time-list li ol")[2]).find("li").remove();  //清空秒
+        }*/
+
+        /*function formatminutes(date) {
+            $(".laydate-time-list li").eq(233).remove()
+            $(".laydate-time-list li").eq(86).remove()
+            $(".laydate-time-list li").css("width","50%")
+            $(".laydate-time-list li ol li").css("width","100%")
+        }*/
+
+
+        table.on('toolbar(gym_table)', function (obj) {
+            var checkStatus = table.checkStatus(obj.config.id);
+            switch (obj.event) {
+                case 'batchDeleted':
+                    var checkStatus = table.checkStatus(obj.config.id);
+                    var data = checkStatus.data;
+                    if (data.length == 0) {
+                        layer.msg("请选择要批量删除的用户");
+                    } else {
+                        var userIds = [];
+                        $(data).each(function (index, item) {
+                            userIds.push(item.gymId);
+                        });
+                        tipDialog(userIds, "选中的");
+                    }
+                    break;
+                case 'addNewGym':
+                    form.render();
+                    $(".title").html("新增场地");
+                    $(".gym_table_div").hide();
+                    $(".operation_gym").show();
+                    $(".operation_gym input[name=gymId]").val("");
+                    $(".operation_gym input[name=deptId]").val("");
+                    $(".operation_gym input[name=gymName]").val("");
+                    $(".operation_gym input[name=gymPhone]").val("");
+                    $(".operation_gym input[name=gymCapacity]").val("");
+                    $(".operation_gym input[name=openOnHoliday]").val("");
+                    $(".operation_gym input[name=gymTypes]").val("");
+                    $(".operation_gym input[name=gymPosition]").val("");
+                    $(".operation_gym input[name=gymDetails]").val("");
+                    $(".operation_gym input[name=deptName]").val("");
+                    $(".operation_gym input[name=Monday]").val("");
+                    $(".operation_gym input[name=Saturday]").val("");
+                    //var x = document.getElementsByClassName("layui-unselect layui-form-switch");
+                    //x[0].setAttribute("class", "layui-unselect layui-form-switch layui-form-onswitch");
+                    //var d = document.getElementsByTagName('em')[0];
+                    //d.firstChild.nodeValue = '启用';
+                    form.render(); //更新全部
+                    initTree("");
+                    break;
+                case 'search':
+                    searchParam.gymName = $("#gymName").val();
+                    searchParam.gymTypes = $("#gymTypes").val();
+                    searchParam.openOnHoliday = $("#openOnHoliday").val();
+                    searchParam.createTime = $("#createTime").val();
+                    searchParam.pageNum = 1;
+                    CoreUtil.sendAjax("/sys/gyms", JSON.stringify(searchParam), function (res) {
+                        laypageTable(res.data.totalRows, searchParam.pageNum);
+                        if (res.data.list != null) {
+                            loadTable(res.data.list);
+                        }
+                    }, "POST", false, function (res) {
+                        layer.msg("抱歉！您暂无获取用户列表的权限");
+                        var noAuthorityData = [];
+                        loadTable(noAuthorityData);
+                    });
+                    break;
+            }
+            ;
+        });
+        table.on('tool(gym_table)', function (obj) {
+            var data = obj.data;
+            switch (obj.event) {
+                case 'del':
+                    var userIds = [];
+                    userIds.push(data.gymId);
+                    tipDialog(userIds, data.gymName);
+                    break;
+                case 'edit':
+                    $(".gym_table_div").hide();
+                    $(".operation_gym").show();
+                    $(".title").html("编辑用户");
+                    $(".operation_gym input[name=gymId]").val(data.gymId);
+                    $(".operation_gym input[name=deptId]").val(data.deptId);
+                    $(".operation_gym input[name=gymName]").val(data.gymName);
+                    $(".operation_gym input[name=gymPhone]").val(data.gymPhone);
+                    $(".operation_gym input[name=gymCapacity]").val(data.gymCapacity);
+                    $(".operation_gym input[name=openOnHoliday]").val(data.openOnHoliday);
+                    $(".operation_gym input[name=gymTypes]").val(data.gymTypes);
+                    $(".operation_gym input[name=gymPosition]").val(data.gymPosition);
+                    $(".operation_gym input[name=gymDetails]").val(data.gymDetails);
+                    $(".operation_gym input[name=deptName]").val(data.deptName);
+                    $(".operation_gym input[name=Monday]").val(data.monday);
+                    $(".operation_gym input[name=Saturday]").val(data.saturday);
+                    form.render(); //更新全部
+                    initTree("");
+                    break;
+            }
+        });
+        $("#btn_cancel").click(function () {
+            $(".gym_table_div").show();
+            $(".operation_gym").hide();
+            return false;
+        });
+
+        var tipDialog = function (userIds, username) {
+            layer.open({
+                content: '确定要删除' + username + "用户么?",
+                yes: function (index, layero) {
+                    layer.close(index); //如果设定了yes回调，需进行手工关闭
+                    CoreUtil.sendAjax("/sys/gym", JSON.stringify(userIds), function (res) {
+                        layer.msg(res.msg);
+                        $(".layui-laypage-btn").click();
+                    }, "DELETE", false, function (res) {
+                        layer.msg("抱歉！您暂无删除用户的权限");
+                    });
+                }
+            });
+        };
+
+        form.on('switch(switch)', function () {
+            $(".operation_gym input[name=status]").attr('type', 'hidden').val(this.checked ? 1 : 2);
+
+        });
+
+        form.on('submit(submit)', function (data) {
+            if (data.field.id === undefined || data.field.id === null || data.field.id === "") {
+                CoreUtil.sendAjax("/sys/gym", JSON.stringify(data.field), function (res) {
+                    $(".gym_table_div").show();
+                    $(".operation_gym").hide();
+                    $(".layui-laypage-btn").click();
+                }, "POST", false, function (res) {
+                    layer.msg("抱歉！您暂无新增用户的权限");
+                });
+            } else {
+                CoreUtil.sendAjax("/sys/gym", JSON.stringify(data.field), function (res) {
+                    $(".gym_table_div").show();
+                    $(".operation_gym").hide();
+                    $(".layui-laypage-btn").click();
+                }, "PUT", false, function (res) {
+                    layer.msg("抱歉！您暂无编辑用户的权限");
+                });
+            }
+            return false;
+        });
+
+        var loadDeptTree = function (data) {
+            tree.render({
+                elem: '#deptTree'
+                , data: data
+                , onlyIconControl: true  //是否仅允许节点左侧图标控制展开收缩
+                , click: function (obj) {
+                    selectNode = obj;
+                    layer.msg(JSON.stringify(selectNode.data.title));
+                }
+            });
+        };
+
+        $(".operation_gym input[name=deptName]").click(function () {
+            layer.open({
+                type: 1,
+                offset: '0px',
+                skin: 'layui-layer-molv',
+                title: "选择部门",
+                area: ['400px', '550px'],
+                shade: 0,
+                shadeClose: false,
+                content: jQuery("#deptTree"),
+                btn: ['确定', '取消'],
+                yes: function (index) {
+                    if (selectNode.data != null) {
+                        //选中回显
+                        $(".operation_gym input[name=deptId]").val(selectNode.data.id);
+                        $(".operation_gym input[name=deptName]").val(selectNode.data.title);
+                    }
+                    layer.close(index);
+                }
+            });
+        });
+
+        var initTree = function (id) {
+            var param = {deptId: id}
+            CoreUtil.sendAjax("/sys/dept/tree", param, function (res) {
+                loadDeptTree(res.data);
+            }, "GET", false, function (res) {
+                layer.msg("抱歉！您暂无获取部门树的权限");
+                var noAuthorityData = [];
+                loadDeptTree(noAuthorityData);
+            });
+        };
+
+        var initTransfer = function (data) {
+            transfer.render({
+                elem: '#roles'
+                , data: data.allRole
+                , title: ['赋予角色', '拥有角色']
+                , showSearch: true
+                , value: data.ownRoles
+                , id: 'ownData'
+                , parseData: function (res) {
+                    return {
+                        "value": res.id //数据值
+                        , "title": res.name //数据标题
+                    }
+                }
+            })
+        }
+    });
+</script>
+</html>

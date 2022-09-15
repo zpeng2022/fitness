@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yiie.common.mapper.GymMapper">
+    <resultMap id="BaseResultMap" type="com.yiie.entity.Gym">
+        <id column="gymId" jdbcType="VARCHAR" property="gymId" />
+        <result column="deptId" jdbcType="VARCHAR" property="deptId" />
+        <result column="gymName" jdbcType="VARCHAR" property="gymName" />
+        <result column="monday" jdbcType="VARCHAR" property="monday" />
+        <result column="saturday" jdbcType="VARCHAR" property="saturday" />
+        <result column="gymPhone" jdbcType="VARCHAR" property="gymPhone" />
+        <result column="gymCapacity" jdbcType="INTEGER" property="gymCapacity" />
+        <result column="gymPicturesPath" jdbcType="VARCHAR" property="gymPicturesPath" />
+        <result column="openOnHoliday" jdbcType="TINYINT" property="openOnHoliday" />
+        <result column="gymTypes" jdbcType="VARCHAR" property="gymTypes" />
+        <result column="gymPosition" jdbcType="VARCHAR" property="gymPosition" />
+        <result column="gymDetails" jdbcType="VARCHAR" property="gymDetails" />
+        <result column="gymGps" jdbcType="VARCHAR" property="gymGps" />
+        <result column="createTime" jdbcType="VARCHAR" property="createTime" />
+        <result column="updateTime" jdbcType="VARCHAR" property="updateTime" />
+        <result column="deleted" jdbcType="TINYINT" property="deleted" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        gymId, deptId, gymName, monday, saturday, gymPhone, gymCapacity, gymPicturesPath, openOnHoliday, gymTypes, gymPosition, gymDetails, gymGps, createTime, updateTime, deleted
+    </sql>
+
+    <select id="getAllGymsByNameByDeptID" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"></include>
+        FROM gym
+        AND deptId=#{deptId}
+        AND deleted=1
+    </select>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from gym
+        where gymId = #{gymId, jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectAllGymsByDeptID" resultMap="BaseResultMap" parameterType="com.yiie.vo.request.GymPageReqVO">
+        select <include refid="Base_Column_List"></include>
+        from gym
+        <where>
+            deleted=1
+            AND deptId = #{deptId}
+            <if test="gymId != null and gymId != ''">
+                AND gymId = #{gymId}
+            </if>
+            <if test="deptId != null and deptId != ''">
+                AND deptId = #{deptId}
+            </if>
+            <if test="gymName != null and gymName != ''">
+                AND gymName = #{gymName}
+            </if>
+            <if test="monday != null and monday != ''">
+                AND monday = #{monday}
+            </if>
+            <if test="saturday != null and saturday != ''">
+                AND saturday = #{saturday}
+            </if>
+            <if test="gymPhone != null and gymPhone != ''">
+                AND gymPhone = #{gymPhone}
+            </if>
+            <if test="gymCapacity != null and gymCapacity != ''">
+                AND gymCapacity = #{gymCapacity}
+            </if>
+            <if test="gymPicturesPath != null and gymPicturesPath != ''">
+                AND gymPicturesPath = #{gymPicturesPath}
+            </if>
+            <if test="openOnHoliday != null and openOnHoliday != ''">
+                AND openOnHoliday = #{openOnHoliday}
+            </if>
+            <if test="gymTypes != null and gymTypes != ''">
+                AND gymTypes = #{gymTypes}
+            </if>
+            <if test="gymPosition != null and gymPosition != ''">
+                AND gymPosition = #{gymPosition}
+            </if>
+            <if test="gymDetails != null and gymDetails != ''">
+                AND gymDetails = #{gymDetails}
+            </if>
+            <if test="gymGps != null and gymGps != ''">
+                AND gymGps = #{gymGps}
+            </if>
+            <if test="createTime != null and createTime != ''">
+                AND createTime = #{createTime}
+            </if>
+            <if test="updateTime != null and updateTime != ''">
+                AND updateTime = #{updateTime}
+            </if>
+        </where>
+    </select>
+
+    <insert id="insertSelective" parameterType="com.yiie.entity.Gym">
+        insert into gym
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="gymId != null">
+                gymId,
+            </if>
+            <if test="deptId != null">
+                deptId,
+            </if>
+            <if test="gymName != null">
+                gymName,
+            </if>
+            <if test="monday != null">
+                monday,
+            </if>
+            <if test="saturday != null">
+                saturday,
+            </if>
+            <if test="gymPhone!=null">
+                gymPhone,
+            </if>
+            <if test="gymCapacity != null">
+                gymCapacity,
+            </if>
+            <if test="gymPicturesPath != null">
+                gymPicturesPath,
+            </if>
+            <if test="openOnHoliday != null">
+                openOnHoliday,
+            </if>
+            <if test="gymTypes != null">
+                gymTypes,
+            </if>
+            <if test="gymPosition != null">
+                gymPosition,
+            </if>
+            <if test="gymDetails != null">
+                gymDetails,
+            </if>
+            <if test="gymGps != null">
+                gymGps,
+            </if>
+            <if test="createTime != null">
+                createTime,
+            </if>
+            <if test="updateTime != null">
+                updateTime,
+            </if>
+            <if test="deleted != null">
+                deleted,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="gymId != null">
+                #{gymId,jdbcType=VARCHAR},
+            </if>
+            <if test="deptId != null">
+                #{deptId,jdbcType=VARCHAR},
+            </if>
+            <if test="gymName != null">
+                #{gymName,jdbcType=VARCHAR},
+            </if>
+            <if test="monday != null">
+                #{monday,jdbcType=VARCHAR},
+            </if>
+            <if test="saturday != null">
+                #{saturday,jdbcType=VARCHAR},
+            </if>
+            <if test="gymPhone!=null">
+                #{gymPhone, jdbcType=VARCHAR},
+            </if>
+            <if test="gymCapacity != null">
+                #{gymCapacity,jdbcType=INTEGER},
+            </if>
+            <if test="gymPicturesPath != null">
+                #{gymPicturesPath,jdbcType=VARCHAR},
+            </if>
+            <if test="openOnHoliday != null">
+                #{openOnHoliday,jdbcType=TINYINT},
+            </if>
+            <if test="gymTypes != null">
+                #{gymTypes,jdbcType=VARCHAR},
+            </if>
+            <if test="gymPosition != null">
+                #{gymPosition,jdbcType=VARCHAR},
+            </if>
+            <if test="gymDetails != null">
+                #{gymDetails,jdbcType=VARCHAR},
+            </if>
+            <if test="gymGps != null">
+                #{gymGps,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=VARCHAR},
+            </if>
+            <if test="deleted != null">
+                #{deleted,jdbcType=TINYINT},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.yiie.entity.Gym">
+        update gym
+        <set>
+            <if test="gymId != null">
+                gymId = #{gymId,jdbcType=VARCHAR},
+            </if>
+            <if test="deptId != null">
+                deptId = #{deptId,jdbcType=VARCHAR},
+            </if>
+            <if test="gymName != null">
+                gymName = #{gymName,jdbcType=VARCHAR},
+            </if>
+            <if test="monday != null">
+                monday = #{monday,jdbcType=VARCHAR},
+            </if>
+            <if test="saturday != null">
+                saturday = #{saturday,jdbcType=VARCHAR},
+            </if>
+            <if test="gymPhone != null">
+                gymPhone = #{gymPhone,jdbcType=VARCHAR},
+            </if>
+            <if test="gymCapacity != null">
+                gymCapacity = #{gymCapacity,jdbcType=INTEGER},
+            </if>
+            <if test="gymPicturesPath != null">
+                gymPicturesPath = #{gymPicturesPath,jdbcType=VARCHAR},
+            </if>
+            <if test="openOnHoliday != null">
+                openOnHoliday = #{openOnHoliday,jdbcType=TINYINT},
+            </if>
+            <if test="gymTypes != null">
+                gymTypes = #{gymTypes,jdbcType=VARCHAR},
+            </if>
+            <if test="gymPosition != null">
+                gymPosition = #{gymPosition,jdbcType=VARCHAR},
+            </if>
+            <if test="gymDetails != null">
+                gymDetails = #{gymDetails,jdbcType=VARCHAR},
+            </if>
+            <if test="gymGps != null">
+                gymGps = #{gymGps,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                createTime = #{createTime,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null">
+                updateTime = #{updateTime,jdbcType=VARCHAR},
+            </if>
+            <if test="deleted != null">
+                deleted = #{deleted,jdbcType=TINYINT},
+            </if>
+        </set>
+        where gymId = #{gymId,jdbcType=VARCHAR}
+    </update>
+
+    <update id="deletedGyms" parameterType="com.yiie.entity.Gym">
+        update gym
+        <set>
+            deleted = 0,
+            <if test="sysUser.updateTime != null">
+                updateTime = #{sysUser.updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where gymId in
+        <foreach collection="list" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+    </update>
+</mapper>

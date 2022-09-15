@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yiie.common.mapper.GymCustomTagsMapper">
+    <resultMap id="BaseResultMap" type="com.yiie.entity.GymCustomTags">
+        <id column="tagId" jdbcType="VARCHAR" property="tagId" />
+        <result column="deptId" jdbcType="VARCHAR" property="deptId" />
+        <result column="tagCount" jdbcType="INTEGER" property="tagCount" />
+        <result column="tagContent" jdbcType="VARCHAR" property="tagContent" />
+        <result column="createTime" jdbcType="VARCHAR" property="createTime" />
+        <result column="updateTime" jdbcType="VARCHAR" property="updateTime" />
+        <result column="deleted" jdbcType="TINYINT" property="deleted" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        tagId, deptId, tagCount, tagContent, createTime, updateTime, deleted
+    </sql>
+
+    <select id="getAllGymCustomTagsByDeptID" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"></include>
+        FROM gym_customtag
+        AND deptId=#{deptId}
+        AND deleted=1
+    </select>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from gym_customtag
+        where tagId = #{tagId,jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectAllGymCustomTagsByDeptID" resultMap="BaseResultMap" parameterType="com.yiie.vo.request.GymCommentTagPageReqVO">
+        select <include refid="Base_Column_List"></include>
+        from gym_customtag
+        <where>
+            deleted=1
+            AND deptId = #{deptId}
+            <if test="tagId != null and tagId != ''">
+                AND tagId = #{tagId}
+            </if>
+            <if test="deptId != null and deptId != ''">
+                AND deptId = #{deptId}
+            </if>
+            <if test="tagCount != null and tagCount != ''">
+                AND tagCount = #{tagCount}
+            </if>
+            <if test="tagContent != null and tagContent != ''">
+                AND tagContent = #{tagContent}
+            </if>
+            <if test="createTime != null and createTime != ''">
+                AND createTime = #{createTime}
+            </if>
+            <if test="updateTime != null and updateTime != ''">
+                AND updateTime = #{updateTime}
+            </if>
+        </where>
+    </select>
+
+    <insert id="insertSelective" parameterType="com.yiie.entity.GymCustomTags">
+        insert into gym_customtag
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="tagId != null">
+                tagId,
+            </if>
+            <if test="deptId != null">
+                deptId,
+            </if>
+            <if test="tagCount != null">
+                tagCount,
+            </if>
+            <if test="tagContent != null">
+                tagContent,
+            </if>
+            <if test="createTime != null">
+                createTime,
+            </if>
+            <if test="updateTime != null">
+                updateTime,
+            </if>
+            <if test="deleted != null">
+                deleted,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="tagId != null">
+                #{tagId,jdbcType=VARCHAR},
+            </if>
+            <if test="deptId != null">
+                #{deptId,jdbcType=VARCHAR},
+            </if>
+            <if test="tagCount != null">
+                #{tagCount,jdbcType=INTEGER},
+            </if>
+            <if test="tagContent != null">
+                #{tagContent,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=VARCHAR},
+            </if>
+            <if test="deleted != null">
+                #{deleted,jdbcType=TINYINT},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.yiie.entity.GymCustomTags">
+        update gym_customtag
+        <set>
+            <if test="tagId != null">
+                tagId = #{tagId,jdbcType=VARCHAR},
+            </if>
+            <if test="deptId != null">
+                deptId = #{deptId,jdbcType=VARCHAR},
+            </if>
+            <if test="tagCount != null">
+                tagCount = #{tagCount,jdbcType=INTEGER},
+            </if>
+            <if test="tagContent != null">
+                tagContent = #{tagContent,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                createTime = #{createTime,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null">
+                updateTime = #{updateTime,jdbcType=VARCHAR},
+            </if>
+            <if test="deleted != null">
+                deleted = #{deleted,jdbcType=TINYINT},
+            </if>
+        </set>
+        where commentId = #{commentId,jdbcType=VARCHAR}
+    </update>
+
+    <update id="deletedGymCustomTags" parameterType="com.yiie.entity.GymCustomTags">
+        update gym_customtag
+        <set>
+            deleted = 0
+        </set>
+        where tagId in
+        <foreach collection="list" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+    </update>
+</mapper>

@@ -12,8 +12,9 @@ import java.util.List;
 @Repository
 @Mapper
 public interface BlackUserMapper {
-    BlackUser getBlackUserInfoByNameByDeptID(String username, String deptID);
-    // BlackUser getBlackUserInfoByIdentityCardAndDeptID(String identityCard, String deptID);
+    BlackUser getBlackUserInfoByNameByDeptID(@Param("username") String username, @Param("deptID") String deptID);
+    BlackUser getBlackUserInfoByIdentityCardAndDeptID(@Param("identityCard")  String identityCard, @Param("deptID") String deptID);
+    List<BlackUser> selectBlackUserInfoByIdentityCards(@Param("list") List<String> list, @Param("deptID") String deptID);
     BlackUser selectByPrimaryKey(String id);
     // it changed
     // we get all black users with deptID.

@@ -36,7 +36,7 @@
     <select id="getBlackUserInfoByIdentityCardAndDeptID" resultMap="BaseResultMap">
         SELECT <include refid="Base_Column_List"></include>
         FROM blacklists
-        WHERE identityCard=#{identityCard,jdbcType=VARCHAR}
+        WHERE identityCard=#{identityCard}
         AND deptID=#{deptID}
         AND deleted=1
     </select>

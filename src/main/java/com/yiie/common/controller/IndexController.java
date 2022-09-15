@@ -72,6 +72,31 @@ public class IndexController {
         return "logs/loginlog_list";
     }
 
+    @GetMapping("/gyms")
+    public String gymList(){
+        return "gym/gym_list";
+    }
+
+    @GetMapping("/gymHistories")
+    public String gymHistroiesList(){
+        return "gym/gym_historylist";
+    }
+
+    @GetMapping("/gymOrders")
+    public String gymOrdersList(){
+        return "gym/gym_orderlist";
+    }
+
+    @GetMapping("/gymComments")
+    public String gymCommentsList(){
+        return "gym/gym_commentslist";
+    }
+
+    @GetMapping("/gymCommentTags")
+    public String gymCommentTagsList(){
+        return "depts/dept_commenttaglist";
+    }
+
     @GetMapping("/depts")
     public String deptList(){
         return "depts/dept_list";

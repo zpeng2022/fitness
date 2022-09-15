@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yiie.common.mapper.GymCountMapper">
+    <resultMap id="BaseResultMap" type="com.yiie.entity.GymCount">
+        <id column="gymId" jdbcType="VARCHAR" property="gymId" />
+        <result column="deptId" jdbcType="VARCHAR" property="deptId" />
+        <result column="currentCount" jdbcType="INTEGER" property="currentCount" />
+        <result column="historyCount" jdbcType="INTEGER" property="historyCount" />
+        <result column="currentDate" jdbcType="VARCHAR" property="currentDate" />
+        <result column="deleted" jdbcType="TINYINT" property="deleted" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        gymId, deptId, currentCount, historyCount, currentDate, deleted
+    </sql>
+
+    <select id="getAllGymCountsByNameByDeptID" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"></include>
+        FROM gym_count
+        AND deptId=#{deptId}
+        AND deleted=1
+    </select>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from gym_count
+        where gymId = #{gymId,jdbcType=VARCHAR}
+    </select>
+
+    <insert id="insertSelective" parameterType="com.yiie.entity.GymCount">
+        insert into gym_count
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="gymId != null">
+                gymId,
+            </if>
+            <if test="deptId != null">
+                deptId,
+            </if>
+            <if test="currentCount != null">
+                currentCount,
+            </if>
+            <if test="historyCount != null">
+                historyCount,
+            </if>
+            <if test="currentDate != null">
+                currentDate,
+            </if>
+            <if test="deleted != null">
+                deleted,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="gymId != null">
+                #{gymId,jdbcType=VARCHAR},
+            </if>
+            <if test="deptId != null">
+                #{deptId,jdbcType=VARCHAR},
+            </if>
+            <if test="currentCount != null">
+                #{currentCount,jdbcType=INTEGER},
+            </if>
+            <if test="historyCount != null">
+                #{historyCount,jdbcType=INTEGER},
+            </if>
+            <if test="currentDate != null">
+                #{currentDate,jdbcType=VARCHAR},
+            </if>
+            <if test="deleted != null">
+                #{deleted,jdbcType=TINYINT},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.yiie.entity.GymCount">
+        update gym_count
+        <set>
+            <if test="gymId != null">
+                gymId = #{gymId,jdbcType=VARCHAR},
+            </if>
+            <if test="deptId != null">
+                deptId = #{deptId,jdbcType=VARCHAR},
+            </if>
+            <if test="currentCount != null">
+                currentCount = #{currentCount,jdbcType=INTEGER},
+            </if>
+            <if test="historyCount != null">
+                historyCount = #{historyCount,jdbcType=INTEGER},
+            </if>
+            <if test="currentDate != null">
+                currentDate = #{currentDate,jdbcType=VARCHAR},
+            </if>
+            <if test="deleted != null">
+                deleted = #{deleted,jdbcType=TINYINT},
+            </if>
+        </set>
+        where gymId = #{gymId,jdbcType=VARCHAR}
+    </update>
+
+    <update id="deletedGymCounts" parameterType="com.yiie.entity.GymCount">
+        update gym_count
+        <set>
+            deleted = 0
+        </set>
+        where gymId in
+        <foreach collection="list" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+    </update>
+</mapper>

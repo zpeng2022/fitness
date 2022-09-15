@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yiie.common.mapper.GymOrderMapper">
+    <resultMap id="BaseResultMap" type="com.yiie.entity.GymOrder">
+        <id column="orderId" jdbcType="VARCHAR" property="orderId" />
+        <result column="gymId" jdbcType="VARCHAR" property="gymId" />
+        <result column="deptId" jdbcType="VARCHAR" property="deptId" />
+        <result column="customerId" jdbcType="VARCHAR" property="customerId" />
+        <result column="customerName" jdbcType="VARCHAR" property="customerName" />
+        <result column="customerPhone" jdbcType="VARCHAR" property="customerPhone" />
+        <result column="customerIdentityCard" jdbcType="VARCHAR" property="customerIdentityCard" />
+        <result column="exerciseType" jdbcType="VARCHAR" property="exerciseType" />
+        <result column="existBlackUser" jdbcType="TINYINT" property="existBlackUser" />
+        <result column="orderStatus" jdbcType="TINYINT" property="orderStatus" />
+        <result column="orderFailComment" jdbcType="VARCHAR" property="orderFailComment" />
+        <result column="otherCustomerIdentityCards" jdbcType="VARCHAR" property="otherCustomerIdentityCards" />
+        <result column="otherCustomerNames" jdbcType="VARCHAR" property="otherCustomerNames" />
+        <result column="otherCustomerPhones" jdbcType="VARCHAR" property="otherCustomerPhones" />
+        <result column="orderStartTime" jdbcType="VARCHAR" property="orderStartTime" />
+        <result column="orderEndTime" jdbcType="VARCHAR" property="orderEndTime" />
+        <result column="createTime" jdbcType="VARCHAR" property="createTime" />
+        <result column="updateTime" jdbcType="VARCHAR" property="updateTime" />
+        <result column="deleted" jdbcType="TINYINT" property="deleted" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        orderId, gymId, deptId, customerId, customerName, customerPhone, customerIdentityCard, exerciseType, existBlackUser, orderStatus, orderFailComment, otherCustomerIdentityCards, otherCustomerNames, otherCustomerPhones, orderStartTime, orderEndTime, createTime, updateTime, deleted
+    </sql>
+
+    <select id="getAllGymOrderByDeptID" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"></include>
+        FROM gym_order
+        AND deptId=#{deptId}
+        AND deleted=1
+    </select>
+
+    <select id="getAllGymOrdersByGymID" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"></include>
+        FROM gym_order
+        AND gymId=#{gymId}
+        AND deleted=1
+    </select>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from gym_order
+        where orderId = #{orderId,jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectAllGymOrderByDeptID" resultMap="BaseResultMap" parameterType="com.yiie.vo.request.GymOrderPageReqVO">
+        select <include refid="Base_Column_List"></include>
+        from gym_order
+        <where>
+            deleted=1
+            AND deptId = #{deptId}
+            <if test="orderId != null and orderId != ''">
+                AND orderId = #{orderId}
+            </if>
+            <if test="gymId != null and gymId != ''">
+                AND gymId = #{gymId}
+            </if>
+            <if test="deptId != null and deptId != ''">
+                AND deptId = #{deptId}
+            </if>
+            <if test="customerId != null and customerId != ''">
+                AND customerId = #{customerId}
+            </if>
+            <if test="customerName != null and customerName != ''">
+                AND customerName = #{customerName}
+            </if>
+            <if test="customerPhone != null and customerPhone != ''">
+                AND customerPhone = #{customerPhone}
+            </if>
+            <if test="customerIdentityCard != null and customerIdentityCard != ''">
+                AND customerIdentityCard = #{customerIdentityCard}
+            </if>
+            <if test="exerciseType != null and exerciseType != ''">
+                AND exerciseType = #{exerciseType}
+            </if>
+            <if test="existBlackUser != null and existBlackUser != ''">
+                AND existBlackUser = #{existBlackUser}
+            </if>
+            <if test="orderStatus != null and orderStatus != ''">
+                AND orderStatus = #{orderStatus}
+            </if>
+            <if test="orderFailComment != null and orderFailComment != ''">
+                AND orderFailComment = #{orderFailComment}
+            </if>
+            <if test="otherCustomerIdentityCards != null and otherCustomerIdentityCards != ''">
+                AND otherCustomerIdentityCards = #{otherCustomerIdentityCards}
+            </if>
+            <if test="otherCustomerNames != null and otherCustomerNames != ''">
+                AND otherCustomerNames = #{otherCustomerNames}
+            </if>
+            <if test="otherCustomerPhones != null and otherCustomerPhones != ''">
+                AND otherCustomerPhones = #{otherCustomerPhones}
+            </if>
+            <if test="orderStartTime != null and orderStartTime != ''">
+                AND orderStartTime = #{orderStartTime}
+            </if>
+            <if test="orderEndTime != null and orderEndTime != ''">
+                AND orderEndTime = #{orderEndTime}
+            </if>
+            <if test="createTime != null and createTime != ''">
+                AND createTime = #{createTime}
+            </if>
+            <if test="updateTime != null and updateTime != ''">
+                AND updateTime = #{updateTime}
+            </if>
+        </where>
+    </select>
+
+
+    <insert id="insertSelective" parameterType="com.yiie.entity.GymOrder">
+        insert into gym_order
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="orderId != null">
+                orderId,
+            </if>
+            <if test="gymId != null">
+                gymId,
+            </if>
+            <if test="deptId != null">
+                deptId,
+            </if>
+            <if test="customerId != null">
+                customerId,
+            </if>
+            <if test="customerName != null">
+                customerName,
+            </if>
+            <if test="customerPhone != null">
+                customerPhone,
+            </if>
+            <if test="customerIdentityCard != null">
+                customerIdentityCard,
+            </if>
+            <if test="exerciseType != null">
+                exerciseType,
+            </if>
+            <if test="existBlackUser != null">
+                existBlackUser,
+            </if>
+            <if test="orderStatus != null">
+                orderStatus,
+            </if>
+            <if test="orderFailComment != null">
+                orderFailComment,
+            </if>
+            <if test="otherCustomerIdentityCards != null">
+                otherCustomerIdentityCards,
+            </if>
+            <if test="otherCustomerNames != null">
+                otherCustomerNames,
+            </if>
+            <if test="otherCustomerPhones != null">
+                otherCustomerPhones,
+            </if>
+            <if test="orderStartTime != null">
+                orderStartTime,
+            </if>
+            <if test="orderEndTime != null">
+                orderEndTime,
+            </if>
+            <if test="createTime != null">
+                createTime,
+            </if>
+            <if test="updateTime != null">
+                updateTime,
+            </if>
+            <if test="deleted != null">
+                deleted,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="orderId != null">
+                #{orderId,jdbcType=VARCHAR},
+            </if>
+            <if test="gymId != null">
+                #{gymId,jdbcType=VARCHAR},
+            </if>
+            <if test="deptId != null">
+                #{deptId,jdbcType=VARCHAR},
+            </if>
+            <if test="customerId != null">
+                #{customerId,jdbcType=VARCHAR},
+            </if>
+            <if test="customerName != null">
+                #{customerName,jdbcType=VARCHAR},
+            </if>
+            <if test="customerPhone != null">
+                #{customerPhone,jdbcType=VARCHAR},
+            </if>
+            <if test="customerIdentityCard != null">
+                #{customerIdentityCard,jdbcType=VARCHAR},
+            </if>
+            <if test="exerciseType != null">
+                #{exerciseType,jdbcType=VARCHAR},
+            </if>
+            <if test="existBlackUser != null">
+                #{existBlackUser,jdbcType=TINYINT},
+            </if>
+            <if test="orderStatus != null">
+                #{orderStatus,jdbcType=TINYINT},
+            </if>
+            <if test="orderFailComment != null">
+                #{orderFailComment,jdbcType=VARCHAR},
+            </if>
+            <if test="otherCustomerIdentityCards != null">
+                #{otherCustomerIdentityCards,jdbcType=VARCHAR},
+            </if>
+            <if test="otherCustomerNames != null">
+                #{otherCustomerNames,jdbcType=VARCHAR},
+            </if>
+            <if test="otherCustomerPhones != null">
+                #{otherCustomerPhones,jdbcType=VARCHAR},
+            </if>
+            <if test="orderStartTime != null">
+                #{orderStartTime,jdbcType=VARCHAR},
+            </if>
+            <if test="orderEndTime != null">
+                #{orderEndTime,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=VARCHAR},
+            </if>
+            <if test="deleted != null">
+                #{deleted,jdbcType=TINYINT},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.yiie.entity.GymOrder">
+        update gym_order
+        <set>
+            <if test="orderId != null">
+                orderId = #{orderId,jdbcType=VARCHAR},
+            </if>
+            <if test="gymId != null">
+                gymId = #{gymId,jdbcType=VARCHAR},
+            </if>
+            <if test="deptId != null">
+                deptId = #{deptId,jdbcType=VARCHAR},
+            </if>
+            <if test="customerId != null">
+                customerId =  #{customerId,jdbcType=VARCHAR},
+            </if>
+            <if test="customerName != null">
+                customerName =  #{customerName,jdbcType=VARCHAR},
+            </if>
+            <if test="customerPhone != null">
+                customerPhone = #{customerPhone,jdbcType=VARCHAR},
+            </if>
+            <if test="customerIdentityCard != null">
+                customerIdentityCard = #{customerIdentityCard,jdbcType=VARCHAR},
+            </if>
+            <if test="exerciseType != null">
+                exerciseType = #{exerciseType,jdbcType=VARCHAR},
+            </if>
+            <if test="existBlackUser != null">
+                existBlackUser = #{existBlackUser,jdbcType=TINYINT},
+            </if>
+            <if test="orderStatus != null">
+                orderStatus = #{orderStatus,jdbcType=TINYINT},
+            </if>
+            <if test="orderFailComment != null">
+                orderFailComment = #{orderFailComment,jdbcType=VARCHAR},
+            </if>
+            <if test="otherCustomerIdentityCards != null">
+                otherCustomerIdentityCards = #{otherCustomerIdentityCards,jdbcType=VARCHAR},
+            </if>
+            <if test="otherCustomerNames != null">
+                otherCustomerNames = #{otherCustomerNames,jdbcType=VARCHAR},
+            </if>
+            <if test="otherCustomerPhones != null">
+                otherCustomerPhones = #{otherCustomerPhones,jdbcType=VARCHAR},
+            </if>
+            <if test="orderStartTime != null">
+                orderStartTime = #{orderStartTime,jdbcType=VARCHAR},
+            </if>
+            <if test="orderEndTime != null">
+                orderEndTime = #{orderEndTime,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                createTime = #{createTime,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null">
+                updateTime = #{updateTime,jdbcType=VARCHAR},
+            </if>
+            <if test="deleted != null">
+                deleted = #{deleted,jdbcType=TINYINT},
+            </if>
+        </set>
+        where orderId = #{orderId,jdbcType=VARCHAR}
+    </update>
+
+    <update id="deletedGymOrders" parameterType="com.yiie.entity.GymOrder">
+        update gym_order
+        <set>
+            deleted = 0
+        </set>
+        where orderId in
+        <foreach collection="list" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+    </update>
+</mapper>

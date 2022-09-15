@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yiie.common.mapper.GymOrderAutoPassMapper">
+    <resultMap id="BaseResultMap" type="com.yiie.entity.GymOrderAutoPass">
+        <id column="deptId" jdbcType="VARCHAR" property="deptId" />
+        <result column="isAutoPass" jdbcType="INTEGER" property="isAutoPass" />
+        <result column="createTime" jdbcType="VARCHAR" property="createTime" />
+        <result column="updateTime" jdbcType="VARCHAR" property="updateTime" />
+        <result column="deleted" jdbcType="TINYINT" property="deleted" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        deptId, isAutoPass, createTime, updateTime, deleted
+    </sql>
+
+    <select id="getGymOrderAutoPassByDeptID" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"></include>
+        FROM gym_orderautopass
+        AND deptId=#{deptId}
+        AND deleted=1
+    </select>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from gym_orderautopass
+        where deptId = #{deptId,jdbcType=VARCHAR}
+    </select>
+
+    <insert id="insertSelective" parameterType="com.yiie.entity.GymOrderAutoPass">
+        insert into gym_orderautopass
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="deptId != null">
+                deptId,
+            </if>
+            <if test="isAutoPass != null">
+                isAutoPass,
+            </if>
+            <if test="createTime != null">
+                createTime,
+            </if>
+            <if test="updateTime != null">
+                updateTime,
+            </if>
+            <if test="deleted != null">
+                deleted,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="deptId != null">
+                #{deptId,jdbcType=VARCHAR},
+            </if>
+            <if test="isAutoPass != null">
+                #{isAutoPass,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=VARCHAR},
+            </if>
+            <if test="deleted != null">
+                #{deleted,jdbcType=TINYINT},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.yiie.entity.GymOrderAutoPass">
+        update gym_orderautopass
+        <set>
+            <if test="deptId != null">
+                deptId = #{deptId,jdbcType=VARCHAR},
+            </if>
+            <if test="isAutoPass != null">
+                isAutoPass = #{isAutoPass,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                createTime = #{createTime,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null">
+                updateTime = #{updateTime,jdbcType=VARCHAR},
+            </if>
+            <if test="deleted != null">
+                deleted = #{deleted,jdbcType=TINYINT},
+            </if>
+        </set>
+        where deptId = #{deptId,jdbcType=VARCHAR}
+    </update>
+
+    <update id="deletedGymOrderAutoPass" parameterType="com.yiie.entity.GymOrderAutoPass">
+        update gym_orderautopass
+        <set>
+            deleted = 0
+        </set>
+        where deptId in
+        <foreach collection="list" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+    </update>
+</mapper>

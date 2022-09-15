@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yiie.common.mapper.GymCommentsMapper">
+    <resultMap id="BaseResultMap" type="com.yiie.entity.GymComments">
+        <id column="commentId" jdbcType="VARCHAR" property="commentId" />
+        <result column="gymId" jdbcType="VARCHAR" property="gymId" />
+        <result column="deptId" jdbcType="VARCHAR" property="deptId" />
+        <result column="commentCustomerId" jdbcType="VARCHAR" property="commentCustomerId" />
+        <result column="commentCustomerPhone" jdbcType="VARCHAR" property="commentCustomerPhone" />
+        <result column="commentCustomerIdentityCard" jdbcType="VARCHAR" property="commentCustomerIdentityCard" />
+        <result column="commentStars" jdbcType="INTEGER" property="commentStars" />
+        <result column="commentTags" jdbcType="VARCHAR" property="commentTags" />
+        <result column="commentDetail" jdbcType="VARCHAR" property="commentDetail" />
+        <result column="commentAnswer" jdbcType="VARCHAR" property="commentAnswer" />
+        <result column="commentCustomerName" jdbcType="VARCHAR" property="commentCustomerName" />
+        <result column="commentStatus" jdbcType="TINYINT" property="commentStatus" />
+        <result column="createTime" jdbcType="VARCHAR" property="createTime" />
+        <result column="updateTime" jdbcType="VARCHAR" property="updateTime" />
+        <result column="deleted" jdbcType="TINYINT" property="deleted" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        commentId, gymId, deptId, commentCustomerId, commentCustomerPhone, commentCustomerIdentityCard, commentStars, commentTags, commentTagContent, commentDetail, commentAnswer, commentCustomerName, commentStatus, createTime, updateTime, deleted
+    </sql>
+
+    <select id="getAllGymCommentsByDeptID" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"></include>
+        FROM gym_comment
+        AND deptId=#{deptId}
+        AND deleted=1
+    </select>
+
+    <select id="getAllGymCommentsByGymID" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"></include>
+        FROM gym_comment
+        AND gymId=#{gymId}
+        AND deleted=1
+    </select>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from gym_comment
+        where commentId = #{commentId,jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectAllGymCommentsByDeptID" resultMap="BaseResultMap" parameterType="com.yiie.vo.request.GymCommentPageReqVO">
+        select <include refid="Base_Column_List"></include>
+        from gym_comment
+        <where>
+            deleted=1
+            AND deptId = #{deptId}
+            <if test="commentId != null and commentId != ''">
+                AND commentId = #{commentId}
+            </if>
+            <if test="gymId != null and gymId != ''">
+                AND gymId = #{gymId}
+            </if>
+            <if test="deptId != null and deptId != ''">
+                AND deptId = #{deptId}
+            </if>
+            <if test="commentCustomerId != null and commentCustomerId != ''">
+                AND commentCustomerId = #{commentCustomerId}
+            </if>
+            <if test="commentCustomerPhone != null and commentCustomerPhone != ''">
+                AND commentCustomerPhone = #{commentCustomerPhone}
+            </if>
+            <if test="commentCustomerIdentityCard != null and commentCustomerIdentityCard != ''">
+                AND commentCustomerIdentityCard = #{commentCustomerIdentityCard}
+            </if>
+            <if test="commentStars != null and commentStars != ''">
+                AND commentStars = #{commentStars}
+            </if>
+            <if test="commentTags != null and commentTags != ''">
+                AND commentTags = #{commentTags}
+            </if>
+            <if test="commentTagContent != null and commentTagContent != ''">
+                AND commentTagContent = #{commentTagContent}
+            </if>
+            <if test="commentDetail != null and commentDetail != ''">
+                AND commentDetail = #{commentDetail}
+            </if>
+            <if test="commentAnswer != null and commentAnswer != ''">
+                AND commentAnswer = #{commentAnswer}
+            </if>
+            <if test="commentCustomerName != null and commentCustomerName != ''">
+                AND commentCustomerName = #{commentCustomerName}
+            </if>
+            <if test="commentStatus != null and commentStatus != ''">
+                AND commentStatus = #{commentStatus}
+            </if>
+            <if test="createTime != null and createTime != ''">
+                AND createTime = #{createTime}
+            </if>
+            <if test="updateTime != null and updateTime != ''">
+                AND updateTime = #{updateTime}
+            </if>
+        </where>
+    </select>
+
+    <insert id="insertSelective" parameterType="com.yiie.entity.GymComments">
+        insert into gym_comment
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="commentId != null">
+                commentId,
+            </if>
+            <if test="gymId != null">
+                gymId,
+            </if>
+            <if test="deptId != null">
+                deptId,
+            </if>
+            <if test="commentCustomerId != null">
+                commentCustomerId,
+            </if>
+            <if test="commentCustomerPhone != null">
+                commentCustomerPhone,
+            </if>
+            <if test="commentCustomerIdentityCard != null">
+                commentCustomerIdentityCard,
+            </if>
+            <if test="commentStars != null">
+                commentStars,
+            </if>
+            <if test="commentTags != null">
+                commentTags,
+            </if>
+            <if test="commentTagContent != null">
+                commentTagContent,
+            </if>
+            <if test="commentDetail != null">
+                commentDetail,
+            </if>
+            <if test="commentAnswer != null">
+                commentAnswer,
+            </if>
+            <if test="commentCustomerName != null">
+                commentCustomerName,
+            </if>
+            <if test="commentStatus != null">
+                commentStatus,
+            </if>
+            <if test="createTime != null">
+                createTime,
+            </if>
+            <if test="updateTime != null">
+                updateTime,
+            </if>
+            <if test="deleted != null">
+                deleted,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="commentId != null">
+                #{commentId,jdbcType=VARCHAR},
+            </if>
+            <if test="gymId != null">
+                #{gymId,jdbcType=VARCHAR},
+            </if>
+            <if test="deptId != null">
+                #{deptId,jdbcType=VARCHAR},
+            </if>
+            <if test="commentCustomerId != null">
+                #{commentCustomerId,jdbcType=VARCHAR},
+            </if>
+            <if test="commentCustomerPhone != null">
+                #{commentCustomerPhone,jdbcType=VARCHAR},
+            </if>
+            <if test="commentCustomerIdentityCard != null">
+                #{commentCustomerIdentityCard,jdbcType=VARCHAR},
+            </if>
+            <if test="commentStars != null">
+                #{commentStars,jdbcType=INTEGER},
+            </if>
+            <if test="commentTags != null">
+                #{commentTags,jdbcType=VARCHAR},
+            </if>
+            <if test="commentTagContent != null">
+                #{commentTagContent,jdbcType=VARCHAR},
+            </if>
+            <if test="commentDetail != null">
+                #{commentDetail,jdbcType=VARCHAR},
+            </if>
+            <if test="commentAnswer != null">
+                #{commentAnswer,jdbcType=VARCHAR},
+            </if>
+            <if test="commentCustomerName != null">
+                #{commentCustomerName,jdbcType=VARCHAR},
+            </if>
+            <if test="commentStatus != null">
+                #{commentStatus,jdbcType=TINYINT},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=VARCHAR},
+            </if>
+            <if test="deleted != null">
+                #{deleted,jdbcType=TINYINT},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.yiie.entity.GymComments">
+        update gym_comment
+        <set>
+            <if test="commentId != null">
+                commentId = #{commentId,jdbcType=VARCHAR},
+            </if>
+            <if test="gymId != null">
+                gymId = #{gymId,jdbcType=VARCHAR},
+            </if>
+            <if test="deptId != null">
+                deptId = #{deptId,jdbcType=VARCHAR},
+            </if>
+            <if test="commentCustomerId != null">
+                commentCustomerId = #{commentCustomerId,jdbcType=VARCHAR},
+            </if>
+            <if test="commentCustomerPhone != null">
+                commentCustomerPhone = #{commentCustomerPhone,jdbcType=VARCHAR},
+            </if>
+            <if test="commentCustomerIdentityCard != null">
+                commentCustomerIdentityCard = #{commentCustomerIdentityCard,jdbcType=VARCHAR},
+            </if>
+            <if test="commentStars != null">
+                commentStars = #{commentStars,jdbcType=INTEGER},
+            </if>
+            <if test="commentTags != null">
+                commentTags = #{commentTags,jdbcType=VARCHAR},
+            </if>
+            <if test="commentTagContent != null">
+                commentTagContent = #{commentTagContent,jdbcType=VARCHAR},
+            </if>
+            <if test="commentDetail != null">
+                commentDetail = #{commentDetail,jdbcType=VARCHAR},
+            </if>
+            <if test="commentAnswer != null">
+                commentAnswer = #{commentAnswer,jdbcType=VARCHAR},
+            </if>
+            <if test="commentCustomerName != null">
+                commentCustomerName = #{commentCustomerName,jdbcType=VARCHAR},
+            </if>
+            <if test="commentStatus != null">
+                commentStatus = #{commentStatus,jdbcType=TINYINT},
+            </if>
+            <if test="createTime != null">
+                createTime = #{createTime,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null">
+                updateTime = #{updateTime,jdbcType=VARCHAR},
+            </if>
+            <if test="deleted != null">
+                deleted = #{deleted,jdbcType=TINYINT},
+            </if>
+        </set>
+        where commentId = #{commentId,jdbcType=VARCHAR}
+    </update>
+
+    <update id="deletedGymComments" parameterType="com.yiie.entity.GymComments">
+        update gym_comment
+        <set>
+            deleted = 0
+        </set>
+        where commentId in
+        <foreach collection="list" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+    </update>
+</mapper>
