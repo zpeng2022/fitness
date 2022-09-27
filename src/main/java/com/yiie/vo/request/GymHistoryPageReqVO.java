@@ -62,10 +62,10 @@ public class GymHistoryPageReqVO {
      * orderTime是预约要过去的时间
      */
     @ApiModelProperty(value = "预约的开始时间")
-    private Date orderStartTime;
+    private String orderStartTime;
 
     @ApiModelProperty(value = "预约的结束时间")
-    private Date orderEndTime;
+    private String orderEndTime;
 
     @ApiModelProperty(value = "锻炼类型")
     private String exerciseType;
@@ -73,16 +73,16 @@ public class GymHistoryPageReqVO {
      * 进出场馆的时间
      */
     @ApiModelProperty(value = "进入场馆的时间")
-    private Date inTime;
+    private String inTime;
 
     @ApiModelProperty(value = "出去场馆的时间")
-    private Date outTime;
+    private String outTime;
 
     @ApiModelProperty(value = "记录创建的时间")
-    private Date createTime;
+    private String createTime;
 
     @ApiModelProperty(value = "记录更新的时间")
-    private Date updateTime;
+    private String updateTime;
 
     @ApiModelProperty(value = "是否删除记录")
     private Integer deleted;

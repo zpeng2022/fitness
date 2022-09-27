@@ -92,6 +92,63 @@
         </where>
     </select>
 
+
+    <select id="h5GetAllGyms" resultMap="BaseResultMap" parameterType="com.yiie.vo.request.GymPageReqVO">
+        select <include refid="Base_Column_List"></include>
+        from gym
+        <where>
+            deleted=1
+            <if test="deptId != null and deptId != ''">
+                AND deptId = #{deptId}
+            </if>
+            <if test="gymId != null and gymId != ''">
+                AND gymId = #{gymId}
+            </if>
+            <if test="deptId != null and deptId != ''">
+                AND deptId = #{deptId}
+            </if>
+            <if test="gymName != null and gymName != ''">
+                AND gymName = #{gymName}
+            </if>
+            <if test="monday != null and monday != ''">
+                AND monday = #{monday}
+            </if>
+            <if test="saturday != null and saturday != ''">
+                AND saturday = #{saturday}
+            </if>
+            <if test="gymPhone != null and gymPhone != ''">
+                AND gymPhone = #{gymPhone}
+            </if>
+            <if test="gymCapacity != null and gymCapacity != ''">
+                AND gymCapacity = #{gymCapacity}
+            </if>
+            <if test="gymPicturesPath != null and gymPicturesPath != ''">
+                AND gymPicturesPath = #{gymPicturesPath}
+            </if>
+            <if test="openOnHoliday != null and openOnHoliday != ''">
+                AND openOnHoliday = #{openOnHoliday}
+            </if>
+            <if test="gymTypes != null and gymTypes != ''">
+                AND gymTypes = #{gymTypes}
+            </if>
+            <if test="gymPosition != null and gymPosition != ''">
+                AND gymPosition = #{gymPosition}
+            </if>
+            <if test="gymDetails != null and gymDetails != ''">
+                AND gymDetails = #{gymDetails}
+            </if>
+            <if test="gymGps != null and gymGps != ''">
+                AND gymGps = #{gymGps}
+            </if>
+            <if test="createTime != null and createTime != ''">
+                AND createTime = #{createTime}
+            </if>
+            <if test="updateTime != null and updateTime != ''">
+                AND updateTime = #{updateTime}
+            </if>
+        </where>
+    </select>
+
     <insert id="insertSelective" parameterType="com.yiie.entity.Gym">
         insert into gym
         <trim prefix="(" suffix=")" suffixOverrides=",">

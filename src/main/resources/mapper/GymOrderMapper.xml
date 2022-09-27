@@ -111,6 +111,69 @@
         </where>
     </select>
 
+    <select id="selectAllGymOrderByCustomerIDWithSearch" resultMap="BaseResultMap" parameterType="com.yiie.vo.request.GymOrderPageReqVO">
+        select <include refid="Base_Column_List"></include>
+        from gym_order
+        <where>
+            deleted=1
+            AND customerId = #{customerId}
+        </where>
+    </select>
+
+    <select id="selectAllGymOrderByCustomerID" resultMap="BaseResultMap" parameterType="com.yiie.vo.request.GymOrderPageReqVO">
+        select <include refid="Base_Column_List"></include>
+        from gym_order
+        <where>
+            deleted=1
+            AND customerId = #{customerId}
+            <if test="orderId != null and orderId != ''">
+                AND orderId = #{orderId}
+            </if>
+            <if test="gymId != null and gymId != ''">
+                AND gymId = #{gymId}
+            </if>
+            <if test="deptId != null and deptId != ''">
+                AND deptId = #{deptId}
+            </if>
+            <if test="customerName != null and customerName != ''">
+                AND customerName = #{customerName}
+            </if>
+            <if test="customerPhone != null and customerPhone != ''">
+                AND customerPhone = #{customerPhone}
+            </if>
+            <if test="customerIdentityCard != null and customerIdentityCard != ''">
+                AND customerIdentityCard = #{customerIdentityCard}
+            </if>
+            <if test="exerciseType != null and exerciseType != ''">
+                AND exerciseType = #{exerciseType}
+            </if>
+            <if test="orderFailComment != null and orderFailComment != ''">
+                AND orderFailComment = #{orderFailComment}
+            </if>
+            <if test="otherCustomerIdentityCards != null and otherCustomerIdentityCards != ''">
+                AND otherCustomerIdentityCards = #{otherCustomerIdentityCards}
+            </if>
+            <if test="otherCustomerNames != null and otherCustomerNames != ''">
+                AND otherCustomerNames = #{otherCustomerNames}
+            </if>
+            <if test="otherCustomerPhones != null and otherCustomerPhones != ''">
+                AND otherCustomerPhones = #{otherCustomerPhones}
+            </if>
+            <if test="orderStartTime != null and orderStartTime != ''">
+                AND orderStartTime = #{orderStartTime}
+            </if>
+            <if test="orderEndTime != null and orderEndTime != ''">
+                AND orderEndTime = #{orderEndTime}
+            </if>
+            <if test="createTime != null and createTime != ''">
+                AND createTime = #{createTime}
+            </if>
+            <if test="updateTime != null and updateTime != ''">
+                AND updateTime = #{updateTime}
+            </if>
+        </where>
+    </select>
+
 
     <insert id="insertSelective" parameterType="com.yiie.entity.GymOrder">
         insert into gym_order

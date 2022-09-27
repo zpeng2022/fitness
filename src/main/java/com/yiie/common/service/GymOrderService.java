@@ -8,6 +8,7 @@ import com.yiie.vo.response.PageVO;
 import java.util.List;
 
 public interface GymOrderService {
+    PageVO<GymOrder> h5PageInfo(GymOrderPageReqVO vo);
     PageVO<GymOrder> pageInfo(GymOrderPageReqVO vo);
     void addGymOrders(GymOrderAddReqVO vo);
     void updateGymOrdersInfo(GymOrderUpdateReqVO vo);

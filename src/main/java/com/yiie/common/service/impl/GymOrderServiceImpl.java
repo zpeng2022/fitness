@@ -18,6 +18,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -70,6 +72,14 @@ public class GymOrderServiceImpl implements GymOrderService {
 
 
     @Override
+    public PageVO<GymOrder> h5PageInfo(GymOrderPageReqVO vo) {
+        PageHelper.startPage(vo.getPageNum(),vo.getPageSize());
+        List<GymOrder> gymOrders = gymOrderMapper.selectAllGymOrderByCustomerID(vo);
+        return PageUtils.getPageVO(gymOrders);
+        //selectAllGymOrderByCustomerID
+    }
+
+    @Override
     public PageVO<GymOrder> pageInfo(GymOrderPageReqVO vo) {
         PageHelper.startPage(vo.getPageNum(),vo.getPageSize());
         List<GymOrder> gymOrders = gymOrderMapper.selectAllGymOrderByDeptID(vo);
@@ -93,8 +103,19 @@ public class GymOrderServiceImpl implements GymOrderService {
         gymOrder.setOtherCustomerIdentityCards(vo.getOtherCustomerIdentityCards());
         gymOrder.setOtherCustomerNames(vo.getOtherCustomerNames());
         gymOrder.setOtherCustomerPhones(vo.getOtherCustomerPhones());
-        gymOrder.setOrderStartTime(vo.getOrderStartTime());
-        gymOrder.setOrderEndTime(vo.getOrderEndTime());
+        SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        try {
+            gymOrder.setOrderStartTime(ft.parse(vo.getOrderStartTime()));
+        } catch (ParseException e) {
+            log.error("time不合法 :{}不合法",vo.getOrderStartTime());
+            e.printStackTrace();
+        }
+        try {
+            gymOrder.setOrderEndTime(ft.parse(vo.getOrderEndTime()));
+        } catch (ParseException e) {
+            log.error("time不合法 :{}不合法",vo.getOrderEndTime());
+            e.printStackTrace();
+        }
         gymOrder.setDeleted(1);
 
         Integer existBlackUser = 0;
@@ -157,8 +178,18 @@ public class GymOrderServiceImpl implements GymOrderService {
                 gymOrderDetail.setIsBlackUser(0);
                 gymOrderDetail.setCreateTime(new Date());
                 gymOrderDetail.setExerciseType(vo.getExerciseType());
-                gymOrderDetail.setOrderStartTime(vo.getOrderStartTime());
-                gymOrderDetail.setOrderEndTime(vo.getOrderEndTime());
+                try {
+                    gymOrderDetail.setOrderStartTime(ft.parse(vo.getOrderStartTime()));
+                } catch (ParseException e) {
+                    log.error("time不合法 :{}不合法",vo.getOrderStartTime());
+                    e.printStackTrace();
+                }
+                try {
+                    gymOrderDetail.setOrderEndTime(ft.parse(vo.getOrderEndTime()));
+                } catch (ParseException e) {
+                    log.error("time不合法 :{}不合法",vo.getOrderEndTime());
+                    e.printStackTrace();
+                }
 
                 int result = gymOrderDetailMapper.insertSelective(gymOrderDetail);
                 if(result != 1){

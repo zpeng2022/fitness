@@ -18,6 +18,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -89,7 +91,13 @@ public class GymHistoryServiceImpl implements GymHistoryService {
             gymHistory.setOrderStartTime(gymOrderDetail.getOrderStartTime());
             gymHistory.setOrderEndTime(gymOrderDetail.getOrderEndTime());
         }
-        gymHistory.setInTime(vo.getInTime());
+        SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        try {
+            gymHistory.setInTime(ft.parse(vo.getInTime()));
+        } catch (ParseException e) {
+            log.error("time不合法 :{}不合法",vo.getInTime());
+            e.printStackTrace();
+        }
         gymHistory.setExerciseType(vo.getExerciseType());
         if(vo.getInTime() == null) gymHistory.setInTime(new Date());
         gymHistory.setCreateTime(new Date());
@@ -111,7 +119,15 @@ public class GymHistoryServiceImpl implements GymHistoryService {
         gymHistory.setUpdateTime(new Date());
         if(gymHistory.getOutTime() == null) {
             Date newTime = new Date();
-            if(vo.getOutTime() != null) newTime = vo.getOutTime();
+            SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            if(vo.getOutTime() != null) {
+                try {
+                    newTime = ft.parse(vo.getOutTime());
+                } catch (ParseException e) {
+                    log.error("time不合法 :{}不合法",vo.getOutTime());
+                    e.printStackTrace();
+                }
+            }
             gymHistory.setOutTime(newTime);
         }
         int count = gymHistoryMapper.updateByPrimaryKeySelective(gymHistory);

@@ -35,7 +35,7 @@ public class BlackUserController {
 
     @PostMapping("/blackusers")
     @ApiOperation(value = "分页获取禁入人员列表接口")
-    @LogAnnotation(title = "禁入名单管理",action = "分页获取禁入人员列表")
+    @LogAnnotation(title = "禁入名单管理", action = "分页获取禁入人员列表")
     @RequiresPermissions("sys:blackusers:list")
     public DataResult<PageVO<BlackUser>> pageInfo(@RequestBody BlackUserPageReqVO vo, HttpServletRequest request){
         DataResult<PageVO<BlackUser>> result= DataResult.success();

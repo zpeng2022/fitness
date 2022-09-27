@@ -72,7 +72,7 @@ public class CustomerContactServiceImpl implements CustomerContactService {
         /**
          * you can do more additional operations here.
          */
-        int count= customerContactMapper.updateByPrimaryKeySelective(sysUser);
+        int count = customerContactMapper.updateByPrimaryKeySelective(sysUser);
         if (count!=1){
             throw new BusinessException(BaseResponseCode.OPERATION_ERRO);
         }

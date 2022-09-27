@@ -44,6 +44,51 @@
         where commentId = #{commentId,jdbcType=VARCHAR}
     </select>
 
+    <select id="selectAllGymComments" resultMap="BaseResultMap" parameterType="com.yiie.vo.request.GymCommentPageReqVO">
+        select <include refid="Base_Column_List"></include>
+        from gym_comment
+        <where>
+            deleted=1
+            AND commentCustomerId = #{commentCustomerId}
+            <if test="commentId != null and commentId != ''">
+                AND commentId = #{commentId}
+            </if>
+            <if test="gymId != null and gymId != ''">
+                AND gymId = #{gymId}
+            </if>
+            <if test="deptId != null and deptId != ''">
+                AND deptId = #{deptId}
+            </if>
+            <if test="commentCustomerPhone != null and commentCustomerPhone != ''">
+                AND commentCustomerPhone = #{commentCustomerPhone}
+            </if>
+            <if test="commentCustomerIdentityCard != null and commentCustomerIdentityCard != ''">
+                AND commentCustomerIdentityCard = #{commentCustomerIdentityCard}
+            </if>
+            <if test="commentTags != null and commentTags != ''">
+                AND commentTags = #{commentTags}
+            </if>
+            <if test="commentTagContent != null and commentTagContent != ''">
+                AND commentTagContent = #{commentTagContent}
+            </if>
+            <if test="commentDetail != null and commentDetail != ''">
+                AND commentDetail = #{commentDetail}
+            </if>
+            <if test="commentAnswer != null and commentAnswer != ''">
+                AND commentAnswer = #{commentAnswer}
+            </if>
+            <if test="commentCustomerName != null and commentCustomerName != ''">
+                AND commentCustomerName = #{commentCustomerName}
+            </if>
+            <if test="createTime != null and createTime != ''">
+                AND createTime = #{createTime}
+            </if>
+            <if test="updateTime != null and updateTime != ''">
+                AND updateTime = #{updateTime}
+            </if>
+        </where>
+    </select>
+
     <select id="selectAllGymCommentsByDeptID" resultMap="BaseResultMap" parameterType="com.yiie.vo.request.GymCommentPageReqVO">
         select <include refid="Base_Column_List"></include>
         from gym_comment

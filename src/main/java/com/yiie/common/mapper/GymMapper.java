@@ -13,6 +13,7 @@ import java.util.List;
 public interface GymMapper {
     List<Gym> getAllGymsByDeptID(String deptId);
     List<Gym> selectAllGymsByDeptID(GymPageReqVO vo);
+    List<Gym> h5GetAllGyms(GymPageReqVO vo);
     Gym selectByPrimaryKey(String gymId);
     int insertSelective(Gym gym);
     int updateByPrimaryKeySelective(Gym gym);

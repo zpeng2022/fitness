@@ -31,6 +31,16 @@ public class gymOrderController {
     @Autowired
     private GymOrderService gymOrderService;
 
+    @PostMapping("/H5GymOrders")
+    @ApiOperation(value = "H5预约记录接口")
+    @LogAnnotation(title = "预约管理",action = "分页获取预约信息列表")
+    public DataResult<PageVO<GymOrder>> H5PageInfo(@RequestBody GymOrderPageReqVO vo, HttpServletRequest request){
+        DataResult<PageVO<GymOrder>> result= DataResult.success();
+        // vo.setDeptId(deptID);
+        result.setData(gymOrderService.h5PageInfo(vo));
+        return result;
+    }
+
     @PostMapping("/gymOrders")
     @ApiOperation(value = "预约记录接口")
     @LogAnnotation(title = "预约管理",action = "分页获取预约信息列表")

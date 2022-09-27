@@ -35,6 +35,16 @@ public class gymCommentController {
     @Autowired
     private GymCommentTagService gymCommentTagService;
 
+    // /sys/H5GymComments
+    @PostMapping("/H5GymComments")
+    @ApiOperation(value = "H5评论信息接口")
+    @LogAnnotation(title = "评论管理",action = "分页获取评论信息列表")
+    public DataResult<PageVO<GymComments>> h5PageInfo(@RequestBody GymCommentPageReqVO vo, HttpServletRequest request){
+        DataResult<PageVO<GymComments>> result= DataResult.success();
+        result.setData(gymCommentService.h5PageInfo(vo));
+        return result;
+    }
+
     @PostMapping("/gymComments")
     @ApiOperation(value = "评论信息接口")
     @LogAnnotation(title = "评论管理",action = "分页获取评论信息列表")

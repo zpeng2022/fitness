@@ -23,6 +23,8 @@ import org.springframework.stereotype.Service;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -58,7 +60,12 @@ public class CustomerServiceImpl implements CustomerService {
         sysUser.setCustomer_nickname(vo.getCustomer_nickname());
         sysUser.setCustomer_weight(vo.getCustomer_weight());
         sysUser.setCustomer_height(vo.getCustomer_height());
-        sysUser.setCustomer_birthday(vo.getCustomer_birthday());
+        SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        try {
+            sysUser.setCustomer_birthday(ft.parse(vo.getCustomer_birthday()));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         sysUser.setCustomer_location(vo.getCustomer_location());
         sysUser.setCustomer_hobby(vo.getCustomer_hobby());
         sysUser.setCustomer_disease(vo.getCustomer_disease());

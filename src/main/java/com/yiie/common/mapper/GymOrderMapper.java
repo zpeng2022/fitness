@@ -14,6 +14,7 @@ import java.util.List;
 public interface GymOrderMapper {
     List<GymOrder> getAllGymOrderByDeptID(String deptId);
     List<GymOrder> selectAllGymOrderByDeptID(GymOrderPageReqVO vo);
+    List<GymOrder> selectAllGymOrderByCustomerID(GymOrderPageReqVO vo);
     List<GymOrder> getAllGymOrdersByGymID(String gymId);
     GymOrder selectByPrimaryKey(String tagId);
     int insertSelective(GymOrder gymOrder);

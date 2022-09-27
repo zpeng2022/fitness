@@ -57,6 +57,13 @@ public class GymCommentServiceImpl implements GymCommentService {
     private TokenSettings tokenSettings;
 
     @Override
+    public PageVO<GymComments> h5PageInfo(GymCommentPageReqVO vo) {
+        PageHelper.startPage(vo.getPageNum(),vo.getPageSize());
+        List<GymComments> gymComments = gymCommentsMapper.selectAllGymComments(vo);
+        return PageUtils.getPageVO(gymComments);
+    }
+
+    @Override
     public PageVO<GymComments> pageInfo(GymCommentPageReqVO vo) {
         PageHelper.startPage(vo.getPageNum(),vo.getPageSize());
         List<GymComments> gymComments = gymCommentsMapper.selectAllGymCommentsByDeptID(vo);

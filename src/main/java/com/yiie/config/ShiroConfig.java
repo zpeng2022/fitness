@@ -71,6 +71,12 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("/sys/user/token", "anon");
         filterChainDefinitionMap.put("/index/**", "anon");
         filterChainDefinitionMap.put("*.html", "anon");
+        // 配置H5页面的
+        filterChainDefinitionMap.put("/sys/H5Gyms", "anon");
+        filterChainDefinitionMap.put("/sys/H5GymOrders", "anon");
+        filterChainDefinitionMap.put("/sys/H5GymComments", "anon");
+        filterChainDefinitionMap.put("/sys/H5GymCommentTags", "anon");
+
         //放开swagger-ui地址
         filterChainDefinitionMap.put("/swagger/**", "anon");
         filterChainDefinitionMap.put("/v2/api-docs", "anon");

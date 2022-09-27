@@ -31,6 +31,19 @@ public class gymController {
     @Autowired
     private UserService userService;
 
+    @PostMapping("/H5Gyms")
+    @ApiOperation(value = "H5场地信息接口")
+    @LogAnnotation(title = "场馆管理",action = "分页获取场地列表")
+    // @RequiresPermissions("sys:gym:list")
+    // interface for h5, testing...
+    public DataResult<PageVO<Gym>> h5PageInfo(@RequestBody GymPageReqVO vo, HttpServletRequest request){
+        DataResult<PageVO<Gym>> h5Result= DataResult.success();
+        h5Result.setData(gymService.h5PageInfo(vo));
+        System.out.println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+        return h5Result;
+    }
+
+
     @PostMapping("/gyms")
     @ApiOperation(value = "场地信息接口")
     @LogAnnotation(title = "场馆管理",action = "分页获取场地列表")

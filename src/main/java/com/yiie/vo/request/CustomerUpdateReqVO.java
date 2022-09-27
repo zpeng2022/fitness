@@ -63,10 +63,10 @@ public class CustomerUpdateReqVO {
     private String customer_info_id;
 
     @ApiModelProperty(value = "用户创建时间")
-    private Date customer_create_time;
+    private String customer_create_time;
 
     @ApiModelProperty(value = "用户表更新时间")
-    private Date customer_update_time;
+    private String customer_update_time;
 
     @ApiModelProperty(value = "此用户记录是否删除")
     private Integer customer_deleted;

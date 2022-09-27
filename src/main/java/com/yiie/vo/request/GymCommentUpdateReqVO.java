@@ -62,10 +62,10 @@ public class GymCommentUpdateReqVO {
     private Integer commentStatus;
 
     @ApiModelProperty(value = "创建时间")
-    private Date createTime;
+    private String createTime;
 
     @ApiModelProperty(value = "更新时间")
-    private Date updateTime;
+    private String updateTime;
 
     @ApiModelProperty(value = "是否删除")
     private Integer deleted;

@@ -19,6 +19,9 @@ public class GymCommentTagPageReqVO {
     @ApiModelProperty(value = "分页数量")
     private int pageSize=10;
 
+    @ApiModelProperty(value = "gymId")
+    private String gymId;
+
     @ApiModelProperty(value = "tagId")
     private String tagId;
 
@@ -32,10 +35,10 @@ public class GymCommentTagPageReqVO {
     private String tagContent;
 
     @ApiModelProperty(value = "创建时间")
-    private Date createTime;
+    private String createTime;
 
     @ApiModelProperty(value = "更新时间")
-    private Date updateTime;
+    private String updateTime;
 
     @ApiModelProperty(value = "0表示删除, 1表示不删除")
     private Integer deleted;

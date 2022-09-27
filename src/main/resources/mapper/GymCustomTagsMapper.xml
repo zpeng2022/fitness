@@ -41,9 +41,9 @@
             <if test="deptId != null and deptId != ''">
                 AND deptId = #{deptId}
             </if>
-            <if test="tagCount != null and tagCount != ''">
+            <!--<if test="tagCount != null and tagCount != ''">
                 AND tagCount = #{tagCount}
-            </if>
+            </if>-->
             <if test="tagContent != null and tagContent != ''">
                 AND tagContent = #{tagContent}
             </if>

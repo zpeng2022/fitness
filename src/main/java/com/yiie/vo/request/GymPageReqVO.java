@@ -64,10 +64,10 @@ public class GymPageReqVO {
     private String gymGps;
 
     @ApiModelProperty(value = "场地创建时间")
-    private Date createTime;
+    private String createTime;
 
     @ApiModelProperty(value = "场地更新时间")
-    private Date updateTime;
+    private String updateTime;
 
     @ApiModelProperty(value = "场地是否删除")
     private Integer deleted;

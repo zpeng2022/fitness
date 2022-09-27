@@ -60,6 +60,21 @@ public class GymServiceImpl implements GymService {
 
 
     @Override
+    public PageVO<Gym> h5PageInfo(GymPageReqVO vo) {
+        PageHelper.startPage(vo.getPageNum(),vo.getPageSize());
+        List<Gym> gyms = gymMapper.h5GetAllGyms(vo);
+        if(!gyms.isEmpty()){
+            for (Gym gym : gyms){
+                Dept sysDept = deptMapper.selectByPrimaryKey(gym.getDeptId());
+                if (sysDept!=null){
+                    gym.setDeptName(sysDept.getName());
+                }
+            }
+        }
+        return PageUtils.getPageVO(gyms);
+    }
+
+    @Override
     public PageVO<Gym> pageInfo(GymPageReqVO vo) {
         PageHelper.startPage(vo.getPageNum(),vo.getPageSize());
         List<Gym> gyms = gymMapper.selectAllGymsByDeptID(vo);
@@ -105,6 +120,11 @@ public class GymServiceImpl implements GymService {
         if(result != 1){
             throw new BusinessException(BaseResponseCode.OPERATION_ERRO);
         }
+    }
+
+    @Override
+    public Gym getGymById(String Id) {
+        return gymMapper.selectByPrimaryKey(Id);
     }
 
     @Override

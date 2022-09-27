@@ -14,6 +14,7 @@ public interface GymCommentsMapper {
     List<GymComments> getAllGymCommentsByDeptID(String deptId);
     List<GymComments> getAllGymCommentsByGymID(String gymId);
     List<GymComments> selectAllGymCommentsByDeptID(GymCommentPageReqVO vo);
+    List<GymComments> selectAllGymComments(GymCommentPageReqVO vo);
     GymComments selectByPrimaryKey(String commentId);
     int insertSelective(GymComments gymComments);
     int updateByPrimaryKeySelective(GymComments gymComments);

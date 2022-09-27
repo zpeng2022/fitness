@@ -91,8 +91,10 @@ public class LogAspect {
         log.info("Ip{}，接口地址{}，请求方式{}，入参：{}",sysLog.getIp(),request.getRequestURL(),request.getMethod(),sysLog.getParams());
         //用户名
         String  token = request.getHeader(Constant.ACCESS_TOKEN);
+
         String userId= JwtTokenUtil.getUserId(token);
         String username=JwtTokenUtil.getUserName(token);
+
         sysLog.setUsername(username);
         sysLog.setUserId(userId);
         sysLog.setTime((int) time);

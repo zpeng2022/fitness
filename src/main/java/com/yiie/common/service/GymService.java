@@ -7,8 +7,10 @@ import com.yiie.vo.response.PageVO;
 import java.util.List;
 
 public interface GymService {
+    PageVO<Gym> h5PageInfo(GymPageReqVO vo);
     PageVO<Gym> pageInfo(GymPageReqVO vo);
     void addGym(GymAddReqVO vo);
+    Gym getGymById(String Id);
     void updateGymInfo(GymUpdateReqVO vo);
     void deletedGyms(List<String> userIds);
 }

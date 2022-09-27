@@ -2,6 +2,7 @@ package com.yiie.common.controller;
 
 import com.yiie.aop.annotation.LogAnnotation;
 import com.yiie.common.service.GymCommentTagService;
+import com.yiie.common.service.GymService;
 import com.yiie.common.service.UserService;
 import com.yiie.constant.Constant;
 import com.yiie.entity.Gym;
@@ -29,7 +30,23 @@ public class gymCommentTagController {
     private UserService userService;
 
     @Autowired
+    private GymService gymService;
+
+    @Autowired
     private GymCommentTagService gymCommentTagService;
+
+    @PostMapping("/H5GymCommentTags")
+    @ApiOperation(value = "评价标签信息接口")
+    @LogAnnotation(title = "评价标签管理",action = "分页获取评价标签信息")
+    //@RequiresPermissions("sys:gymCommentTag:list")
+    public DataResult<PageVO<GymCustomTags>> h5PageInfo(@RequestBody GymCommentTagPageReqVO vo, HttpServletRequest request){
+        DataResult<PageVO<GymCustomTags>> result= DataResult.success();
+        Gym gym = gymService.getGymById(vo.getGymId());
+        String deptID = gym.getDeptId();
+        vo.setDeptId(deptID);
+        result.setData(gymCommentTagService.pageInfo(vo));
+        return result;
+    }
 
     @PostMapping("/gymCommentTags")
     @ApiOperation(value = "评价标签信息接口")

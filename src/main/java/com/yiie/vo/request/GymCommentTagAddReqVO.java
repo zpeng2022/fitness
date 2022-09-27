@@ -23,10 +23,10 @@ public class GymCommentTagAddReqVO {
     private String tagContent;
 
     @ApiModelProperty(value = "创建时间")
-    private Date createTime;
+    private String createTime;
 
     @ApiModelProperty(value = "更新时间")
-    private Date updateTime;
+    private String updateTime;
 
     @ApiModelProperty(value = "0表示删除, 1表示不删除")
     private Integer deleted;

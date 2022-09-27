@@ -152,6 +152,7 @@ public class JwtTokenUtil {
     public static String getUserId(String token){
         String userId=null;
         try {
+            if(token == null) return "h5users";
             Claims claims = getClaimsFromToken(token);
             userId = claims.getSubject();
         } catch (Exception e) {
@@ -169,8 +170,9 @@ public class JwtTokenUtil {
 
         String username=null;
         try {
+            if(token == null) return "h5Users";
             Claims claims = getClaimsFromToken(token);
-            username = (String) claims .get(Constant.JWT_USER_NAME);
+            username = (String) claims.get(Constant.JWT_USER_NAME);
         } catch (Exception e) {
             log.error("eror={}",e);
         }

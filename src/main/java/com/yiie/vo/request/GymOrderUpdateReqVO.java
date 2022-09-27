@@ -70,16 +70,16 @@ public class GymOrderUpdateReqVO {
     private String otherCustomerPhones;
 
     @ApiModelProperty(value = "预约的开始时间")
-    private Date orderStartTime;
+    private String orderStartTime;
 
     @ApiModelProperty(value = "预约的结束时间")
-    private Date orderEndTime;
+    private String orderEndTime;
 
     @ApiModelProperty(value = "创建时间")
-    private Date createTime;
+    private String createTime;
 
     @ApiModelProperty(value = "更新时间")
-    private Date updateTime;
+    private String updateTime;
 
     @ApiModelProperty(value = "0表示删除, 1表示不删除")
     private Integer deleted;
