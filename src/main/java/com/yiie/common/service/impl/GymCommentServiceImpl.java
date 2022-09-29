@@ -74,11 +74,12 @@ public class GymCommentServiceImpl implements GymCommentService {
     public void addGymComments(GymCommentAddReqVO vo) {
         GymComments gymComments = new GymComments();
         BeanUtils.copyProperties(vo, gymComments);
-        gymComments.setCommentId(UUID.randomUUID().toString());
+        String generateCommentId = UUID.randomUUID().toString();
+        // System.out.println("++++++" + generateCommentId.trim()  + "+++++");
+        gymComments.setCommentId(generateCommentId);
         gymComments.setCommentCustomerIdentityCard(vo.getCommentCustomerIdentityCard());
         gymComments.setGymId(vo.getGymId());
         gymComments.setDeptId(vo.getDeptId());
-        gymComments.setCommentId(vo.getCommentId());
         gymComments.setCommentStars(vo.getCommentStars());
         gymComments.setCommentDetail(vo.getCommentDetail());
         if(vo.getCommentStatus() != null) gymComments.setCommentStatus(vo.getCommentStatus());
@@ -88,6 +89,7 @@ public class GymCommentServiceImpl implements GymCommentService {
         gymComments.setDeleted(1);
         gymComments.setCommentCustomerName(vo.getCommentCustomerName());
         gymComments.setCreateTime(new Date());
+        gymComments.setCommentCustomerPhone(vo.getCommentCustomerPhone());
         int result = gymCommentsMapper.insertSelective(gymComments);
         if(result != 1){
             throw new BusinessException(BaseResponseCode.OPERATION_ERRO);

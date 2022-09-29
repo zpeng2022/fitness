@@ -28,15 +28,6 @@
             <if test="customer_info_id != null and customer_info_id != '' ">
                 AND customer_info_id=#{customer_info_id}
             </if>
-            <if test="customer_fitness_point!=null and customer_fitness_point!=''">
-                AND customer_fitness_point=#{customer_fitness_point}
-            </if>
-            <if test="customer_credit_point!=null and customer_credit_point!=''">
-                AND customer_credit_point=#{customer_credit_point}
-            </if>
-            <if test="customer_step_per_day!=null and customer_step_per_day!=''">
-                AND customer_step_per_day=#{customer_step_per_day}
-            </if>
         </where>
         order by customer_info_id
     </select>

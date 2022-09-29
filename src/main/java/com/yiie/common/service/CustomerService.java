@@ -10,6 +10,6 @@ import java.util.List;
 public interface CustomerService {
     PageVO<Customer> pageInfo(CustomerPageReqVO vo);
     void addCustomer(CustomerAddReqVO vo) throws IOException;
-    void updateCustomer(CustomerUpdateReqVO vo, String operationId);
-    void deletedCustomers(List<String> userIds, String operationId);
+    void updateCustomer(CustomerUpdateReqVO vo);
+    void deletedCustomers(List<String> userIds);
 }

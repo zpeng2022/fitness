@@ -10,6 +10,6 @@ import java.util.List;
 
 public interface CustomerInfoService {
     PageVO<CustomerInfo> pageInfo(CustomerInfoPageReqVO vo);
-    void updateCustomerInfo(CustomerInfoUpdateReqVO vo, String operationId);
-    void deletedCustomersInfo(List<String> userIds, String operationId);
+    void updateCustomerInfo(CustomerInfoUpdateReqVO vo);
+    void deletedCustomersInfo(List<String> userIds);
 }

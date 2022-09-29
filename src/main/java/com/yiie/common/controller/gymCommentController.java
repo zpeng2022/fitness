@@ -45,6 +45,16 @@ public class gymCommentController {
         return result;
     }
 
+    @PostMapping("/H5AddGymComment")
+    @ApiOperation(value = "H5新增评论信息接口")
+    @LogAnnotation(title = "评论管理",action = "新增评论信息")
+    public DataResult addH5GymComments(@RequestBody @Valid GymCommentAddReqVO vo, HttpServletRequest request){
+        // deptId...
+
+        gymCommentService.addGymComments(vo);
+        return DataResult.success();
+    }
+
     @PostMapping("/gymComments")
     @ApiOperation(value = "评论信息接口")
     @LogAnnotation(title = "评论管理",action = "分页获取评论信息列表")

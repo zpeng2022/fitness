@@ -34,7 +34,7 @@ public class CustomerInfoServiceImpl implements CustomerInfoService {
     }
 
     @Override
-    public void updateCustomerInfo(CustomerInfoUpdateReqVO vo, String operationId) {
+    public void updateCustomerInfo(CustomerInfoUpdateReqVO vo) {
         CustomerInfo sysUser = customerInfoMapper.selectCustomerInfoByPrimaryKey(vo.getCustomer_info_id());
         if (null == sysUser){
             log.error("传入 的 id:{}不合法",vo.getCustomer_info_id());
@@ -50,10 +50,7 @@ public class CustomerInfoServiceImpl implements CustomerInfoService {
     }
 
     @Override
-    public void deletedCustomersInfo(List<String> infoIds, String operationId) {
-        if(infoIds.contains(operationId)){
-            throw new BusinessException(BaseResponseCode.DELETE_CONTAINS_MYSELF);
-        }
+    public void deletedCustomersInfo(List<String> infoIds) {
         if(infoIds.contains("fcf34b56-a7a2-4719-9236-867495e74c31")){
             throw new BusinessException(BaseResponseCode.OPERATION_ADMIN);
         }

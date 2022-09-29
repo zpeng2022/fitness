@@ -11,6 +11,6 @@ import java.util.List;
 public interface CustomerContactService {
     PageVO<CustomerContact> pageInfo(CustomerContactPageReqVO vo);
     void addCustomerContact(CustomerContactAddReqVO vo);
-    void updateCustomerContact(CustomerContactUpdateReqVO vo, String operationId);
-    void deletedCustomerContacts(List<String> userIds, String operationId);
+    void updateCustomerContact(CustomerContactUpdateReqVO vo);
+    void deletedCustomerContacts(List<String> contactIds);
 }

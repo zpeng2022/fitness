@@ -1,10 +1,7 @@
 package com.yiie.config;
 
 import at.pollux.thymeleaf.shiro.dialect.ShiroDialect;
-import com.yiie.shiro.CustomAccessControlFilter;
-import com.yiie.shiro.CustomHashedCredentialsMatcher;
-import com.yiie.shiro.CustomRealm;
-import com.yiie.shiro.RedisCacheManager;
+import com.yiie.shiro.*;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
@@ -62,6 +59,8 @@ public class ShiroConfig {
         shiroFilterFactoryBean.setSecurityManager(securityManager);
         //自定义拦截器限制并发人数,参考博客：
         LinkedHashMap<String, Filter> filtersMap = new LinkedHashMap<>();
+        // 解决shiro跨域问题.
+        shiroFilterFactoryBean.getFilters().put("authc", new CROSUserFilter());
         //用来校验token
         filtersMap.put("token", new CustomAccessControlFilter());
         shiroFilterFactoryBean.setFilters(filtersMap);
@@ -74,9 +73,18 @@ public class ShiroConfig {
         // 配置H5页面的
         filterChainDefinitionMap.put("/sys/H5Gyms", "anon");
         filterChainDefinitionMap.put("/sys/H5GymOrders", "anon");
+        filterChainDefinitionMap.put("/sys/H5AddGymOrders", "anon");
         filterChainDefinitionMap.put("/sys/H5GymComments", "anon");
         filterChainDefinitionMap.put("/sys/H5GymCommentTags", "anon");
-
+        filterChainDefinitionMap.put("/sys/H5AddGymComment", "anon");
+        // H5用户接口
+        filterChainDefinitionMap.put("/sys/H5CustomerBasicInfo", "anon");
+        filterChainDefinitionMap.put("/sys/H5CustomerUpdateBasicInfo", "anon");
+        filterChainDefinitionMap.put("/sys/H5CustomerOtherInfo", "anon");
+        filterChainDefinitionMap.put("/sys/H5CustomerUpdateOtherInfo", "anon");
+        filterChainDefinitionMap.put("/sys/H5CustomerContactInfo", "anon");
+        filterChainDefinitionMap.put("/sys/H5CustomerUpdateContactInfo", "anon");
+        filterChainDefinitionMap.put("/sys/H5CustomerDeleteContactInfo", "anon");
         //放开swagger-ui地址
         filterChainDefinitionMap.put("/swagger/**", "anon");
         filterChainDefinitionMap.put("/v2/api-docs", "anon");
@@ -95,6 +103,7 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("/login/**", "anon");
         filterChainDefinitionMap.put("/css/**", "anon");
         filterChainDefinitionMap.put("/treetable-lay/**", "anon");
+        // 拦截..
         filterChainDefinitionMap.put("/**","token,authc");
         shiroFilterFactoryBean.setLoginUrl("/index/login");
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);

@@ -12,7 +12,7 @@ import java.util.List;
 @Mapper
 public interface CustomerContactMapper {
     CustomerContact selectCustomerContactByPrimaryKey(String id);
-    List<CustomerContact> selectAllCustomersInfo(CustomerContactPageReqVO vo);
+    List<CustomerContact> selectAllCustomerContacts(CustomerContactPageReqVO vo);
     int insertSelective(CustomerContact record);
     int updateByPrimaryKeySelective(CustomerContact record);
     int deletedCustomerContacts(@Param("sysUser") CustomerContact sysUser, @Param("list") List<String> list);

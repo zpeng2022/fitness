@@ -61,7 +61,8 @@
         select <include refid="Base_Column_List"></include>
         from customer
         <where>
-            deleted=1
+            customer_deleted=1
+            AND customer_id = #{customer_id}
             <if test="customer_identity_card!=null and customer_identity_card!=''">
                 AND customer_identity_card=#{customer_identity_card}
             </if>
@@ -70,15 +71,6 @@
             </if>
             <if test="customer_nickname!=null and customer_nickname!=''">
                 AND customer_nickname=#{customer_nickname}
-            </if>
-            <if test="customer_weight!=null and customer_weight!=''">
-                AND customer_weight=#{customer_weight}
-            </if>
-            <if test="customer_height!=null and customer_height!=''">
-                AND customer_height=#{customer_height}
-            </if>
-            <if test="customer_birthday!=null and customer_birthday!=''">
-                AND customer_birthday=#{customer_birthday}
             </if>
             <if test="customer_birthday!=null and customer_birthday!=''">
                 AND customer_birthday=#{customer_birthday}
@@ -94,9 +86,6 @@
             </if>
             <if test="customer_picture!=null and customer_picture!=''">
                 AND customer_picture=#{customer_picture}
-            </if>
-            <if test="customer_gender!=null and customer_gender!=''">
-                AND customer_gender=#{customer_gender}
             </if>
             <if test="customer_phone!=null and customer_phone!=''">
                 AND customer_phone=#{customer_phone}
@@ -117,7 +106,7 @@
                 AND customer_update_time=#{customer_update_time}
             </if>
         </where>
-        order by customer_identity_card
+        order by customer_id
     </select>
 
     <select id="selectCustomerInfoByIdentityCards" resultMap="BaseResultMap">
@@ -336,7 +325,7 @@
     <update id="deletedCustomers" parameterType="com.yiie.entity.Customer">
         update customer
         <set>
-            deleted = 0,
+            customer_deleted = 0,
             <if test="sysUser.customer_update_time != null">
                 customer_update_time = #{sysUser.customer_update_time,jdbcType=TIMESTAMP},
             </if>

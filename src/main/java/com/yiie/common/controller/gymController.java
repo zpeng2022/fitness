@@ -39,7 +39,7 @@ public class gymController {
     public DataResult<PageVO<Gym>> h5PageInfo(@RequestBody GymPageReqVO vo, HttpServletRequest request){
         DataResult<PageVO<Gym>> h5Result= DataResult.success();
         h5Result.setData(gymService.h5PageInfo(vo));
-        System.out.println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+        // System.out.println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
         return h5Result;
     }
 

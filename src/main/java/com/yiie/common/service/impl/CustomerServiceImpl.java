@@ -110,18 +110,11 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public void updateCustomer(CustomerUpdateReqVO vo, String operationId) {
+    public void updateCustomer(CustomerUpdateReqVO vo) {
         Customer sysUser = customerMapper.selectCustomerByPrimaryKey(vo.getCustomer_id());
         if (null == sysUser){
             log.error("传入 的 id:{}不合法",vo.getCustomer_id());
             throw new BusinessException(BaseResponseCode.DATA_ERROR);
-        }
-        // permission ??
-        if(operationId.equals(vo.getCustomer_id()) && !operationId.equals("fcf34b56-a7a2-4719-9236-867495e74c31")){
-            throw new BusinessException(BaseResponseCode.OPERATION_MYSELF);
-        }
-        if(!operationId.equals("fcf34b56-a7a2-4719-9236-867495e74c31") && vo.getCustomer_id().equals("fcf34b56-a7a2-4719-9236-867495e74c31")){
-            throw new BusinessException(BaseResponseCode.OPERATION_ADMIN);
         }
         BeanUtils.copyProperties(vo,sysUser);
         sysUser.setCustomer_update_time(new Date());
@@ -140,13 +133,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public void deletedCustomers(List<String> userIds, String operationId) {
-        if(userIds.contains(operationId)){
-            throw new BusinessException(BaseResponseCode.DELETE_CONTAINS_MYSELF);
-        }
-        if(userIds.contains("fcf34b56-a7a2-4719-9236-867495e74c31")){
-            throw new BusinessException(BaseResponseCode.OPERATION_ADMIN);
-        }
+    public void deletedCustomers(List<String> userIds) {
         Customer sysUser = new Customer();
         // It's same in all jobs that we have done.
         // we don't need operationID in BlackUser

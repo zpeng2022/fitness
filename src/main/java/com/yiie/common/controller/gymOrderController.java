@@ -41,6 +41,14 @@ public class gymOrderController {
         return result;
     }
 
+    @PostMapping("/H5AddGymOrders")
+    @ApiOperation(value = "H5新增预约记录接口")
+    @LogAnnotation(title = "预约管理",action = "新增预约信息列表")
+    public DataResult H5AddGymOrders(@RequestBody @Valid GymOrderAddReqVO vo, HttpServletRequest request){
+        gymOrderService.addGymOrders(vo);
+        return DataResult.success();
+    }
+
     @PostMapping("/gymOrders")
     @ApiOperation(value = "预约记录接口")
     @LogAnnotation(title = "预约管理",action = "分页获取预约信息列表")

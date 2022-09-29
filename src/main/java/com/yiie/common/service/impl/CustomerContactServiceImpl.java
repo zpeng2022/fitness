@@ -3,9 +3,7 @@ package com.yiie.common.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.yiie.common.mapper.CustomerContactMapper;
 import com.yiie.common.service.CustomerContactService;
-import com.yiie.entity.Customer;
 import com.yiie.entity.CustomerContact;
-import com.yiie.entity.CustomerInfo;
 import com.yiie.enums.BaseResponseCode;
 import com.yiie.exceptions.BusinessException;
 import com.yiie.utils.PageUtils;
@@ -18,7 +16,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -30,7 +27,7 @@ public class CustomerContactServiceImpl implements CustomerContactService {
     @Override
     public PageVO<CustomerContact> pageInfo(CustomerContactPageReqVO vo) {
         PageHelper.startPage(vo.getPageNum(),vo.getPageSize());
-        List<CustomerContact> sysUsers = customerContactMapper.selectAllCustomersInfo(vo);
+        List<CustomerContact> sysUsers = customerContactMapper.selectAllCustomerContacts(vo);
         return PageUtils.getPageVO(sysUsers);
     }
 
@@ -54,18 +51,11 @@ public class CustomerContactServiceImpl implements CustomerContactService {
     }
 
     @Override
-    public void updateCustomerContact(CustomerContactUpdateReqVO vo, String operationId) {
+    public void updateCustomerContact(CustomerContactUpdateReqVO vo) {
         CustomerContact sysUser = customerContactMapper.selectCustomerContactByPrimaryKey(vo.getContact_id());
         if (null == sysUser){
             log.error("传入 的 id:{}不合法",vo.getContact_id());
             throw new BusinessException(BaseResponseCode.DATA_ERROR);
-        }
-        // permission ??
-        if(operationId.equals(vo.getContact_id()) && !operationId.equals("fcf34b56-a7a2-4719-9236-867495e74c31")){
-            throw new BusinessException(BaseResponseCode.OPERATION_MYSELF);
-        }
-        if(!operationId.equals("fcf34b56-a7a2-4719-9236-867495e74c31") && vo.getContact_id().equals("fcf34b56-a7a2-4719-9236-867495e74c31")){
-            throw new BusinessException(BaseResponseCode.OPERATION_ADMIN);
         }
         BeanUtils.copyProperties(vo,sysUser);
         sysUser.setContacter_deleted(1);
@@ -79,10 +69,7 @@ public class CustomerContactServiceImpl implements CustomerContactService {
     }
 
     @Override
-    public void deletedCustomerContacts(List<String> contactIds, String operationId) {
-        if(contactIds.contains(operationId)){
-            throw new BusinessException(BaseResponseCode.DELETE_CONTAINS_MYSELF);
-        }
+    public void deletedCustomerContacts(List<String> contactIds) {
         if(contactIds.contains("fcf34b56-a7a2-4719-9236-867495e74c31")){
             throw new BusinessException(BaseResponseCode.OPERATION_ADMIN);
         }
