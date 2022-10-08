@@ -20,9 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -153,28 +151,30 @@ public class GymOrderServiceImpl implements GymOrderService {
             gymOrder.setOrderStatus(1);
             /**
              * this order is passed.
-             * we should put all the people in the order to order detail
+             * we should put all the people in the order to order_detail
              */
-            String [] identityCards = otherCustomerIdentityCards.split("#");
-            Integer len = identityCards.length;
-            identityCards[len] = firstIdentityCard;
+            List<String> ListidentityCards = Arrays.asList(otherCustomerIdentityCards.split("#"));
+            ArrayList<String> identityCards = new ArrayList<>(ListidentityCards);
+            identityCards.add(firstIdentityCard);
             String otherCustomerNames = vo.getOtherCustomerNames();
             String otherCustomerPhones = vo.getOtherCustomerPhones();
-            String [] customerNames = otherCustomerNames.split("#");
-            customerNames[len] = vo.getCustomerName();
-            String [] customerPhones = otherCustomerPhones.split("#");
-            customerPhones[len] = vo.getCustomerPhone();
-            len ++;
-            for(int i = 0; i < len; i ++){
+            List<String> ListCustomerNames = Arrays.asList(otherCustomerNames.split("#"));
+            ArrayList customerNames = new ArrayList<>(ListCustomerNames);
+            customerNames.add(vo.getCustomerName());
+            List<String> ListCustomerPhones = Arrays.asList(otherCustomerPhones.split("#"));
+            ArrayList customerPhones = new ArrayList<>(ListCustomerPhones);
+            customerPhones.add(vo.getCustomerPhone());
+            int siz = customerPhones.size();
+            for(int i = 0; i < siz; i ++){
                 GymOrderDetail gymOrderDetail = new GymOrderDetail();
                 gymOrderDetail.setOrderDetailId(UUID.randomUUID().toString());
                 gymOrderDetail.setGymId(vo.getGymId());
                 gymOrderDetail.setDeptId(vo.getDeptId());
                 gymOrderDetail.setDeleted(1);
                 gymOrderDetail.setOrderId(orderId);
-                gymOrderDetail.setCustomerName(customerNames[i]);
-                gymOrderDetail.setCustomerPhone(customerPhones[i]);
-                gymOrderDetail.setCustomerName(customerNames[i]);
+                gymOrderDetail.setCustomerName((String)customerNames.get(i));
+                gymOrderDetail.setCustomerPhone((String)customerPhones.get(i));
+                gymOrderDetail.setCustomerName((String)customerNames.get(i));
                 gymOrderDetail.setIsBlackUser(0);
                 gymOrderDetail.setCreateTime(new Date());
                 gymOrderDetail.setExerciseType(vo.getExerciseType());
@@ -228,26 +228,28 @@ public class GymOrderServiceImpl implements GymOrderService {
             String orderId = gymOrder.getOrderId();
             String firstIdentityCard = gymOrder.getCustomerIdentityCard();
 
-            String [] identityCards = otherCustomerIdentityCards.split("#");
-            Integer len = identityCards.length;
-            identityCards[len] = firstIdentityCard;
+            List<String> ListIdentityCards = Arrays.asList(otherCustomerIdentityCards.split("#"));
+            ArrayList identityCards = new ArrayList<>(ListIdentityCards);
+            identityCards.add(firstIdentityCard);
             String otherCustomerNames = gymOrder.getOtherCustomerNames();
             String otherCustomerPhones = gymOrder.getOtherCustomerPhones();
-            String [] customerNames = otherCustomerNames.split("#");
-            customerNames[len] = gymOrder.getCustomerName();
-            String [] customerPhones = otherCustomerPhones.split("#");
-            customerPhones[len] = gymOrder.getCustomerPhone();
-            len ++;
-            for(int i = 0; i < len; i ++){
+            List<String> ListCustomerNames = Arrays.asList(otherCustomerNames.split("#"));
+            ArrayList customerNames = new ArrayList<>(ListCustomerNames);
+            customerNames.add(gymOrder.getCustomerName());
+            List<String> ListCustomerPhones = Arrays.asList(otherCustomerPhones.split("#"));
+            ArrayList customerPhones = new ArrayList<>(ListCustomerPhones);
+            customerPhones.add(gymOrder.getCustomerPhone());
+            int siz = customerPhones.size();
+            for(int i = 0; i < siz; i ++){
                 GymOrderDetail gymOrderDetail = new GymOrderDetail();
                 gymOrderDetail.setOrderDetailId(UUID.randomUUID().toString());
                 gymOrderDetail.setGymId(gymOrder.getGymId());
                 gymOrderDetail.setDeptId(gymOrder.getDeptId());
                 gymOrderDetail.setDeleted(1);
                 gymOrderDetail.setOrderId(orderId);
-                gymOrderDetail.setCustomerName(customerNames[i]);
-                gymOrderDetail.setCustomerPhone(customerPhones[i]);
-                gymOrderDetail.setCustomerName(customerNames[i]);
+                gymOrderDetail.setCustomerName((String)customerNames.get(i));
+                gymOrderDetail.setCustomerPhone((String)customerPhones.get(i));
+                gymOrderDetail.setCustomerName((String)customerNames.get(i));
                 gymOrderDetail.setIsBlackUser(0);
                 gymOrderDetail.setCreateTime(new Date());
                 gymOrderDetail.setExerciseType(gymOrder.getExerciseType());

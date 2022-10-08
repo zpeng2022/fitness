@@ -110,13 +110,15 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public void updateCustomer(CustomerUpdateReqVO vo) {
+    public void updateCustomer(CustomerUpdateReqVO vo) throws ParseException {
         Customer sysUser = customerMapper.selectCustomerByPrimaryKey(vo.getCustomer_id());
         if (null == sysUser){
             log.error("传入 的 id:{}不合法",vo.getCustomer_id());
             throw new BusinessException(BaseResponseCode.DATA_ERROR);
         }
         BeanUtils.copyProperties(vo,sysUser);
+        SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        if(vo.getCustomer_birthday() != null) sysUser.setCustomer_birthday(ft.parse(vo.getCustomer_birthday()));
         sysUser.setCustomer_update_time(new Date());
         sysUser.setCustomer_deleted(1);
         // update sex.

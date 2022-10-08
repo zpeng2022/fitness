@@ -85,6 +85,7 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("/sys/H5CustomerContactInfo", "anon");
         filterChainDefinitionMap.put("/sys/H5CustomerUpdateContactInfo", "anon");
         filterChainDefinitionMap.put("/sys/H5CustomerDeleteContactInfo", "anon");
+        filterChainDefinitionMap.put("/sys/H5CustomerAddContactInfo", "anon");
         //放开swagger-ui地址
         filterChainDefinitionMap.put("/swagger/**", "anon");
         filterChainDefinitionMap.put("/v2/api-docs", "anon");

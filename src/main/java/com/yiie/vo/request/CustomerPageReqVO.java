@@ -37,7 +37,7 @@ public class CustomerPageReqVO {
     private Double customer_height;
 
     @ApiModelProperty(value = "用户生日")
-    private Date customer_birthday;
+    private String customer_birthday;
 
     @ApiModelProperty(value = "用户居住地址")
     private String customer_location;

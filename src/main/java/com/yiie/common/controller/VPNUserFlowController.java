@@ -26,7 +26,7 @@ import javax.validation.Valid;
  * @Author： yiie
  * @Version： 1.0
  */
-@Api(tags = "VPN管理模块-流量管理")
+//@Api(tags = "VPN管理模块-流量管理")
 @RequestMapping("/sys")
 @RestController
 public class VPNUserFlowController {
@@ -35,8 +35,8 @@ public class VPNUserFlowController {
     private VPNUserFlowService vpnUserFlowService;
 
     @PostMapping("/vpnuserflows")
-    @ApiOperation(value = "分页获取VPN用户流量信息接口")
-    @LogAnnotation(title = "VPN用户流量管理",action = "分页获取VPN用户流量信息")
+    //@ApiOperation(value = "分页获取VPN用户流量信息接口")
+    //@LogAnnotation(title = "VPN用户流量管理",action = "分页获取VPN用户流量信息")
     @RequiresPermissions("sys:vpnuserflow:list")
     public DataResult<PageVO<VPNUserFlow>> pageInfo(@RequestBody VPNUserFlowPageReqVO vo){
         DataResult<PageVO<VPNUserFlow>> result=DataResult.success();
@@ -45,8 +45,8 @@ public class VPNUserFlowController {
     }
 
     @PutMapping("/vpnuserflow")
-    @ApiOperation(value = "更新VPN用户流量信息接口")
-    @LogAnnotation(title = "VPN管理",action = "更新VPN用户流量信息")
+    //@ApiOperation(value = "更新VPN用户流量信息接口")
+    //@LogAnnotation(title = "VPN管理",action = "更新VPN用户流量信息")
     @RequiresPermissions("sys:vpnuserflow:update")
     public DataResult updateUserInfo(@RequestBody @Valid VPNUserFlowUpdateReqVO vo){
         System.out.println(vo.toString());

@@ -3,7 +3,7 @@
 <mapper namespace="com.yiie.common.mapper.GymOrderAutoPassMapper">
     <resultMap id="BaseResultMap" type="com.yiie.entity.GymOrderAutoPass">
         <id column="deptId" jdbcType="VARCHAR" property="deptId" />
-        <result column="isAutoPass" jdbcType="INTEGER" property="isAutoPass" />
+        <result column="isAutoPass" jdbcType="TINYINT" property="isAutoPass" />
         <result column="createTime" jdbcType="VARCHAR" property="createTime" />
         <result column="updateTime" jdbcType="VARCHAR" property="updateTime" />
         <result column="deleted" jdbcType="TINYINT" property="deleted" />
@@ -14,10 +14,11 @@
     </sql>
 
     <select id="getGymOrderAutoPassByDeptID" resultMap="BaseResultMap">
-        SELECT <include refid="Base_Column_List"></include>
-        FROM gym_orderautopass
-        AND deptId=#{deptId}
-        AND deleted=1
+        select
+        <include refid="Base_Column_List"></include>
+        from gym_orderautopass
+        where deptId = #{deptId}
+        and deleted = 1
     </select>
 
     <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">

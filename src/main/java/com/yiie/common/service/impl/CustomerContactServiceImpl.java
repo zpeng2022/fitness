@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @Slf4j
@@ -38,10 +39,10 @@ public class CustomerContactServiceImpl implements CustomerContactService {
     public void addCustomerContact(CustomerContactAddReqVO vo) {
         CustomerContact customerContact = new CustomerContact();
         // TODO stuff,
-        customerContact.setContact_id(vo.getContact_id());
+        customerContact.setContact_id(UUID.randomUUID().toString());
         customerContact.setCustomer_contactId(vo.getCustomer_contacts_id());
         customerContact.setContacter_phone(vo.getContacter_phone());
-        customerContact.setContacter_identity_card(vo.getContacter_phone());
+        customerContact.setContacter_identity_card(vo.getContacter_identity_card());
         customerContact.setContacter_display_name(vo.getContacter_display_name());
         customerContact.setContacter_deleted(1);
         int contact_return = customerContactMapper.insertSelective(customerContact);

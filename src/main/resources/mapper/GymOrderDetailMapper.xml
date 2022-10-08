@@ -82,9 +82,6 @@
             <if test="exerciseType != null">
                 exerciseType,
             </if>
-            <if test="orderStatus != null">
-                orderStatus,
-            </if>
             <if test="orderStartTime != null">
                 orderStartTime,
             </if>

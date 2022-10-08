@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.text.ParseException;
 import java.util.List;
 
 @Api(tags = "组织模块-线上用户接口")
@@ -51,7 +52,7 @@ public class gymCustomerController {
     @PutMapping("/H5CustomerUpdateBasicInfo")
     @ApiOperation(value = "更新用户基本信息接口")
     @LogAnnotation(title = "线上用户接口",action = "更新用户基本信息")
-    public DataResult updateH5BasicInfo(@RequestBody @Valid CustomerUpdateReqVO vo, HttpServletRequest request){
+    public DataResult updateH5BasicInfo(@RequestBody @Valid CustomerUpdateReqVO vo, HttpServletRequest request) throws ParseException {
         customerService.updateCustomer(vo);
         return DataResult.success();
     }
@@ -70,7 +71,6 @@ public class gymCustomerController {
     @PutMapping("/H5CustomerUpdateOtherInfo")
     @ApiOperation(value = "更新用户积分信息接口")
     @LogAnnotation(title = "线上用户接口",action = "更新用户健身积分信息")
-    @RequiresPermissions("sys:gym:update")
     public DataResult updateH5OtherInfo(@RequestBody @Valid CustomerInfoUpdateReqVO vo, HttpServletRequest request){
         customerInfoService.updateCustomerInfo(vo);
         return DataResult.success();
@@ -100,6 +100,14 @@ public class gymCustomerController {
     @LogAnnotation(title = "线上用户接口", action = "删除用户联系人信息")
     public DataResult h5CustomerDeleteContactInfo(@RequestBody @ApiParam(value = "用户联系人id集合") List<String> userIds, HttpServletRequest request){
         customerContactService.deletedCustomerContacts(userIds);
+        return DataResult.success();
+    }
+
+    @PostMapping("/H5CustomerAddContactInfo")
+    @ApiOperation(value = "添加用户联系人接口")
+    @LogAnnotation(title = "线上用户接口",action = "新增用户联系人信息")
+    public DataResult H5AddGymOrders(@RequestBody @Valid CustomerContactAddReqVO vo, HttpServletRequest request){
+        customerContactService.addCustomerContact(vo);
         return DataResult.success();
     }
 }

@@ -8,7 +8,6 @@ import javax.validation.constraints.NotBlank;
 @Data
 public class CustomerContactAddReqVO {
     @ApiModelProperty(value = "通讯录id")
-    @NotBlank(message = "通讯录id不能为空")
     private String contact_id;
 
     @ApiModelProperty(value = "用户的通讯录唯一id")

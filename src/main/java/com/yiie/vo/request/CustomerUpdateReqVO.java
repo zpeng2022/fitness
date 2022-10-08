@@ -14,7 +14,6 @@ public class CustomerUpdateReqVO {
     private String customer_id;
 
     @ApiModelProperty(value = "用户身份证")
-    @NotBlank(message = "用户身份证不能为空")
     private String customer_identity_card;
 
     @ApiModelProperty(value = "用户名称")
@@ -30,7 +29,7 @@ public class CustomerUpdateReqVO {
     private Double customer_height;
 
     @ApiModelProperty(value = "用户生日")
-    private Date customer_birthday;
+    private String customer_birthday;
 
     @ApiModelProperty(value = "用户居住地址")
     private String customer_location;
@@ -51,7 +50,6 @@ public class CustomerUpdateReqVO {
     private String customer_phone;
 
     @ApiModelProperty(value = "用户健身码")
-    @NotBlank(message = "用户健身码不能为空")
     private String customer_fitness_QRCode;
 
     @ApiModelProperty(value = "常用联系人唯一ID")

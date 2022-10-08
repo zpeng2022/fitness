@@ -49,19 +49,22 @@
         insert into customer_contact
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="contact_id != null">
-                contact_id,
+               contact_id,
             </if>
             <if test="customer_contacts_id!=null">
-                AND customer_contacts_id=#{customer_contacts_id}
+                customer_contacts_id,
             </if>
             <if test="contacter_display_name!=null">
-                AND contacter_display_name=#{contacter_display_name}
+                contacter_display_name,
             </if>
             <if test="contacter_identity_card!=null">
-                AND contacter_identity_card=#{contacter_identity_card}
+                contacter_identity_card,
             </if>
             <if test="contacter_phone!=null and contacter_phone!=''">
-                AND contacter_phone=#{contacter_phone}
+                contacter_phone,
+            </if>
+            <if test="contacter_deleted!=null and contacter_deleted!=''">
+                contacter_deleted,
             </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -80,26 +83,23 @@
             <if test="contacter_phone != null">
                 #{contacter_phone,jdbcType=VARCHAR},
             </if>
+            <if test="contacter_deleted != null">
+                #{contacter_deleted,jdbcType=TINYINT},
+            </if>
         </trim>
     </insert>
 
     <update id="updateByPrimaryKeySelective" parameterType="com.yiie.entity.CustomerContact">
         update customer_contact
         <set>
-            <if test="contact_id != null">
-                contact_id,
-            </if>
-            <if test="customer_contacts_id!=null">
-                AND customer_contacts_id=#{customer_contacts_id}
-            </if>
             <if test="contacter_display_name!=null">
-                AND contacter_display_name=#{contacter_display_name}
+                contacter_display_name=#{contacter_display_name,jdbcType=VARCHAR},
             </if>
             <if test="contacter_identity_card!=null">
-                AND contacter_identity_card=#{contacter_identity_card}
+                contacter_identity_card=#{contacter_identity_card,jdbcType=VARCHAR},
             </if>
             <if test="contacter_phone!=null and contacter_phone!=''">
-                AND contacter_phone=#{contacter_phone}
+                contacter_phone=#{contacter_phone,jdbcType=VARCHAR},
             </if>
         </set>
         where contact_id = #{contact_id,jdbcType=VARCHAR}

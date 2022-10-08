@@ -67,17 +67,14 @@
     <update id="updateByPrimaryKeySelective" parameterType="com.yiie.entity.CustomerInfo">
         update customer_info
         <set>
-            <if test="customer_info_id != null">
-                customer_info_id,
-            </if>
             <if test="customer_fitness_point!=null">
-                AND customer_fitness_point=#{customer_fitness_point}
+                customer_fitness_point=#{customer_fitness_point},
             </if>
             <if test="customer_credit_point!=null">
-                AND customer_credit_point=#{customer_credit_point}
+                customer_credit_point=#{customer_credit_point},
             </if>
             <if test="customer_step_per_day!=null">
-                AND customer_step_per_day=#{customer_step_per_day}
+                customer_step_per_day=#{customer_step_per_day},
             </if>
         </set>
         where customer_info_id = #{customer_info_id,jdbcType=VARCHAR}

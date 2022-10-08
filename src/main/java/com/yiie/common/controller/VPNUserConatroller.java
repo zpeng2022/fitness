@@ -28,7 +28,7 @@ import java.util.List;
  * @Author： yiie
  * @Version： 1.0
  */
-@Api(tags = "VPN管理模块-用户管理")
+//@Api(tags = "VPN管理模块-用户管理")
 @RequestMapping("/sys")
 @RestController
 public class VPNUserConatroller {
@@ -37,8 +37,8 @@ public class VPNUserConatroller {
     private VPNUserService vpnUserService;
 
     @PostMapping("/vpnusers")
-    @ApiOperation(value = "分页获取VPN角色信息接口")
-    @LogAnnotation(title = "VPN角色管理",action = "分页获取VPN角色信息")
+    //@ApiOperation(value = "分页获取VPN角色信息接口")
+    //@LogAnnotation(title = "VPN角色管理",action = "分页获取VPN角色信息")
     @RequiresPermissions("sys:vpnuser:list")
     public DataResult<PageVO<VPNUser>> pageInfo(@RequestBody VPNUserPageReqVO vo){
         DataResult<PageVO<VPNUser>> result=DataResult.success();
@@ -47,8 +47,8 @@ public class VPNUserConatroller {
     }
 
     @DeleteMapping("/vpnuser")
-    @ApiOperation(value = "删除VPN用户接口")
-    @LogAnnotation(title = "VPN管理",action = "删除VPN用户")
+    //@ApiOperation(value = "删除VPN用户接口")
+    //@LogAnnotation(title = "VPN管理",action = "删除VPN用户")
     @RequiresPermissions("sys:vpnuser:deleted")
     public DataResult deletedVPNUser(@RequestBody @ApiParam(value = "用户id集合") List<String> userIds){
         vpnUserService.deletedUsers(userIds);
@@ -56,17 +56,17 @@ public class VPNUserConatroller {
     }
 
     @PostMapping("/vpnuser")
-    @ApiOperation(value = "新增VPN用户接口")
+    //@ApiOperation(value = "新增VPN用户接口")
     @RequiresPermissions("sys:vpnuser:add")
-    @LogAnnotation(title = "VPN管理",action = "新增VPN用户")
+    //@LogAnnotation(title = "VPN管理",action = "新增VPN用户")
     public DataResult addUser(@RequestBody @Valid VPNUserAddReqVO vo){
         vpnUserService.addUser(vo);
         return DataResult.success();
     }
 
     @PutMapping("/vpnuser")
-    @ApiOperation(value = "更新VPN用户信息接口")
-    @LogAnnotation(title = "VPN管理",action = "更新VPN用户信息")
+    //@ApiOperation(value = "更新VPN用户信息接口")
+    //@LogAnnotation(title = "VPN管理",action = "更新VPN用户信息")
     @RequiresPermissions("sys:vpnuser:update")
     public DataResult updateUserInfo(@RequestBody @Valid VPNUserUpdateReqVO vo){
         System.out.println(vo.toString());

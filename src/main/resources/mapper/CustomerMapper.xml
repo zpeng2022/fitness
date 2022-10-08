@@ -261,62 +261,59 @@
     <update id="updateByPrimaryKeySelective" parameterType="com.yiie.entity.Customer">
         update customer
         <set>
-            <if test="customer_id != null">
-                #{customer_id,jdbcType=VARCHAR},
+            <if test="customer_id != null and customer_id != ''">
+                customer_id = #{customer_id,jdbcType=VARCHAR},
             </if>
-            <if test="customer_identity_card != null">
-                #{customer_identity_card,jdbcType=VARCHAR},
+            <if test="customer_identity_card != null and customer_identity_card != ''">
+                customer_identity_card = #{customer_identity_card,jdbcType=VARCHAR},
             </if>
-            <if test="customer_name != null">
-                #{customer_name,jdbcType=VARCHAR},
+            <if test="customer_name != null and customer_name != ''">
+                customer_name = #{customer_name,jdbcType=VARCHAR},
             </if>
-            <if test="customer_nickname != null">
-                #{customer_nickname,jdbcType=VARCHAR},
+            <if test="customer_nickname != null and customer_nickname != ''">
+                customer_nickname = #{customer_nickname,jdbcType=VARCHAR},
             </if>
             <if test="customer_weight != null">
-                #{customer_weight,jdbcType=DOUBLE},
+                customer_weight = #{customer_weight,jdbcType=DOUBLE},
             </if>
             <if test="customer_height != null">
-                #{customer_height,jdbcType=DOUBLE},
+                customer_height = #{customer_height,jdbcType=DOUBLE},
             </if>
             <if test="customer_birthday != null">
-                #{customer_birthday,jdbcType=TIMESTAMP},
+                customer_birthday = #{customer_birthday,jdbcType=TIMESTAMP},
             </if>
-            <if test="customer_location != null">
-                #{customer_location,jdbcType=VARCHAR},
+            <if test="customer_location != null and customer_location != ''">
+                customer_location = #{customer_location,jdbcType=VARCHAR},
             </if>
-            <if test="customer_hobby != null">
-                #{customer_hobby,jdbcType=VARCHAR},
+            <if test="customer_hobby != null and customer_hobby != ''">
+                customer_hobby = #{customer_hobby,jdbcType=VARCHAR},
             </if>
-            <if test="customer_disease != null">
-                #{customer_disease,jdbcType=VARCHAR},
+            <if test="customer_disease != null and customer_disease != ''">
+                customer_disease = #{customer_disease,jdbcType=VARCHAR},
             </if>
-            <if test="customer_picture != null">
-                #{customer_picture,jdbcType=VARCHAR},
+            <if test="customer_picture != null and customer_picture != ''">
+                customer_picture = #{customer_picture,jdbcType=VARCHAR},
             </if>
             <if test="customer_gender != null">
-                #{customer_gender,jdbcType=TINYINT},
+                customer_gender = #{customer_gender,jdbcType=TINYINT},
             </if>
-            <if test="customer_phone != null">
-                #{customer_phone,jdbcType=VARCHAR},
+            <if test="customer_phone != null and customer_phone != ''">
+                customer_phone = #{customer_phone,jdbcType=VARCHAR},
             </if>
-            <if test="customer_fitness_QRCode != null">
-                #{customer_fitness_QRCode,jdbcType=VARCHAR},
+            <if test="customer_fitness_QRCode != null and customer_fitness_QRCode != ''">
+                customer_fitness_QRCode = #{customer_fitness_QRCode,jdbcType=VARCHAR},
             </if>
-            <if test="customer_contacts_id != null">
-                #{customer_contacts_id,jdbcType=VARCHAR},
+            <if test="customer_contacts_id != null and customer_contacts_id != ''">
+                customer_contacts_id = #{customer_contacts_id,jdbcType=VARCHAR},
             </if>
-            <if test="customer_info_id != null">
-                #{customer_info_id,jdbcType=VARCHAR},
-            </if>
-            <if test="customer_create_time != null">
-                #{customer_create_time,jdbcType=TIMESTAMP},
+            <if test="customer_info_id != null and customer_info_id != ''">
+                customer_info_id = #{customer_info_id,jdbcType=VARCHAR},
             </if>
             <if test="customer_update_time != null">
-                #{customer_update_time,jdbcType=TIMESTAMP},
+                customer_update_time = #{customer_update_time,jdbcType=TIMESTAMP},
             </if>
             <if test="customer_deleted != null">
-                #{customer_deleted,jdbcType=TINYINT},
+                customer_deleted = #{customer_deleted,jdbcType=TINYINT},
             </if>
         </set>
         where customer_id = #{customer_id,jdbcType=VARCHAR}
