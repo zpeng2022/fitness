@@ -26,14 +26,14 @@ import java.util.List;
  * @Version： 1.0
  */
 //@Api(tags = "VPN管理模块-节点管理")
-@RequestMapping("/sys")
+//@RequestMapping("/sys")
 @RestController
 public class VPNNodeController {
 
     @Autowired
     private VPNNodeService vpnNodeService;
 
-    @PostMapping("/vpnnode")
+    //@PostMapping("/vpnnode")
     //@ApiOperation(value = "分页获取VPN节点信息接口")
     //@LogAnnotation(title = "VPN角色管理",action = "分页获取VPN节点信息")
     @RequiresPermissions("sys:vpnnode:list")
@@ -43,7 +43,7 @@ public class VPNNodeController {
         return result;
     }
 
-    @DeleteMapping("/vpnnode")
+    //@DeleteMapping("/vpnnode")
     //@ApiOperation(value = "删除VPN节点接口")
     //@LogAnnotation(title = "VPN管理",action = "删除VPN节点")
     @RequiresPermissions("sys:vpnnode:deleted")
@@ -52,7 +52,7 @@ public class VPNNodeController {
         return DataResult.success();
     }
 
-    @PutMapping("/vpnnode")
+    //@PutMapping("/vpnnode")
     //@ApiOperation(value = "更新VPN节点信息接口")
     //@LogAnnotation(title = "VPN管理",action = "更新VPN节点信息")
     @RequiresPermissions("sys:vpnnode:update")
@@ -62,7 +62,7 @@ public class VPNNodeController {
         return DataResult.success();
     }
 
-    @PostMapping("/vpnnodeadd")
+    //@PostMapping("/vpnnodeadd")
     //@ApiOperation(value = "新增VPN节点接口")
     @RequiresPermissions("sys:vpnnode:add")
     //@LogAnnotation(title = "VPN管理",action = "新增VPN节点")

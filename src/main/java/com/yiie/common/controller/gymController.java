@@ -39,7 +39,16 @@ public class gymController {
     public DataResult<PageVO<Gym>> h5PageInfo(@RequestBody GymPageReqVO vo, HttpServletRequest request){
         DataResult<PageVO<Gym>> h5Result= DataResult.success();
         h5Result.setData(gymService.h5PageInfo(vo));
-        // System.out.println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+        return h5Result;
+    }
+
+    @PostMapping("/H5SearchGyms")
+    @ApiOperation(value = "H5场地信息接口")
+    @LogAnnotation(title = "场馆管理",action = "分页获取场地列表")
+    public DataResult<PageVO<Gym>> h5GymSearch(@RequestBody List<String> gymName, HttpServletRequest request){
+        DataResult<PageVO<Gym>> h5Result= DataResult.success();
+        // System.out.println(gymName);
+        h5Result.setData(gymService.h5GymSearch(gymName));
         return h5Result;
     }
 

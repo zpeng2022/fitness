@@ -8,6 +8,7 @@ import java.util.List;
 
 public interface GymService {
     PageVO<Gym> h5PageInfo(GymPageReqVO vo);
+    PageVO<Gym> h5GymSearch(List<String> gymName);
     PageVO<Gym> pageInfo(GymPageReqVO vo);
     void addGym(GymAddReqVO vo);
     Gym getGymById(String Id);

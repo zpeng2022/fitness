@@ -18,4 +18,6 @@ public interface GymMapper {
     int insertSelective(Gym gym);
     int updateByPrimaryKeySelective(Gym gym);
     int deletedGyms(@Param("sysUser") Gym sysUser, @Param("list") List<String> list);
+
+    List<Gym> h5SearchGyms(@Param("gymName") String gymName);
 }

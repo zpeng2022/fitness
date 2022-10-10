@@ -29,14 +29,14 @@ import java.util.List;
  * @Version： 1.0
  */
 //@Api(tags = "VPN管理模块-用户管理")
-@RequestMapping("/sys")
+//@RequestMapping("/sys")
 @RestController
 public class VPNUserConatroller {
 
     @Autowired
     private VPNUserService vpnUserService;
 
-    @PostMapping("/vpnusers")
+    //@PostMapping("/vpnusers")
     //@ApiOperation(value = "分页获取VPN角色信息接口")
     //@LogAnnotation(title = "VPN角色管理",action = "分页获取VPN角色信息")
     @RequiresPermissions("sys:vpnuser:list")
@@ -46,7 +46,7 @@ public class VPNUserConatroller {
         return result;
     }
 
-    @DeleteMapping("/vpnuser")
+    //@DeleteMapping("/vpnuser")
     //@ApiOperation(value = "删除VPN用户接口")
     //@LogAnnotation(title = "VPN管理",action = "删除VPN用户")
     @RequiresPermissions("sys:vpnuser:deleted")
@@ -55,7 +55,7 @@ public class VPNUserConatroller {
         return DataResult.success();
     }
 
-    @PostMapping("/vpnuser")
+    //@PostMapping("/vpnuser")
     //@ApiOperation(value = "新增VPN用户接口")
     @RequiresPermissions("sys:vpnuser:add")
     //@LogAnnotation(title = "VPN管理",action = "新增VPN用户")
@@ -64,7 +64,7 @@ public class VPNUserConatroller {
         return DataResult.success();
     }
 
-    @PutMapping("/vpnuser")
+    //@PutMapping("/vpnuser")
     //@ApiOperation(value = "更新VPN用户信息接口")
     //@LogAnnotation(title = "VPN管理",action = "更新VPN用户信息")
     @RequiresPermissions("sys:vpnuser:update")

@@ -72,6 +72,7 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("*.html", "anon");
         // 配置H5页面的
         filterChainDefinitionMap.put("/sys/H5Gyms", "anon");
+        filterChainDefinitionMap.put("/sys/H5SearchGyms", "anon");
         filterChainDefinitionMap.put("/sys/H5GymOrders", "anon");
         filterChainDefinitionMap.put("/sys/H5AddGymOrders", "anon");
         filterChainDefinitionMap.put("/sys/H5GymComments", "anon");

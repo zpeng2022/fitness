@@ -75,6 +75,23 @@ public class GymServiceImpl implements GymService {
     }
 
     @Override
+    public PageVO<Gym> h5GymSearch(List<String> gymName) {
+        PageHelper.startPage(1,10);
+        //System.out.println(gymName.get(0) + "+++++++++++++++++++++");
+        List<Gym> gyms = gymMapper.h5SearchGyms(gymName.get(0));
+        //if(gyms != null) System.out.println("++++++ DONE ++++++++" );
+        if(!gyms.isEmpty()){
+            for (Gym gym : gyms){
+                Dept sysDept = deptMapper.selectByPrimaryKey(gym.getDeptId());
+                if (sysDept!=null){
+                    gym.setDeptName(sysDept.getName());
+                }
+            }
+        }
+        return PageUtils.getPageVO(gyms);
+    }
+
+    @Override
     public PageVO<Gym> pageInfo(GymPageReqVO vo) {
         PageHelper.startPage(vo.getPageNum(),vo.getPageSize());
         List<Gym> gyms = gymMapper.selectAllGymsByDeptID(vo);

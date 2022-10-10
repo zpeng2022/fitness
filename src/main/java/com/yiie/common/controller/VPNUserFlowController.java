@@ -27,14 +27,14 @@ import javax.validation.Valid;
  * @Version： 1.0
  */
 //@Api(tags = "VPN管理模块-流量管理")
-@RequestMapping("/sys")
+//@RequestMapping("/sys")
 @RestController
 public class VPNUserFlowController {
 
     @Autowired
     private VPNUserFlowService vpnUserFlowService;
 
-    @PostMapping("/vpnuserflows")
+    //@PostMapping("/vpnuserflows")
     //@ApiOperation(value = "分页获取VPN用户流量信息接口")
     //@LogAnnotation(title = "VPN用户流量管理",action = "分页获取VPN用户流量信息")
     @RequiresPermissions("sys:vpnuserflow:list")
@@ -44,7 +44,7 @@ public class VPNUserFlowController {
         return result;
     }
 
-    @PutMapping("/vpnuserflow")
+    //@PutMapping("/vpnuserflow")
     //@ApiOperation(value = "更新VPN用户流量信息接口")
     //@LogAnnotation(title = "VPN管理",action = "更新VPN用户流量信息")
     @RequiresPermissions("sys:vpnuserflow:update")
