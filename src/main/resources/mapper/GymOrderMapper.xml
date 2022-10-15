@@ -22,6 +22,10 @@
         <result column="updateTime" jdbcType="VARCHAR" property="updateTime" />
         <result column="deleted" jdbcType="TINYINT" property="deleted" />
     </resultMap>
+    <resultMap id="SprotAndValue" type="com.yiie.vo.data.SportAndValue">
+        <result column="sport" property="sport" />
+        <result column="value" property="value" />
+    </resultMap>
 
     <sql id="Base_Column_List">
         orderId, gymId, deptId, customerId, customerName, customerPhone, customerIdentityCard, exerciseType, existBlackUser, orderStatus, orderFailComment, otherCustomerIdentityCards, otherCustomerNames, otherCustomerPhones, orderStartTime, orderEndTime, createTime, updateTime, deleted
@@ -109,6 +113,26 @@
                 AND updateTime = #{updateTime}
             </if>
         </where>
+    </select>
+    <!--预约人数-->
+    <select id="getTypeAndValue" resultMap="SprotAndValue">
+        SELECT exerciseType AS sport, COUNT(orderId) AS value
+        FROM gym_order
+        WHERE gymId = #{name}
+        GROUP BY exerciseType;
+    </select>
+    <!--运动人数占比-->
+    <select id="getAllTypeAndValue" resultType="com.yiie.vo.data.SportAndValue">
+        SELECT exerciseType AS sport, COUNT(orderId) AS value
+        FROM gym_order
+        WHERE gymId = #{name}
+        GROUP BY exerciseType;
+    </select>
+    <!--近一个月场地人数-->
+    <select id="getGymPeopleNum" resultType="com.yiie.vo.data.SportAndValue">
+        SELECT gymId AS sport, COUNT(orderId) AS value
+        FROM gym_order
+        GROUP BY gymId;
     </select>
 
 

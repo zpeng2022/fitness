@@ -1,6 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.yiie.common.mapper.GymHistoryMapper">
+    <resultMap id="SportAndValue" type="com.yiie.vo.data.SportAndValue">
+        <result column="exerciseType" property="sport" />
+        <result column="num" property="value" />
+    </resultMap>
+    <resultMap id="DateSpan" type="com.yiie.vo.data.DateSpan">
+        <result column="orderStartTime" property="start" />
+        <result column="orderEndTime" property="end" />
+    </resultMap>
+    <resultMap id="PeopleSportTime" type="com.yiie.vo.data.PeopleSportTime">
+        <result column="customerIdentityCard" property="idcard" />
+        <result column="customerName" property="name" />
+        <result column="inTime" property="start" />
+        <result column="outTime" property="end" />
+    </resultMap>
     <resultMap id="BaseResultMap" type="com.yiie.entity.GymHistory">
         <id column="historyId" jdbcType="VARCHAR" property="historyId" />
         <result column="gymId" jdbcType="VARCHAR" property="gymId" />
@@ -98,6 +112,45 @@
             </if>
         </where>
     </select>
+    <!--<select id="getTypeAndValue" resultType="com.yiie.vo.request.SportAndValue">
+        SELECT exerciseType AS sport, COUNT(historyId) AS value
+        FROM gym_history
+        WHERE gymId = #{name}
+        GROUP BY exerciseType;
+    </select>-->
+    <!--上面的是原来的-->
+    <select id="getTypeAndValue" resultMap="SportAndValue">
+        SELECT exerciseType, COUNT(customerIdentityCard) as num
+        FROM gym_history
+        where gymId=#{name} and deleted=1
+        GROUP BY exerciseType ORDER BY num DESC
+    </select>
+
+    <select id="getIdentity" resultType="java.lang.String">
+        SELECT distinct customerIdentityCard FROM gym_history
+        where gymId=#{gymId} and deleted=1
+    </select>
+    <select id="getOrderDateSpan" resultMap="DateSpan">
+        SELECT orderStartTime,orderEndTime
+        FROM gym_history
+        where gymId=#{gymId} and deleted=1
+    </select>
+    <select id="getPeopleSportTimes" resultMap="PeopleSportTime">
+        SELECT customerName,customerIdentityCard,inTime,outTime
+        FROM gym_history
+        where gymId=#{gymId} and deleted=1
+    </select>
+    <select id="getPeopleNumMonth" resultType="com.yiie.vo.data.GymPeopleMonth">
+        SELECT gh.gymId,g.gymName,COUNT(customerIdentityCard)as num
+        FROM gym_history gh
+        LEFT JOIN gym g
+        on gh.gymId=g.gymId
+        where
+        gh.deleted=1 and
+        inTime>=#{monthAgo} and #{nowTime}>=outTime
+        GROUP BY gymId
+    </select>
+
 
     <insert id="insertSelective" parameterType="com.yiie.entity.GymHistory">
         insert into gym_history

@@ -28,6 +28,12 @@
         from gym_opentime
         where openTimeId = #{openTimeId,jdbcType=VARCHAR}
     </select>
+    <select id="getGymCT" resultType="com.yiie.vo.data.GymCloseTime">
+        SELECT DISTINCT gymId,whichDay,closeTime
+        FROM gym_opentime
+        WHERE deleted=1 and whichDay>=#{fiveDaysAgo} and #{today}>=whichDay and gymId=#{gymId}
+        ORDER BY whichDay DESC
+    </select>
 
     <insert id="insertSelective" parameterType="com.yiie.entity.GymOpenTime">
         insert into gym_opentime

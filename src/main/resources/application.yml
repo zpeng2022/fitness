@@ -1,15 +1,18 @@
 server:
   port: 8088
 spring:
+  servlet:
+    multipart:
+      max-request-size: 10MB
   application:
     name: pgman
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
     druid:
       driver-class-name: com.mysql.jdbc.Driver
-      url: jdbc:mysql://localhost:3306/bgman?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&useSSL=false
+      url: jdbc:mysql://localhost:3306/bigman?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&useSSL=false&serverTimezone=GMT%2b8
       username: root
-      password: 123456
+      password: root
       initial-size: 5
       max-active: 20
       min-idle: 5
@@ -47,9 +50,16 @@ spring:
     cache: false
     charset: UTF-8
 #  mvc:
+#    hiddenmethod:
+#      filter:
+#        enabled: true
+#  mvc:
 #    static-path-pattern: /static/**
 mybatis:
   mapper-locations: classpath:mapper/*.xml
+  configuration:
+    #配置mybatis-log-plugin
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 logging:
   file: ${logging.path}/${spring.application.name}.log
   path: logs

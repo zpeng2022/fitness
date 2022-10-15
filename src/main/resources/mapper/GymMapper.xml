@@ -91,6 +91,16 @@
             </if>
         </where>
     </select>
+    <select id="getByName" resultType="com.yiie.entity.Gym">
+        select * from gym
+        where gymName like concat('%',#{name},'%')
+    </select>
+
+    <select id="getGymOT" resultType="com.yiie.vo.data.GymOpenTime">
+        SELECT DISTINCT gymId,gymName,monday,saturday
+        from gym
+        WHERE deleted=1
+    </select>
 
     <insert id="insertSelective" parameterType="com.yiie.entity.Gym">
         insert into gym
@@ -263,5 +273,10 @@
         <foreach collection="list" open="(" close=")" separator="," item="item">
             #{item}
         </foreach>
+    </update>
+    <update id="autoPassBydeptId">
+        update gym_orderautopass set isAutoPass = 1
+        where
+        deptId=#{deptId}
     </update>
 </mapper>

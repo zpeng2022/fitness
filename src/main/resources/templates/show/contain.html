@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>数智驾驶舱</title>
+    <link rel="stylesheet" href="/layui/css/layui.css"  media="all">
+    <link rel="stylesheet" href="/css/form.css">
+
+    <link rel="stylesheet" href="/css/febs.css">
+
+    <script src="/layui/layui.all.js"></script>
+    <script src="/js/util.js"></script>
+
+    <!-- <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/echarts-all-3.js"></script>
+     <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/map/js/china.js"></script>
+ -->
+    <script src=" https://cdn.staticfile.org/echarts/4.3.0/echarts.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/4.3.0/echarts.min.js"></script>
+
+    <!--    <script src="/static/test/echarts.js"></script>-->
+    <script src="/static/echart/echarts.min.js"></script>
+</head>
+<body>
+<div class="layui-containe co layui-anim" style="z-index:999;width:100%;border-bottom: 0px solid lawngreen">
+
+    <div class="layui-form" action="" lay-filter="" style="width: 100%">
+        <div class="layui-form-item">
+<!--            <div class="layui-form-label" style="font-weight: bolder;font-size: 20px">搜索场馆:</div>-->
+            <div class="search" style="display:flex;width: 100%">
+                <div style="width: 10%;line-height:40px;font-weight: bolder;font-size: 20px;margin-left: 20px">
+                    <p style="">搜索场馆:</p>
+                </div>
+                <div style="width: 320px">
+                    <input type="text" name="gymname" placeholder="输入场馆名" value="杭州电子科技大学" autocomplete="off" class="layui-input" style="width: 300px">
+                </div>
+                <div>
+                    <button type="" class="layui-btn" lay-submit="" id="search" lay-filter="">搜索</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--<div class="layui-form-item">
+        <div class="top1_1 layui-inline" style="margin-left: 2%">
+            <span style="font-weight: bolder;font-size: 20px">搜索场馆:</span>
+            <input type="text">
+            <button style="cursor:pointer;background-color: deepskyblue;border: 3px solid skyblue;border-radius: 5px;margin: 10px">查询</button>
+        </div>
+        <div class="top1_2 layui-inline" style="margin-left: 12%">
+            <h1 class="headTitle"></h1>
+        </div>
+    </div>-->
+</div>
+<div class="layui-container 1" id="gymname" style="width:90%;min-height:100px;margin-left: 5px">
+    <h1 class="headTitle" style="font-weight: bolder;font-size: 30px;"></h1>
+</div>
+<!--    <div class="layui-container co" id="main"></div>-->
+<!--    <div class="layui-container co" id="huan1"></div>-->
+
+<div class="layui-container 1" id="huan1" style="width:100%;min-height:400px;margin-top:5%">
+
+
+</div>
+<div class="layui-container 2" id="huan2" style="width:100%;height:400px;margin-top: 15%">
+
+
+</div>
+
+<div class="layui-container 3" id="zhu1" style="width:100%;height:300px;margin-top: 15%">
+
+</div>
+<div class="layui-container 4" id="zhu2" style="width:100%;height:300px;border: 0px solid greenyellow;margin-top: 15%">
+    <!--        <h1>左侧树状图</h1>-->
+</div>
+<div class="layui-container 5" id="zhe1" style="width:100%;height:300px;margin-top: 15%;margin-bottom: 10%">
+    <!--        <h1>右侧折线图</h1>-->
+</div>
+<div class="layui-container 5" id="huan3" style="width:100%;height:350px;margin-top: 15%;margin-bottom: 10%">
+</div>
+<div class="layui-container 6" id="zhu3" style="width:100%;height:300px;margin-top: 15%">
+
+</div>
+<div class="layui-container 7" id="zhu4" style="width:100%;height:300px;margin-top: 15%">
+
+</div>
+</body>
+<script>
+    var layer = layui.layer;
+    var $ = jQuery = layui.jquery;
+    var form = layui.form;
+    var element = layui.element;
+
+    var gymname=$("input[name=gymname]").val();
+    var fontSize_Title=30;
+    var fontSize_legend=20;
+    var legendMarginTop=10;
+    var tuMarginTop=40;
+    function InitChart(gymname) {
+        console.log("初始化图表，先清空");
+        var myChart1 = echarts.init(document.getElementById('huan1'));
+        var myChart2 = echarts.init(document.getElementById('huan2'));
+        var myChart3 = echarts.init(document.getElementById('zhu1'));
+        var myChart4 = echarts.init(document.getElementById('zhu2'));
+        var myChart5 = echarts.init(document.getElementById('zhe1'));
+        var myChart6 = echarts.init(document.getElementById('huan3'));
+        var myChart7 = echarts.init(document.getElementById('zhu3'));
+        var myChart8 = echarts.init(document.getElementById('zhu4'));
+        myChart1.clear();
+        myChart2.clear();
+        myChart3.clear();
+        myChart4.clear();
+        myChart5.clear();
+        myChart6.clear();
+        myChart7.clear();
+        myChart8.clear();
+        echarts.init(document.getElementById('zhu4')).clear;
+        CoreUtil.sendAjax("/sys/containData/"+gymname,null,function (res) {
+            if(res.data != null){
+                console.log("ajax请求完成:"+res.data.gymName)
+                console.log(res.data)
+                $(".headTitle").html("场馆名称："+res.data.gymName)
+                //图1绘制
+                var tu1data=res.data.ageList;/*
+                console.log("tu1data:"+tu1data[0].sport)
+                console.log("tu1data:"+tu1data[0].value)*/
+                var t1_s1=[]
+                var t1_s2={};
+                for(var i=0;i<tu1data.length;i++){
+                    t1_s2={"name":tu1data[i].sport,"value":tu1data[i].value}
+                    t1_s1.push(t1_s2)
+                }
+                var tu1 = [t1_s1];
+                option1 = {
+                    title: {
+                        text: '预约成员分析',
+                        textStyle: {
+                            fontSize:fontSize_Title,
+                        }
+                    },
+                    legend: {
+                        top: legendMarginTop+'%',
+                        left: 'center',
+                        "textStyle": {
+                            "fontSize": fontSize_legend
+                        },
+                    },
+                    color:['pink', 'skyblue', 'rgb(239, 73, 139)','#5cb3cc','#eef7f2'],
+                    series: tu1.map(function (data, idx) {
+                        var top = idx * 33.3;
+                        return {
+                            type: 'pie',
+                            radius: [40, 80],
+                            top: tuMarginTop + '%',
+                            height: '30%',
+                            // minAngle:5,
+                            avoidLabelOverlap: true,//防止标签重叠
+                            startAngle:170, //起始角度
+                            left: 'center',
+                            center:['50%','60%'],
+                            width: 1000,
+                            itemStyle: {
+                                borderColor: '#fff',
+                                borderWidth: 1
+                            },
+                            label: {
+                                alignTo: 'edge',
+                                // formatter: '{@}：{@value}\n{d} %',
+                                formatter: '{b}: {@数值}\n {d}%',
+                                minMargin: 20,
+                                edgeDistance: 50,
+                                lineHeight: 35,
+                                rich: {
+                                    time: {
+                                        color: '#999'
+                                    }
+                                },
+                                "textStyle": {
+                                    "fontSize": 20
+                                },
+                            },
+                            labelLine: {
+                                length: 50,
+                                length2: 100,
+                                maxSurfaceAngle: 80
+                            },
+                            labelLayout: function (params) {
+                                const isLeft = params.labelRect.x < myChart.getWidth() / 2;
+                                const points = params.labelLinePoints;
+                                // Update the end point.
+                                points[2][0] = isLeft
+                                    ? params.labelRect.x
+                                    : params.labelRect.x + params.labelRect.width;
+                                return {
+                                    labelLinePoints: points
+                                };
+                            },
+                            data: data
+                        };
+                    })
+                };
+                myChart1.setOption(option1);
+
+                //图二绘制
+                var t2_s1=[]
+                var t2_s2=['名称','数值']
+                t2_s1.push(t2_s2)
+                for(var i=0;i<res.data.evList.length;i++){
+                    t2_s2=[]
+                    t2_s2.push(res.data.evList[i].sport)
+                    t2_s2.push(res.data.evList[i].value)
+                    t2_s1.push(t2_s2)
+                }
+                // console.log(sportandvalue.length)
+                // console.log(s1)
+                console.log("开始绘图..........")
+                option2 = {
+                    title: {
+                        text: '运动人数占比',
+                        textStyle: {
+                            fontSize:fontSize_Title,
+                        }
+                    },
+                    legend: {
+                        top: legendMarginTop+'%',
+                        "textStyle": {
+                            "fontSize": fontSize_legend
+                        },
+                    },
+                    tooltip: {
+                        trigger: 'axis',
+                        showContent: true
+                    },
+                    dataset: {
+                        source:t2_s1
+                        /*
+                            // ['product', '2012', '2013', '2014', '2015', '2016', '2017'],
+                            ['足球', 56.5],
+                            ['篮球', 30],
+                            ['乒乓球', 40.1],
+                            ['棒球',10],
+                            ['羽毛球',100]*/
+
+                    },
+                    // xAxis: { type: 'category' },
+                    // yAxis: { gridIndex: 0 },
+                    // grid: {},
+                    series: [
+                        {
+                            type: 'pie',
+                            id: 'pie',
+                            radius: '50%',
+                            center: ['50%', '60%'],
+                            emphasis: {
+                                focus: 'self'
+                            },
+                            label: {
+                                formatter: '{b}: {@数值} ({d}%)'
+                            },
+                        }
+                    ]
+                };
+                myChart2.setOption(option2);
+
+                //图三绘制
+
+                var tu3data=res.data.orderTimeList,
+                    option3 = {
+                        title: {
+                            text: '场地预约时间分布',
+                            textStyle: {
+                                fontSize:fontSize_Title,
+                            }
+                        },
+                        xAxis: {
+                            type: 'category',
+                            data: ['8:00', '9:00', '10:00', '11:00','12:00', '13:00','14:00', '15:00','16:00', '17:00','18:00']
+                        },
+                        yAxis: {
+                            type: 'value'
+                        },
+                        series: [
+                            {
+                                itemStyle: {
+                                    color: 'rgba(0, 180, 180, 0.5)'
+                                },
+                                data: tu3data,
+                                type: 'bar',
+                                showBackground: true,
+                                backgroundStyle: {
+                                    color: 'rgba(180, 180, 180, 0.2)'
+                                },
+                            }
+                        ]
+                    };
+                myChart3.setOption(option3);
+
+                //图4绘制
+                var tu4data=res.data.sportRank;
+                var tu4name=[];
+                var tu4value=[];
+                console.log(tu4data)
+                for(var i=0;i<tu4data.length;i++){
+                    tu4name.push(tu4data[i].name);
+                    tu4value.push(tu4data[i].value);
+                }
+                option4 = {
+                    title: {
+                        text: '运动排行榜',
+                        textStyle: {
+                            fontSize:fontSize_Title,
+                        }
+                    },
+                    tooltip: {
+                        trigger: 'axis',
+                        axisPointer: {
+                            // Use axis to trigger tooltip
+                            type: 'shadow' // 'shadow' as default; can also be 'line' or 'shadow'
+                        }
+                    },
+                    legend: {},
+                    grid: {
+                        left: '3%',
+                        right: '4%',
+                        bottom: '3%',
+                        containLabel: true
+                    },
+                    xAxis: {
+                        type: 'value'
+                    },
+                    yAxis: {
+                        type: 'category',
+                        data: tu4name
+                    },
+                    series: [
+                        {
+                            name: '排行榜',
+                            type: 'bar',
+                            stack: 'total',
+                            label: {
+                                show: true
+                            },
+                            emphasis: {
+                                focus: 'series'
+                            },
+                            itemStyle: {
+                                color: 'rgba(0, 180, 180, 0.5)'
+                            },
+                            data: tu4value
+                        },
+                    ]
+                };
+                myChart4.setOption(option4);
+
+                //图5绘制
+                var tu5data=res.data.todayPeoples;
+                option5 = {
+                    title: {
+                        text: '今日人数变化',
+                        textStyle: {
+                            fontSize:fontSize_Title,
+                        }
+                    },
+                    xAxis: {
+                        type: 'category',
+                        data: ['8:00', '9:00', '10:00', '11:00','12:00', '13:00','14:00', '15:00','16:00', '17:00','18:00']
+                    },
+                    yAxis: {
+                        type: 'value'
+                    },
+                    series: [
+                        {
+                            data: tu5data,
+                            type: 'line'
+                        }
+                    ]
+                };
+                myChart5.setOption(option5);
+
+                //图6绘制
+                var tu6data=res.data.evList;/*
+                console.log("tu1data:"+tu1data[0].sport)
+                console.log("tu1data:"+tu1data[0].value)*/
+                var t6_s1=[]
+                var t6_s2={};
+                for(var i=0;i<tu6data.length;i++){
+                    t6_s2={"name":tu6data[i].sport,"value":tu6data[i].value}
+                    t6_s1.push(t6_s2)
+                }
+                var tu6 = [t6_s1];
+                option6 = {
+                    title: {
+                        text: '所有场馆运动项目占比',
+                        textStyle: {
+                            fontSize:fontSize_Title,
+                        }
+                    },
+                    legend: {
+                        top: legendMarginTop+'%',
+                        left: 'center',
+                        "textStyle": {
+                            "fontSize": fontSize_legend
+                        },
+                    },
+                    series: tu6.map(function (data, idx) {
+                        var top = idx * 33.3;
+                        return {
+                            type: 'pie',
+                            radius: [40, 80],
+                            top: '100%',
+                            height: '50%',
+                            // minAngle:5,
+                            avoidLabelOverlap: true,//防止标签重叠
+                            startAngle:170, //起始角度
+                            left: 'center',
+                            center:['50%','70%'],
+                            width: 1000,
+                            itemStyle: {
+                                borderColor: '#fff',
+                                borderWidth: 1
+                            },
+                            label: {
+                                alignTo: 'edge',
+                                // formatter: '{@}：{@value}\n{d} %',
+                                formatter: '{b}: {@数值}\n {d}%',
+                                minMargin: 20,
+                                edgeDistance: 50,
+                                lineHeight: 35,
+                                rich: {
+                                    time: {
+                                        color: '#999'
+                                    }
+                                },
+                                "textStyle": {
+                                    "fontSize": 20
+                                },
+                            },
+                            labelLine: {
+                                length: 50,
+                                length2: 100,
+                                maxSurfaceAngle: 80
+                            },
+                            labelLayout: function (params) {
+                                const isLeft = params.labelRect.x < myChart.getWidth() / 2;
+                                const points = params.labelLinePoints;
+                                // Update the end point.
+                                points[2][0] = isLeft
+                                    ? params.labelRect.x
+                                    : params.labelRect.x + params.labelRect.width;
+                                return {
+                                    labelLinePoints: points
+                                };
+                            },
+                            data: data
+                        };
+                    })
+                };
+                myChart6.setOption(option6);
+
+                //图7绘制
+                var tu7data=res.data.lastMonthPeople;
+                var tu7data_1=[];
+                var tu7data_2=[];
+                for(var i=0;i<tu7data.length;i++){
+                    tu7data_1.push(tu7data[i].gymName);
+                    tu7data_2.push(tu7data[i].num);
+                }
+                option7 = {
+                        title: {
+                            text: '近一个月场地人数',
+                            textStyle: {
+                                fontSize:fontSize_Title,
+                            }
+                        },
+                        xAxis: {
+                            type: 'category',
+                            data: tu7data_1
+                        },
+                        yAxis: {
+                            type: 'value'
+                        },
+                        series: [
+                            {
+                                itemStyle: {
+                                    color: 'rgba(0, 180, 180, 0.5)'
+                                },
+                                data: tu7data_2,
+                                type: 'bar',
+                                showBackground: true,
+                                backgroundStyle: {
+                                    color: 'rgba(180, 180, 180, 0.2)'
+                                },
+                            }
+                        ]
+                    };
+                myChart7.setOption(option7);
+
+                //图8
+                var tu81data=res.data.exceptOpenTime;
+                var tu82data=res.data.actualOpenTime;
+                var tu83data=res.data.openTime;//日期
+                option8 = {
+                    title: {
+                        text: '全市场馆开放时长分析表',
+                        textStyle: {
+                            fontSize:fontSize_Title,
+                        }
+                    },
+                    tooltip: {
+                        trigger: 'axis',
+                        axisPointer: {
+                            type: 'shadow'
+                        }
+                    },
+                    legend: {
+                        "textStyle": {
+                            "fontSize": fontSize_legend
+                        },
+                    },
+                    grid: {
+                        left: '3%',
+                        right: '4%',
+                        bottom: '3%',
+                        containLabel: true
+                    },
+                    xAxis: {
+                        type: 'value',
+                        boundaryGap: [0, 0.01]
+                    },
+                    yAxis: {
+                        type: 'category',
+                        data: tu83data
+                    },
+                    series: [
+                        {
+                            name: '实际开放时长',
+                            color:'rgb(0,175,255)',
+                            type: 'bar',
+                            data: tu81data
+                        },
+                        {
+                            name: '计划开放时长',
+                            color:'skyblue',
+                            type: 'bar',
+                            data: tu82data
+                        }
+                    ]
+                };
+                myChart8.setOption(option8);
+            }
+            else{
+                console.log("数据为空");
+                layer.msg("未搜索到该场馆的信息!!!")
+            }
+        },"GET",false);
+    }
+
+    $(function () {
+        console.log("调用初始化方法")
+        // gymname="303050b2-2c89-4cbf-899f-cc7af8cedadb";//默认场馆id
+        gymname="杭州电子科技大学";//默认场馆id
+        InitChart(gymname);
+    })
+    $("#search").click(function () {
+        var gymname=$("input[name=gymname]").val();
+        console.log("搜索场馆")
+        if (gymname!="") {
+            console.log("场馆名称："+gymname)
+            InitChart(gymname)
+        } else {
+            console.log("搜索名为空")
+            layer.msg("搜索名为空，请输入场馆名称！");
+        }
+    });
+
+    layui.use(['table', 'laypage', 'layer', 'laydate', 'tree', 'transfer'], function () {
+
+        form.on('submit(submit)', function (data) {
+            if (data.field.gymname!="") {
+                console.log("搜索场馆："+data.field.gymname)
+                InitChart(data.field.gymname)
+            } else {
+                console.log("搜索名为空")
+                layer.msg("抱歉！您暂无编辑用户的权限");
+            }
+            return false;
+        });
+    });
+</script>
+</html>

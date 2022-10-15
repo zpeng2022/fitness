@@ -68,9 +68,20 @@ public class ShiroConfig {
         Map<String, String> filterChainDefinitionMap = new LinkedHashMap<>();
         // 配置不会被拦截的链接 顺序判断
         filterChainDefinitionMap.put("/sys/user/login", "anon");
-        filterChainDefinitionMap.put("/sys/user/token", "anon");
+
+        filterChainDefinitionMap.put("/sys/loadPicture", "anon");
+        filterChainDefinitionMap.put("/sys/loadPicture2", "anon");
+        filterChainDefinitionMap.put("/sys/uploadBlackFile", "anon");
+        filterChainDefinitionMap.put("/sys/loadGymPicture", "anon");
+        filterChainDefinitionMap.put("/index/loadGymPicture", "anon");
+        filterChainDefinitionMap.put("/sys/gym/getPicture/**", "anon");
+        //开发所有静态资源
+        filterChainDefinitionMap.put("/static/**", "anon");
+
         filterChainDefinitionMap.put("/index/**", "anon");
         filterChainDefinitionMap.put("*.html", "anon");
+        //图片上传
+        filterChainDefinitionMap.put("/sys/user/token", "anon");
         //放开swagger-ui地址
         filterChainDefinitionMap.put("/swagger/**", "anon");
         filterChainDefinitionMap.put("/v2/api-docs", "anon");

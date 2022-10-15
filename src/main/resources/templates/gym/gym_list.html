@@ -125,6 +125,39 @@
         </form>
     </div>
 </div>
+
+<!--<div class="panel panel-default picture_gym" hidden>
+    <div class="panel-heading title" style="text-align: center"></div>
+    <div class="layui-card-body">&lt;!&ndash;/sys/loadPicture&ndash;&gt;
+        <form class="layui-form " action="/index/loadPicture2" method="post" enctype="multipart/form-data" lay-filter="" style="width: 100%;margin-top: 10px">
+
+            <input name="gymId" hidden/>
+
+            <div class="layui-form-item">
+                <div class="layui-form-label ">图片上传</div>
+                <div class="layui-input-block">
+                    <input type="file" name="picture" id="pictureC" class="layui-input" onchange="checkFileNum(this,1,3)" multiple>
+                    <tip>请上传1-3张图片，已有
+                        <p style="display: inline;font-weight: bolder;color: deeppink" id="pictureNums"></p>
+                         张图片，若上传数量不能超过3张。<br>若已存在图片，超出总数量的图片对原图片进行顺序覆盖</tip>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button type="submit" class="layui-btn" lay-submit="" id="loadP" lay-filter="">上传</button>
+                    <button class="layui-btn layui-btn-primary" id="btn_cancel">返回</button>
+                </div>
+            </div>
+         &lt;!&ndash;   <div class="layui-btn-container">
+                <button type="button" class="layui-btn layui-btn-normal" id="choosePicture">选择文件</button>
+                <button type="button" class="layui-btn" id="loadPicture">开始上传</button>
+            </div>&ndash;&gt;
+
+        </form>
+
+    </div>
+</div>-->
 <div class="gym_table_div">
     <div id="searchParam" shiro:hasPermission="sys:gym:list">
         <div class="layui-form-item">
@@ -172,8 +205,16 @@
             <i class="layui-icon">&#xe608;</i> 新增场地
         </button>
     </div>
+    <!--一键审批 -->
+    <div class="layui-btn-group">
+        <button type="button" class="layui-btn layui-btn-danger" lay-event="autopass"
+                shiro:hasPermission="sys:gym:update">
+            <i class="layui-icon">&#xe608;</i> 一键审批
+        </button>
+    </div>
 </script>
 <script type="text/html" id="tool">
+    <a class="layui-btn layui-btn-xs" lay-event="picture" shiro:hasPermission="sys:gym:update">上传场地图片</a>
     <a class="layui-btn layui-btn-xs" lay-event="edit" shiro:hasPermission="sys:gym:update">编辑</a>
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del" shiro:hasPermission="sys:gym:deleted">删除</a>
 </script>
@@ -210,8 +251,38 @@
     // 文件列表dom
     var fileListDom = $('.file-list');
 
+    /*var loadPFlag=[[${loadPicture}]];
+    // var pictureList=[[${pictureList}]];
+    // var gymId=[[${gymId}]];
+    console.log(+"-图片上传信号："+loadPFlag);
+    if(loadPFlag==0){
+
+    }else if(loadPFlag==1){//上传成功
+        layer.msg("上传成功")
+    }else if(loadPFlag==2){//上传失败
+        layer.msg("该gym信息不存在")
+    }else if(loadPFlag==3){
+        /!*$(".gym_table_div").hide();
+        $(".picture_gym").show();
+        $(".title").html("上传场地图片");
+        $(".picture_gym input[name=gymId]").val(gymId);
+        form.render(); //更新全部*!/
+        layer.msg("上传失败")
+    }*/
+
+    function checkFileNum(fileObj,n1,n2){
+        if (window.File && window.FileList) {
+            var fileCount = fileObj.files.length;
+            if (fileCount < n1 || fileCount > n2) {
+                window.alert('文件数不能小于' + n1 + '个，也不能超过' + n2 + '个，你选择了' + fileCount + '个');
+                fileObj.value=null;
+                return false;
+            }
+        }
+    }
 
     layui.use(['table', 'laypage', 'layer', 'laydate', 'tree', 'transfer'], function () {
+
         form.render();
 
         form.verify({
@@ -551,6 +622,13 @@
                         loadTable(noAuthorityData);
                     });
                     break;
+                case 'autopass':
+                    CoreUtil.sendAjax("/sys/autopass", JSON.stringify(null), function (res) {
+                        layer.msg("审批成功");
+                    }, "POST", false, function (res) {
+                        layer.msg("审批失败！您暂无权限");
+                    });
+                    break;
             }
             ;
         });
@@ -581,13 +659,51 @@
                     form.render(); //更新全部
                     initTree("");
                     break;
+                case 'picture':
+                    console.log("跳转图上传："+data.gymId)
+                    /*$(".gym_table_div").hide();
+                    $(".picture_gym").show();
+                    $(".title").html("上传场地图片");
+                    $(".picture_gym input[name=gymId]").val(data.gymId);
+                    var Pnums=0;
+                    var Ppath=data.gymPicturesPath;
+                    console.log("该场地图片路径:"+Ppath);
+                    for(var i=0;i<Ppath.length;i++){
+                        // console.log(Ppath.substring(i,i+1))
+                        if(Ppath.substring(i,i+1)==";")
+                            Pnums++;
+                    }
+                    console.log("图片个数:"+Pnums);
+                    $("#pictureNums").html(Pnums);
+                    form.render(); //更新全部*/
+                    //直接进行页面跳转
+                    toPictureLoad(data.gymId);
+                    break;
             }
         });
         $("#btn_cancel").click(function () {
+            // loadPFlag=0;
             $(".gym_table_div").show();
             $(".operation_gym").hide();
             return false;
         });
+
+        // $("#loadPicture").click(function () {
+        //     var gymId=$(".picture_gym input[name=gymId]").val();
+        //     var pictureCon=$(".picture_gym input[name=picture]").val();
+        //     var str={"gymId":gymId,"picture":pictureCon}
+        //     console.log("图片上传gymId："+gymId)
+        //     console.log("图片上传pictureCon："+pictureCon)
+        //     CoreUtil.sendAjax("/sys/test",JSON.stringify(str), function (res) {
+        //         layer.msg(res.msg);
+        //         $(".layui-laypage-btn").click();
+        //           $(".gymComment_table_div").show();
+        //           $(".response_gymComment").hide();
+        //         return false;//这个东西要是注释掉，会引发"post" not support问题
+        //     }, "POST", false, function (res) {
+        //         layer.msg("抱歉！您暂无上传的权限");
+        //     });
+        // });
 
         var tipDialog = function (userIds, username) {
             layer.open({
@@ -597,12 +713,41 @@
                     CoreUtil.sendAjax("/sys/gym", JSON.stringify(userIds), function (res) {
                         layer.msg(res.msg);
                         $(".layui-laypage-btn").click();
-                    }, "DELETE", false, function (res) {
+                    }, "POST", false, function (res) {
                         layer.msg("抱歉！您暂无删除用户的权限");
                     });
                 }
             });
         };
+        var toPictureLoad=function(gymId){
+            /*layer.open({
+                content: '确定要跳转么?',
+                yes: function (index, layero) {
+                    layer.close(index); //如果设定了yes回调，需进行手工关闭
+                    CoreUtil.sendAjax("/index/toPictureLoad", JSON.stringify(gymId), function (res) {
+                        layer.msg(res.msg);
+                        $(".layui-laypage-btn").click();
+                    }, "GET", false, function (res) {
+                        layer.msg("抱歉！您暂无权限");
+                    });
+                }
+            });*/
+            var index = layer.open({
+                title: '场地图片上传',
+                type: 2,
+                shade: 0.2,
+                maxmin: true,
+                shadeClose: true,
+                area: ['90%', '90%'],
+                data: gymId,
+                content: '/index/toPictureLoad/'+gymId,
+            });
+            $(window).on("resize", function () {
+                layer.full(index);
+            });
+            return false;
+
+        }
 
         form.on('switch(switch)', function () {
             $(".operation_gym input[name=status]").attr('type', 'hidden').val(this.checked ? 1 : 2);
@@ -610,7 +755,42 @@
         });
 
         form.on('submit(submit)', function (data) {
-            if (data.field.id === undefined || data.field.id === null || data.field.id === "") {
+            if(data.field.gymId!=undefined){
+                console.log("图片上传:"+data)
+                console.log("图片上传:")
+                console.log("图片上传:"+$("#pictureC")[0].files)
+
+                /*
+                /!*let formData=new FormData();
+                formData.append('picture',data.field.picture);*!/
+                // var str={"gymId":data.field.gymId,"picture":data.field.picture}
+                // var gymId=data.field.gymId;
+                var files = document.getElementById("pictureC").files;
+                console.log(files);
+                var formdata = new FormData();
+                formdata.append("picture",files[0])
+                console.log(formdata)*/
+                // var str={"picture":data.field.picture}
+                /*CoreUtil.sendAjax("/sys/test/"+data.field.gymId,"", function (res) {
+                    $(".gym_table_div").show();
+                    $(".picture_gym").hide();
+                    $(".layui-laypage-btn").click();
+                }, "POST", false, function (res) {
+                    layer.msg("抱歉！您暂无新增用户的权限");
+                });*///,"multipart/form-data",false
+                /*upload.render({
+                    elem: '#choosePicture'
+                    ,url: '/sys/test/'+data.field.gymId //此处配置你自己的上传接口即可
+                    ,auto: false
+                    //,multiple: true
+                    ,bindAction: '#loadPicture'
+                    ,done: function(res){
+                        layer.msg('上传成功');
+                        console.log(res)
+                    }
+                });*/
+                // return false;
+            }else if (data.field.id === undefined || data.field.id === null || data.field.id === "") {
                 CoreUtil.sendAjax("/sys/gym", JSON.stringify(data.field), function (res) {
                     $(".gym_table_div").show();
                     $(".operation_gym").hide();

@@ -2,6 +2,7 @@ package com.yiie.common.service;
 
 
 import com.yiie.entity.GymOrder;
+import com.yiie.vo.data.SportAndValue;
 import com.yiie.vo.request.*;
 import com.yiie.vo.response.PageVO;
 
@@ -12,4 +13,10 @@ public interface GymOrderService {
     void addGymOrders(GymOrderAddReqVO vo);
     void updateGymOrdersInfo(GymOrderUpdateReqVO vo);
     void deletedGymOrders(List<String> userIds);
+
+    List<SportAndValue> getTypeAndValue(String name);
+
+    List<SportAndValue> getAllTypeAndValue();
+
+    List<SportAndValue> getGymPeopleNum();
 }

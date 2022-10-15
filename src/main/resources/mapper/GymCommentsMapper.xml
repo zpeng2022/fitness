@@ -267,4 +267,16 @@
             #{item}
         </foreach>
     </update>
+    <update id="readGymCommentsById" parameterType="java.lang.String">
+        update gym_comment
+        set
+            commentStatus=1
+        where commentId = #{commentId}
+    </update>
+    <!--<update id="readGymComments" parameterType="java.lang.String">
+        update gym_comment
+        set
+            commentStatus=1
+        where commentId = #{commentId}
+    </update>-->
 </mapper>

@@ -10,6 +10,9 @@ package com.yiie.enums;
  */
 public enum BaseResponseCode implements ResponseCodeInterface {
 
+    READ_YES(-1,"该评论已为已读状态"),
+    GYM_NONEXISTENT(-2,"不存在该场馆信息"),
+
     SUCCESS(0,"操作成功"),
     SYSTEM_BUSY(500001, "系统繁忙，请稍候再试"),
     OPERATION_ERRO(500002,"操作失败"),

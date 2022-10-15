@@ -1,10 +1,12 @@
 package com.yiie.common.mapper;
 
 import com.yiie.entity.GymOpenTime;
+import com.yiie.vo.data.GymCloseTime;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -20,4 +22,6 @@ public interface GymOpenTimeMapper {
     int insertSelective(GymOpenTime gymOpenTime);
     int updateByPrimaryKeySelective(GymOpenTime gymOpenTime);
     int deletedGymOpenTime(@Param("sysUser") GymOpenTime sysUser, @Param("list") List<String> list);
+
+    List<GymCloseTime> getGymCT(String gymId,Date today, Date fiveDaysAgo);
 }

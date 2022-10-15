@@ -12,4 +12,10 @@ public interface GymCommentService {
     void addGymComments(GymCommentAddReqVO vo);
     void updateGymCommentsInfo(GymCommentUpdateReqVO vo);
     void deletedGymComments(List<String> userIds);
+
+    void readGymComments(GymComments gymComments);
+
+    GymComments getByCommentId(String commentId);
+
+    void readGymCommentsById(String commentId);
 }

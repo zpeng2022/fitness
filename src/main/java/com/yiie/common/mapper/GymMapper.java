@@ -1,6 +1,7 @@
 package com.yiie.common.mapper;
 
 import com.yiie.entity.Gym;
+import com.yiie.vo.data.GymOpenTime;
 import com.yiie.vo.request.GymPageReqVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -17,4 +18,10 @@ public interface GymMapper {
     int insertSelective(Gym gym);
     int updateByPrimaryKeySelective(Gym gym);
     int deletedGyms(@Param("sysUser") Gym sysUser, @Param("list") List<String> list);
+
+    void autoPassBydeptId(String deptId);
+
+    List<Gym>  getByName(String name);
+
+    List<GymOpenTime> getGymOT();
 }

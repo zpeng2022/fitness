@@ -20,6 +20,7 @@ import org.springframework.stereotype.Component;
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.UUID;
 
 /**
@@ -51,6 +52,7 @@ public class LogAspect {
         long time = System.currentTimeMillis() - beginTime;
         //保存日志
         try {
+            System.out.print("LogAspect-54: 保存日志\n");
             saveSysLog(point, time);
         } catch (Exception e) {
             log.error("e={}",e);
@@ -89,7 +91,25 @@ public class LogAspect {
         //设置IP地址
         sysLog.setIp(IPUtil.getIpAddr(request));
         log.info("Ip{}，接口地址{}，请求方式{}，入参：{}",sysLog.getIp(),request.getRequestURL(),request.getMethod(),sysLog.getParams());
+
         //用户名
+        System.out.print("LogAspect-94: 获取token\n");
+        System.out.print("LogAspect-95: request信息\n");
+        System.out.print("请求类型: "+request.getMethod()+"\n");
+        System.out.print("请求标题和内容: \n");
+
+        Enumeration headerNames = request.getHeaderNames();
+        while(headerNames.hasMoreElements()) {
+            String headerName = (String)headerNames.nextElement();
+            System.out.println("Header Name - " + headerName + ", Value - " + request.getHeader(headerName));
+        }
+        System.out.print("请求参数: \n");
+        Enumeration params = request.getParameterNames();
+        while(params.hasMoreElements()){
+            String paramName = (String)params.nextElement();
+            System.out.println("Parameter Name - "+paramName+", Value - "+request.getParameter(paramName));
+        }
+
         String  token = request.getHeader(Constant.ACCESS_TOKEN);
         String userId= JwtTokenUtil.getUserId(token);
         String username=JwtTokenUtil.getUserName(token);
