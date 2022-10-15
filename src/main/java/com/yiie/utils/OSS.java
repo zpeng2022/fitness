@@ -17,7 +17,7 @@ import java.util.UUID;
 
 public class OSS {
     static String accessKeyId = "LTAI5tSjEKyAz6Z4fihMxHia";
-    static String accessKeySecret = "RA8oCSDWPhWrPGvk4Hc9Cp5rk9bIfq";
+    static String accessKeySecret = "";
     static String bucketName="bigman1718";
     static String endPoint="https://oss-cn-hangzhou.aliyuncs.com";
     static String endPoint2="oss-cn-hangzhou.aliyuncs.com";
