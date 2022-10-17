@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yiie.common.mapper.CustomerRecordMapper">
+    <resultMap id="BaseResultMap" type="com.yiie.entity.CustomerRecord">
+        <id column="recordId" jdbcType="VARCHAR" property="recordId" />
+        <result column="customerId" jdbcType="VARCHAR" property="customerId" />
+        <result column="isOnline" jdbcType="TINYINT" property="isOnline" />
+        <result column="recordStatus" jdbcType="TINYINT" property="recordStatus" />
+        <result column="orderStartTime" jdbcType="TIMESTAMP" property="orderStartTime" />
+        <result column="orderEndTime" jdbcType="TIMESTAMP" property="orderEndTime" />
+        <result column="inGymTime" jdbcType="TIMESTAMP" property="inGymTime" />
+        <result column="outGymTime" jdbcType="TIMESTAMP" property="outGymTime" />
+        <result column="exerciseType" jdbcType="VARCHAR" property="exerciseType" />
+        <result column="addFitnessScore" jdbcType="INTEGER" property="addFitnessScore" />
+        <result column="addCreditScore" jdbcType="INTEGER" property="addCreditScore" />
+        <result column="customerRecordCount" jdbcType="INTEGER" property="customerRecordCount" />
+        <result column="finalRecordTime" jdbcType="TIMESTAMP" property="finalRecordTime" />
+        <result column="deleted" jdbcType="TINYINT" property="deleted" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        recordId, isOnline, recordStatus, orderStartTime, orderEndTime, inGymTime, outGymTime, exerciseType, addFitnessScore,
+        addCreditScore, customerRecordCount, finalRecordTime, deleted
+    </sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from customer_fitnesscredithistory
+        where recordId = #{recordId,jdbcType=VARCHAR}
+    </select>
+
+    <select id="getFinalRecord" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select <include refid="Base_Column_List"></include>
+        from customer_fitnesscredithistory
+        <where>
+            deleted=1
+            AND customerId = #{customerId}
+            AND customerRecordCount = (SELECT MAX(customerRecordCount)
+                                        FROM customer_fitnesscredithistory
+                                        WHERE customerId = #{customerId})
+        </where>
+    </select>
+
+    <select id="getCustomerRecordsByCustomerId" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select <include refid="Base_Column_List"></include>
+        from customer_fitnesscredithistory
+        <where>
+            deleted=1
+            AND customerId = #{customerId}
+        </where>
+    </select>
+
+    <insert id="insertSelective" parameterType="com.yiie.entity.CustomerRecord">
+        insert into customer_fitnesscredithistory
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="recordId != null">
+                recordId,
+            </if>
+            <if test="customerId != null">
+                customerId,
+            </if>
+            <if test="isOnline != null">
+                isOnline,
+            </if>
+            <if test="recordStatus != null">
+                recordStatus,
+            </if>
+            <if test="orderStartTime!=null">
+                orderStartTime,
+            </if>
+            <if test="orderEndTime!=null">
+                orderEndTime,
+            </if>
+            <if test="inGymTime!=null">
+                inGymTime,
+            </if>
+            <if test="outGymTime!=null">
+                outGymTime,
+            </if>
+            <if test="exerciseType!=null">
+                exerciseType,
+            </if>
+            <if test="addFitnessScore!=null">
+                addFitnessScore,
+            </if>
+            <if test="addCreditScore!=null">
+                addCreditScore,
+            </if>
+            <if test="customerRecordCount!=null">
+                customerRecordCount,
+            </if>
+            <if test="finalRecordTime!=null">
+                finalRecordTime,
+            </if>
+            <if test="deleted!=null">
+                deleted,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="recordId != null">
+                #{recordId,jdbcType=VARCHAR},
+            </if>
+            <if test="customerId != null">
+                #{customerId,jdbcType=VARCHAR},
+            </if>
+            <if test="isOnline != null">
+                #{isOnline,jdbcType=TINYINT},
+            </if>
+            <if test="recordStatus != null">
+                #{recordStatus,jdbcType=TINYINT},
+            </if>
+            <if test="orderStartTime!=null">
+                #{orderStartTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="orderEndTime!=null">
+                #{orderEndTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="inGymTime!=null">
+                #{inGymTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="outGymTime!=null">
+                #{outGymTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="exerciseType!=null">
+                #{exerciseType,jdbcType=VARCHAR},
+            </if>
+            <if test="addFitnessScore!=null">
+                #{addFitnessScore,jdbcType=INTEGER},
+            </if>
+            <if test="addCreditScore!=null">
+                #{addCreditScore,jdbcType=INTEGER},
+            </if>
+            <if test="customerRecordCount!=null">
+                #{customerRecordCount,jdbcType=INTEGER},
+            </if>
+            <if test="finalRecordTime!=null">
+                #{finalRecordTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="deleted!=null">
+                #{deleted,jdbcType=TINYINT},
+            </if>
+        </trim>
+    </insert>
+
+
+    <update id="deletedCustomerRecords">
+        update customer_fitnesscredithistory
+        <set>
+            deleted = 0,
+        </set>
+        where recordId in
+        <foreach collection="list" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+    </update>
+</mapper>

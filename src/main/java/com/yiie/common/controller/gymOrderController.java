@@ -43,9 +43,17 @@ public class gymOrderController {
 
     @PostMapping("/H5AddGymOrders")
     @ApiOperation(value = "H5新增预约记录接口")
-    @LogAnnotation(title = "预约管理",action = "新增预约信息列表")
+    @LogAnnotation(title = "预约管理",action = "H5新增预约记录接口")
     public DataResult H5AddGymOrders(@RequestBody @Valid GymOrderAddReqVO vo, HttpServletRequest request){
         gymOrderService.addGymOrders(vo);
+        return DataResult.success();
+    }
+
+    @PostMapping("/H5CancelGymOrder")
+    @ApiOperation(value = "H5取消预约记录接口")
+    @LogAnnotation(title = "预约管理",action = "H5取消预约记录接口")
+    public DataResult H5CancelGymOrder(@RequestBody @Valid GymOrderCancelPageReqVO vo, HttpServletRequest request){
+        gymOrderService.cancelGymOrder(vo);
         return DataResult.success();
     }
 

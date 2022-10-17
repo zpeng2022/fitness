@@ -75,6 +75,7 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("/sys/H5SearchGyms", "anon");
         filterChainDefinitionMap.put("/sys/H5GymOrders", "anon");
         filterChainDefinitionMap.put("/sys/H5AddGymOrders", "anon");
+        filterChainDefinitionMap.put("/sys/H5CancelGymOrder", "anon");
         filterChainDefinitionMap.put("/sys/H5GymComments", "anon");
         filterChainDefinitionMap.put("/sys/H5GymCommentTags", "anon");
         filterChainDefinitionMap.put("/sys/H5AddGymComment", "anon");
@@ -87,6 +88,7 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("/sys/H5CustomerUpdateContactInfo", "anon");
         filterChainDefinitionMap.put("/sys/H5CustomerDeleteContactInfo", "anon");
         filterChainDefinitionMap.put("/sys/H5CustomerAddContactInfo", "anon");
+        filterChainDefinitionMap.put("/sys/H5CustomerRecords", "anon");
         //放开swagger-ui地址
         filterChainDefinitionMap.put("/swagger/**", "anon");
         filterChainDefinitionMap.put("/v2/api-docs", "anon");

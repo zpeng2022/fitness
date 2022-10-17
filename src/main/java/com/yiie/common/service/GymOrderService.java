@@ -11,6 +11,7 @@ public interface GymOrderService {
     PageVO<GymOrder> h5PageInfo(GymOrderPageReqVO vo);
     PageVO<GymOrder> pageInfo(GymOrderPageReqVO vo);
     void addGymOrders(GymOrderAddReqVO vo);
+    void cancelGymOrder(GymOrderCancelPageReqVO vo);
     void updateGymOrdersInfo(GymOrderUpdateReqVO vo);
     void deletedGymOrders(List<String> userIds);
 }

@@ -13,6 +13,7 @@ import com.yiie.utils.PageUtils;
 import com.yiie.utils.TokenSettings;
 import com.yiie.vo.request.GymAddReqVO;
 import com.yiie.vo.request.GymPageReqVO;
+import com.yiie.vo.request.GymSearchNamePageReqVO;
 import com.yiie.vo.request.GymUpdateReqVO;
 import com.yiie.vo.response.PageVO;
 import lombok.extern.slf4j.Slf4j;
@@ -75,10 +76,10 @@ public class GymServiceImpl implements GymService {
     }
 
     @Override
-    public PageVO<Gym> h5GymSearch(List<String> gymName) {
-        PageHelper.startPage(1,10);
+    public PageVO<Gym> h5GymSearch(GymSearchNamePageReqVO vo) {
+        PageHelper.startPage(vo.getPageNum(),vo.getPageSize());
         //System.out.println(gymName.get(0) + "+++++++++++++++++++++");
-        List<Gym> gyms = gymMapper.h5SearchGyms(gymName.get(0));
+        List<Gym> gyms = gymMapper.h5SearchGyms(vo.getGymName());
         //if(gyms != null) System.out.println("++++++ DONE ++++++++" );
         if(!gyms.isEmpty()){
             for (Gym gym : gyms){
@@ -125,12 +126,12 @@ public class GymServiceImpl implements GymService {
         gym.setGymPhone(vo.getGymPhone());
         gym.setGymCapacity(vo.getGymCapacity());
         // TODO... add images
-        gym.setGymPicturesPath(null);
+        gym.setGymPicturesPath(vo.getGymPicturesPath());
         gym.setGymTypes(vo.getGymTypes());
         gym.setGymPosition(vo.getGymPosition());
         gym.setGymDetails(vo.getGymDetails());
         // TODO... add GPS
-        gym.setGymGps(null);
+        gym.setGymGps(vo.getGymGps());
         gym.setCreateTime(new Date());
         gym.setDeleted(1);
         int result = gymMapper.insertSelective(gym);
@@ -152,6 +153,7 @@ public class GymServiceImpl implements GymService {
             throw new BusinessException(BaseResponseCode.DATA_ERROR);
         }
         BeanUtils.copyProperties(vo,gym);
+        gym.setDeleted(1);
         gym.setUpdateTime(new Date());
         int count = gymMapper.updateByPrimaryKeySelective(gym);
         if(count != 1){

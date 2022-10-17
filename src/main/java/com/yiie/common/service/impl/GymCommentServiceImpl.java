@@ -104,6 +104,7 @@ public class GymCommentServiceImpl implements GymCommentService {
             throw new BusinessException(BaseResponseCode.DATA_ERROR);
         }
         BeanUtils.copyProperties(vo, gymComments);
+        gymComments.setDeleted(1);
         gymComments.setUpdateTime(new Date());
         /**
          * update Comment Answer

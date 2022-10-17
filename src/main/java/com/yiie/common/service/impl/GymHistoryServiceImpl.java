@@ -86,6 +86,9 @@ public class GymHistoryServiceImpl implements GymHistoryService {
         gymHistory.setIsBlackUser(isBlackUser);
         GymOrderDetail gymOrderDetail = gymOrderDetailMapper.selectByIdentityCardAndTimeAndDeptId(vo.getCustomerIdentityCard(), vo.getDeptId());
         Integer isOnlineUser = (gymOrderDetail != null) ? 1 : 0;
+        // set the origin orderId for online user.
+        // do this, we can find whether this customer come or not.
+        gymHistory.setOrderId(gymOrderDetail.getOrderId());
         gymHistory.setIsOnlineUser(isOnlineUser);
         if(gymOrderDetail != null){
             gymHistory.setOrderStartTime(gymOrderDetail.getOrderStartTime());
@@ -116,6 +119,7 @@ public class GymHistoryServiceImpl implements GymHistoryService {
             throw new BusinessException(BaseResponseCode.DATA_ERROR);
         }
         BeanUtils.copyProperties(vo, gymHistory);
+        gymHistory.setDeleted(1);
         gymHistory.setUpdateTime(new Date());
         if(gymHistory.getOutTime() == null) {
             Date newTime = new Date();

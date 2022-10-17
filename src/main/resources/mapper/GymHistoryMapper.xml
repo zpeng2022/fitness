@@ -3,6 +3,7 @@
 <mapper namespace="com.yiie.common.mapper.GymHistoryMapper">
     <resultMap id="BaseResultMap" type="com.yiie.entity.GymHistory">
         <id column="historyId" jdbcType="VARCHAR" property="historyId" />
+        <result column="orderId" jdbcType="VARCHAR" property="orderId" />
         <result column="gymId" jdbcType="VARCHAR" property="gymId" />
         <result column="deptId" jdbcType="VARCHAR" property="deptId" />
         <result column="customerName" jdbcType="VARCHAR" property="customerName" />
@@ -21,7 +22,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        historyId, gymId, deptId, customerName, customerPhone, customerIdentityCard, isBlackUser, isOnlineUser, orderStartTime, orderEndTime, exerciseType, inTime, outTime, createTime, updateTime, deleted
+        historyId, orderId, gymId, deptId, customerName, customerPhone, customerIdentityCard, isBlackUser, isOnlineUser, orderStartTime, orderEndTime, exerciseType, inTime, outTime, createTime, updateTime, deleted
     </sql>
 
     <select id="getAllGymHistoriesByDeptID" resultMap="BaseResultMap">
@@ -45,6 +46,16 @@
         where historyId = #{historyId,jdbcType=VARCHAR}
     </select>
 
+    <select id="getCustomerHistoryWithOnlineStateAndTime" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from gym_history
+        where customerIdentityCard = #{customerIdentityCard,jdbcType=VARCHAR}
+        AND isOnlineUser = #{isOnlineUser,jdbcType=TINYINT}
+        AND createTime > #{createTime}
+        order by createTime
+    </select>
+
     <select id="selectAllGymHistoriesByDeptID" resultMap="BaseResultMap" parameterType="com.yiie.vo.request.GymHistoryPageReqVO">
         select <include refid="Base_Column_List"></include>
         from gym_history
@@ -53,6 +64,9 @@
             AND deptId = #{deptId}
             <if test="historyId != null and historyId != ''">
                 AND historyId = #{historyId}
+            </if>
+            <if test="orderId != null and orderId != ''">
+                AND orderId = #{orderId}
             </if>
             <if test="gymId != null and gymId != ''">
                 AND gymId = #{gymId}
@@ -105,6 +119,9 @@
             <if test="historyId != null">
                 historyId,
             </if>
+            <if test="orderId != null">
+                orderId,
+            </if>
             <if test="gymId != null">
                 gymId,
             </if>
@@ -154,6 +171,9 @@
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="historyId != null">
                 #{historyId,jdbcType=VARCHAR},
+            </if>
+            <if test="orderId != null">
+                #{orderId,jdbcType=VARCHAR},
             </if>
             <if test="gymId != null">
                 #{gymId,jdbcType=VARCHAR},
@@ -208,6 +228,9 @@
         <set>
             <if test="historyId != null">
                 historyId = #{historyId,jdbcType=VARCHAR},
+            </if>
+            <if test="orderId != null">
+                orderId = #{orderId,jdbcType=VARCHAR},
             </if>
             <if test="gymId != null">
                 gymId = #{gymId,jdbcType=VARCHAR},

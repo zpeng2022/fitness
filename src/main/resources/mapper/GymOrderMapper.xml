@@ -120,6 +120,38 @@
         </where>
     </select>
 
+    <select id="getCustomerOrderSortWithCreateTime" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"></include>
+        from gym_order
+        <where>
+            deleted=1
+            AND customerId = #{customerId}
+            AND createTime > #{createTime}
+            order by createTime
+        </where>
+    </select>
+
+    <select id="getCustomerOrderSortWithOrderEndTime" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"></include>
+        from gym_order
+        <where>
+            deleted=1
+            AND customerId = #{customerId}
+            AND orderEndTime > #{finalTime}
+            AND #{finalTime} > createTime
+            order by orderEndTime
+        </where>
+    </select>
+
+    <select id="selectOrderStatusByPrimaryKey">
+        select orderStatus
+        from gym_order
+        <where>
+            deleted=1
+            AND orderId = #{orderId}
+        </where>
+    </select>
+
     <select id="selectAllGymOrderByCustomerID" resultMap="BaseResultMap" parameterType="com.yiie.vo.request.GymOrderPageReqVO">
         select <include refid="Base_Column_List"></include>
         from gym_order
@@ -296,6 +328,17 @@
             </if>
         </trim>
     </insert>
+
+
+    <update id="updateOrderStatusWithPrimaryKey">
+        update gym_order
+        <set>
+            <if test="orderStatus != null">
+                orderStatus = #{orderStatus,jdbcType=TINYINT},
+            </if>
+        </set>
+        where orderId = #{orderId,jdbcType=VARCHAR}
+    </update>
 
     <update id="updateByPrimaryKeySelective" parameterType="com.yiie.entity.GymOrder">
         update gym_order

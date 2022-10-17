@@ -23,6 +23,9 @@ public class GymHistoryUpdateReqVO {
     @ApiModelProperty(value = "部门Id")
     private String deptId;
 
+    @ApiModelProperty(value = "部门Id")
+    private String orderId;
+
     @ApiModelProperty(value = "用户名称")
     private String customerName;
 

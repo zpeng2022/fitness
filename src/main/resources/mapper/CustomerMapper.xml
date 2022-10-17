@@ -129,6 +129,13 @@
         and customer_deleted=1
     </select>
 
+    <select id="getCustomerInfoIdById">
+        select customer_info_id
+        from customer
+        where customer_id = #{customer_id}
+        and customer_deleted=1
+    </select>
+
     <select id="getCustomerContactIdsByIds" resultMap="BaseResultMap">
         select customer_contacts_id
         from customer

@@ -101,6 +101,7 @@ public class GymOrderServiceImpl implements GymOrderService {
         gymOrder.setOtherCustomerIdentityCards(vo.getOtherCustomerIdentityCards());
         gymOrder.setOtherCustomerNames(vo.getOtherCustomerNames());
         gymOrder.setOtherCustomerPhones(vo.getOtherCustomerPhones());
+        gymOrder.setCreateTime(new Date());
         SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         try {
             gymOrder.setOrderStartTime(ft.parse(vo.getOrderStartTime()));
@@ -174,7 +175,7 @@ public class GymOrderServiceImpl implements GymOrderService {
                 gymOrderDetail.setOrderId(orderId);
                 gymOrderDetail.setCustomerName((String)customerNames.get(i));
                 gymOrderDetail.setCustomerPhone((String)customerPhones.get(i));
-                gymOrderDetail.setCustomerName((String)customerNames.get(i));
+                gymOrderDetail.setCustomerIdentityCard((String)identityCards.get(i));
                 gymOrderDetail.setIsBlackUser(0);
                 gymOrderDetail.setCreateTime(new Date());
                 gymOrderDetail.setExerciseType(vo.getExerciseType());
@@ -190,7 +191,6 @@ public class GymOrderServiceImpl implements GymOrderService {
                     log.error("time不合法 :{}不合法",vo.getOrderEndTime());
                     e.printStackTrace();
                 }
-
                 int result = gymOrderDetailMapper.insertSelective(gymOrderDetail);
                 if(result != 1){
                     throw new BusinessException(BaseResponseCode.OPERATION_ERRO);
@@ -207,13 +207,26 @@ public class GymOrderServiceImpl implements GymOrderService {
     }
 
     @Override
+    public void cancelGymOrder(GymOrderCancelPageReqVO vo) {
+        int cancelStatus = 2;
+        int result = gymOrderMapper.updateOrderStatusWithPrimaryKey(vo.getOrderId(), cancelStatus);
+        if(result != 1){
+            log.error("cancelGymOrder Failed!", vo.getOrderId());
+            throw new BusinessException(BaseResponseCode.OPERATION_ERRO);
+        }
+    }
+
+    @Override
     public void updateGymOrdersInfo(GymOrderUpdateReqVO vo) {
         GymOrder gymOrder = gymOrderMapper.selectByPrimaryKey(vo.getOrderId());
         if(null == gymOrder){
-            log.error("传入 的 id:{}不合法",vo.getOrderId());
+            log.error("传入 的 id:{}不存在",vo.getOrderId());
             throw new BusinessException(BaseResponseCode.DATA_ERROR);
         }
+        Date createTime = gymOrder.getCreateTime();
         BeanUtils.copyProperties(vo, gymOrder);
+        gymOrder.setDeleted(1);
+        gymOrder.setCreateTime(createTime);
         gymOrder.setUpdateTime(new Date());
         if(vo.getOrderFailComment() != null) gymOrder.setOrderFailComment(vo.getOrderFailComment());
         if(vo.getOrderStatus() != 0) gymOrder.setOrderStatus(vo.getOrderStatus());
@@ -249,7 +262,7 @@ public class GymOrderServiceImpl implements GymOrderService {
                 gymOrderDetail.setOrderId(orderId);
                 gymOrderDetail.setCustomerName((String)customerNames.get(i));
                 gymOrderDetail.setCustomerPhone((String)customerPhones.get(i));
-                gymOrderDetail.setCustomerName((String)customerNames.get(i));
+                gymOrderDetail.setCustomerIdentityCard((String)identityCards.get(i));
                 gymOrderDetail.setIsBlackUser(0);
                 gymOrderDetail.setCreateTime(new Date());
                 gymOrderDetail.setExerciseType(gymOrder.getExerciseType());

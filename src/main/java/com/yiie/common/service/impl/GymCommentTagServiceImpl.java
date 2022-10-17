@@ -87,6 +87,7 @@ public class GymCommentTagServiceImpl implements GymCommentTagService {
             throw new BusinessException(BaseResponseCode.DATA_ERROR);
         }
         BeanUtils.copyProperties(vo,gymCustomTags);
+        gymCustomTags.setDeleted(1);
         gymCustomTags.setUpdateTime(new Date());
         int count = gymCustomTagsMapper.updateByPrimaryKeySelective(gymCustomTags);
         if(count != 1){

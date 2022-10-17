@@ -103,6 +103,7 @@ public class BlackUserServiceImpl implements BlackUserService{
             throw new BusinessException(BaseResponseCode.OPERATION_ADMIN);
         }
         BeanUtils.copyProperties(vo,sysUser);
+        sysUser.setDeleted(1);
         sysUser.setUpdateTime(new Date());
         if(vo.getSex() == null || vo.getSex().equals("")){
             sysUser.setSex(blackuserMapper.getBlackUserInfoByNameByDeptID(vo.getUsername(), sysUser.getDeptID()).getSex());

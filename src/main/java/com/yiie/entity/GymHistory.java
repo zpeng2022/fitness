@@ -17,6 +17,8 @@ public class GymHistory implements Serializable {
      * 所属的机关单位Id, 显示的时候需要
      */
     private String deptId;
+    private String orderId;
+
     private String customerName;
     private String customerPhone;
     private String customerIdentityCard;
@@ -54,6 +56,14 @@ public class GymHistory implements Serializable {
     private Date createTime;
     private Date updateTime;
     private Integer deleted;
+
+    public String getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(String orderId) {
+        this.orderId = orderId == null ? null : orderId.trim();;
+    }
 
     public String getHistoryId() {
         return historyId;
@@ -189,6 +199,7 @@ public class GymHistory implements Serializable {
                 "historyId='" + historyId + '\'' +
                 ", gymId='" + gymId + '\'' +
                 ", deptId='" + deptId + '\'' +
+                ", orderId='" + orderId + '\'' +
                 ", customerName='" + customerName + '\'' +
                 ", customerPhone='" + customerPhone + '\'' +
                 ", customerIdentityCard='" + customerIdentityCard + '\'' +

@@ -33,6 +33,18 @@ public class gymHistoryController {
     @Autowired
     private UserService userService;
 
+    @PostMapping("/H5FitnessCreditHistories")
+    @ApiOperation(value = "线上用户健身历史-信用积分历史-运动历史汇总")
+    @LogAnnotation(title = "历史记录管理",action = "分页线上用户健身历史-信用积分历史-运动历史汇总")
+    public DataResult<PageVO<GymHistory>> H5FitnessCreditHistoriesPageInfo(@RequestBody GymHistoryPageReqVO vo, HttpServletRequest request){
+        DataResult<PageVO<GymHistory>> result= DataResult.success();
+        String userId = JwtTokenUtil.getUserId(request.getHeader(Constant.ACCESS_TOKEN));
+        String deptID = userService.getDeptIdFromUserId(userId);
+        vo.setDeptId(deptID);
+        result.setData(gymHistoryService.pageInfo(vo));
+        return result;
+    }
+
     @PostMapping("/gymHistories")
     @ApiOperation(value = "历史记录接口")
     @LogAnnotation(title = "历史记录管理",action = "分页获取历史记录列表")
