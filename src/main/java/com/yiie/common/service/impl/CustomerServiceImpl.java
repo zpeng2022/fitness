@@ -116,8 +116,10 @@ public class CustomerServiceImpl implements CustomerService {
             log.error("传入 的 id:{}不合法",vo.getCustomer_id());
             throw new BusinessException(BaseResponseCode.DATA_ERROR);
         }
+        String createTime = vo.getCustomer_create_time();
         BeanUtils.copyProperties(vo,sysUser);
         SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        sysUser.setCustomer_create_time(ft.parse(createTime));
         if(vo.getCustomer_birthday() != null) sysUser.setCustomer_birthday(ft.parse(vo.getCustomer_birthday()));
         sysUser.setCustomer_update_time(new Date());
         sysUser.setCustomer_deleted(1);

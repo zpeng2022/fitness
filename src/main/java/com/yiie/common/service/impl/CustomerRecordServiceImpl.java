@@ -60,6 +60,7 @@ public class CustomerRecordServiceImpl implements CustomerRecordService {
         List<GymHistory> customerOfflineHistory = gymHistoryMapper.getCustomerHistoryWithOnlineStateAndTime(customerIdentityCard, 0, finalTime);
         ArrayList<GymHistory> customerOfflineHistoryList = new ArrayList<>(customerOfflineHistory);
         int siz = customerOfflineHistoryList.size();
+        System.out.println("offline history records: " + siz + " ======");
         for(int i = 0; i < siz; i ++){
             GymHistory customerHistory = customerOfflineHistoryList.get(i);
             CustomerRecord customerRecord = new CustomerRecord();
@@ -106,6 +107,8 @@ public class CustomerRecordServiceImpl implements CustomerRecordService {
         int addFitnessScore = 0;
         int addCreditScore = 0;
         siz = customerOnlineHistoryList.size();
+        if(customerOnlineHistory == null) siz = 0;
+        System.out.println("online history records: " + siz + " ======");
         for(int i = 0; i < siz; i ++){
             GymHistory gymHistory = customerOnlineHistoryList.get(i);
             int temFitnessScore = 1;
@@ -160,6 +163,12 @@ public class CustomerRecordServiceImpl implements CustomerRecordService {
         // existOrderIds...
         ArrayList<GymOrder> customerOrderList = new ArrayList<>(customerOrders);
         siz = customerOrderList.size();
+        if(customerOrders == null) siz = 0;
+
+        System.out.println("finalTime: " + finalTime + " ======");
+        System.out.println("order records: " + siz + " ======");
+        int passCount = 0;
+
         for(int i = 0; i < siz; i ++){
             GymOrder gymOrder = customerOrderList.get(i);
             String orderId = gymOrder.getOrderId();
@@ -181,7 +190,11 @@ public class CustomerRecordServiceImpl implements CustomerRecordService {
                 temFitnessScore = 0;
                 Date createTime = gymOrder.getCreateTime();
                 if(createTime.getTime() > maxHistoryTime.getTime()) maxHistoryTime = createTime;
+            }else{
+                continue;
             }
+
+            passCount ++;
             addCreditScore += temCreditScore;
             addFitnessScore += temFitnessScore;
 
@@ -209,6 +222,8 @@ public class CustomerRecordServiceImpl implements CustomerRecordService {
             }
         }
 
+        System.out.println("order records passCount: " + passCount + " ======");
+
 
         // step 4.
         // TODO... check passed Orders with future orderStartTime.
@@ -219,8 +234,10 @@ public class CustomerRecordServiceImpl implements CustomerRecordService {
         List<GymOrder> customerOtherOrders = gymOrderMapper.getCustomerOrderSortWithOrderEndTime(CustomerId, finalTime);
         ArrayList<GymOrder> customerOtherOrdersList = new ArrayList<>(customerOtherOrders);
         siz = customerOtherOrdersList.size();
+        if(customerOtherOrders == null) siz = 0;
+        System.out.println("check passed Orders with future orderStartTime: " + siz);
         for(int i = 0; i < siz; i ++){
-            GymOrder gymOrder = customerOrderList.get(i);
+            GymOrder gymOrder = customerOtherOrdersList.get(i);
             String orderId = gymOrder.getOrderId();
             int orderStatus = gymOrder.getOrderStatus();
             if(orderStatus != 1) continue;
@@ -257,13 +274,17 @@ public class CustomerRecordServiceImpl implements CustomerRecordService {
             }
         }
 
-        // update customer fitness score and credit score.
-        CustomerInfo customerInfo = customerInfoMapper.selectCustomerInfoByPrimaryKey(customerInfoId);
-        int creditTotalScore = customerInfo.getCustomer_credit_point();
-        customerInfo.setCustomer_credit_point(creditTotalScore + addCreditScore);
-        int fitnessTotalScore = customerInfo.getCustomer_fitness_point();
-        customerInfo.setCustomer_fitness_point(fitnessTotalScore + addFitnessScore);
-        customerInfoMapper.updateByPrimaryKeySelective(customerInfo);
+        System.out.println("=======> addCreditScore: " + addCreditScore);
+        System.out.println("=======> addFitnessScore: " + addCreditScore);
+        if(addCreditScore != 0 && addCreditScore != 0){
+            // update customer fitness score and credit score.
+            CustomerInfo customerInfo = customerInfoMapper.selectCustomerInfoByPrimaryKey(customerInfoId);
+            int creditTotalScore = customerInfo.getCustomer_credit_point();
+            customerInfo.setCustomer_credit_point(creditTotalScore + addCreditScore);
+            int fitnessTotalScore = customerInfo.getCustomer_fitness_point();
+            customerInfo.setCustomer_fitness_point(fitnessTotalScore + addFitnessScore);
+            customerInfoMapper.updateByPrimaryKeySelective(customerInfo);
+        }
         return;
     }
 }

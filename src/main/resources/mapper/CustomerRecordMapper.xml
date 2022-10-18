@@ -19,7 +19,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        recordId, isOnline, recordStatus, orderStartTime, orderEndTime, inGymTime, outGymTime, exerciseType, addFitnessScore,
+        recordId, customerId, isOnline, recordStatus, orderStartTime, orderEndTime, inGymTime, outGymTime, exerciseType, addFitnessScore,
         addCreditScore, customerRecordCount, finalRecordTime, deleted
     </sql>
 

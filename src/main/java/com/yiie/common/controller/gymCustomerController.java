@@ -110,12 +110,13 @@ public class gymCustomerController {
             long diff = nowTime.getTime() - finalTime.getTime();
             TimeUnit time = TimeUnit.MINUTES;
             long difference = time.convert(diff, TimeUnit.MILLISECONDS);
-            if(difference > 10){
+            /*if(difference > 10){
                 // hard part: get new records from gymOrder and gymHistory
                 // and store them in our database;
                 // TODO... test...
                 customerRecordService.h5GetNewCustomerRecord(vo.getCustomerId(), finalTime, ++ recordCount);
-            }
+            }*/
+            customerRecordService.h5GetNewCustomerRecord(vo.getCustomerId(), finalTime, ++ recordCount);
         }
         // step 2. return the record according to the pageNum.
         // TODO... test...
