@@ -2,6 +2,7 @@ package com.yiie.common.mapper;
 
 import com.yiie.entity.GymCustomTags;
 import com.yiie.entity.GymOrder;
+import com.yiie.vo.data.SportAndValue;
 import com.yiie.vo.request.GymOrderPageReqVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -30,4 +31,10 @@ public interface GymOrderMapper {
     int updateOrderStatusWithPrimaryKey(@Param("orderId") String orderId, @Param("orderStatus") Integer orderStatus);
     int updateByPrimaryKeySelective(GymOrder gymOrder);
     int deletedGymOrders(@Param("sysUser") GymOrder sysUser, @Param("list") List<String> list);
+
+    List<SportAndValue> getTypeAndValue(String name);
+
+    List<SportAndValue> getAllTypeAndValue();
+
+    List<SportAndValue> getGymPeopleNum();
 }

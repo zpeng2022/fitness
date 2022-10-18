@@ -11,6 +11,7 @@ import com.yiie.enums.BaseResponseCode;
 import com.yiie.exceptions.BusinessException;
 import com.yiie.utils.PageUtils;
 import com.yiie.utils.TokenSettings;
+import com.yiie.vo.data.GymOpenTime;
 import com.yiie.vo.request.GymAddReqVO;
 import com.yiie.vo.request.GymPageReqVO;
 import com.yiie.vo.request.GymSearchNamePageReqVO;
@@ -170,5 +171,25 @@ public class GymServiceImpl implements GymService {
         if(result == 0){
             throw new BusinessException(BaseResponseCode.OPERATION_ERRO);
         }
+    }
+
+    @Override
+    public Gym getById(String gymId) {
+        return gymMapper.selectByPrimaryKey(gymId);
+    }
+
+    @Override
+    public void autoPassBydeptId(String deptId) {
+        gymMapper.autoPassBydeptId(deptId);
+    }
+
+    @Override
+    public List<Gym>  getByName(String name) {
+        return gymMapper.getByName(name);
+    }
+
+    @Override
+    public List<GymOpenTime> getGymOT() {
+        return gymMapper.getGymOT();
     }
 }

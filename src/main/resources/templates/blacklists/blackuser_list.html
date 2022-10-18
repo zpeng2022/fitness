@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<html lang="en" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>禁入人员名单</title>
@@ -103,6 +103,44 @@
 </div>
 <div id="deptTree" style="display: none"></div>
 <div id="roles" class="demo-transfer" style="display: none"></div>
+
+<div class="layui-fluid" style="background-color: white" hidden>
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-header">
+
+                    <div class="layui-btn-container">
+                        <!--<button class="layui-btn layui-btn-danger layui-btn-upload-server" id=""
+                                onclick="clearAll()">
+                            <i class="layui-icon">&#xe640;</i>清空数据
+                        </button>-->
+                        <button class="layui-btn layui-btn-upload"><i
+                                class="layui-icon"></i>选择黑名单文件
+                        </button>
+                        <button class="layui-btn layui-btn-normal layui-btn-upload-server" id="uploadFile">
+                            <i class="layui-icon">&#xe67c;</i>上传黑名单数据
+                        </button>
+                        <form class="layui-form " action="" style="display: inline">
+                            <button class="layui-btn layui-btn-primary" id="btn_cancel">返回</button>
+                        </form>
+                    </div>
+
+                </div>
+
+                <div class="layui-row layui-col-space15">
+
+                    <div class="layui-col-md10">
+                        <table class="layui-table layui-form " id="blackFileList" lay-filter="blackFileTable"
+                               style="margin-top: 0px">
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 </body>
 <script type="text/html" id="toolbar">
     <div class="layui-btn-group" id="search">
@@ -120,6 +158,12 @@
         <button type="button" class="layui-btn layui-btn-normal" lay-event="addNewBlackUser"
                 shiro:hasPermission="sys:blackusers:add">
             <i class="layui-icon">&#xe608;</i> 添加禁入人员
+        </button>
+    </div>
+    <div class="layui-btn-group">
+        <button type="button" class="layui-btn layui-btn-danger" lay-event="loadBlackList"
+                shiro:hasPermission="sys:blackusers:add">
+            <i class="layui-icon">&#xe608;</i> 导入黑名单
         </button>
     </div>
 </script>
@@ -309,6 +353,11 @@
                         loadTable(noAuthorityData);
                     });
                     break;
+                case 'loadBlackList':
+                    $(".title").html("导入黑名单");
+                    $(".blackuser_table_div").hide();
+                    $(".layui-fluid").show();
+                    break;
             }
             ;
         });
@@ -388,7 +437,7 @@
         });
         $("#btn_cancel").click(function () {
             $(".blackuser_table_div").show();
-            $(".operation_blackuser").hide();
+            $(".layui-fluid").hide();
             return false;
         });
         var tipDialog = function (userIds, username) {
@@ -496,6 +545,204 @@
                 }
             })
         }
+
     });
+</script>
+<script type="text/javascript" th:inline="none">
+    /**配置文件导入轨迹点
+     * 1. 协议:要求最终的格式为一个二维数组，与表格的顺序和格式相对应
+     * 2. 扩展添加函数
+     * */
+    var $ = layui.jquery;
+    //全局变量
+    var blackOptions = getTableOption("#blackFileList", "黑名单文件");
+
+    function init() {
+        layui.use(['table'], function () {
+            // 表格初始化 ------------------
+
+            var $ = layui.jquery;
+            var table = layui.table; //表格;
+            data = []
+
+            // 完成表格数据
+            var $ = layui.jquery;
+            blackOptions = getTableOption("#blackFileList", "噪声文件");
+            // console.log(blackOptions)
+            $.extend(blackOptions, {data: data});
+            table.render(blackOptions);
+        });
+    }
+
+    init();
+
+    //获取表格配置项
+    function getTableOption(elelVal, name) {
+        var options = {
+            elem: elelVal
+            , height: 600
+            , title: name
+            , page: true //开启分页
+            , cols: [[ //表头
+                , {field: 'id', align: 'center', title: "ID", width: 100, sort: true}
+                , {field: 'fileName', align: 'center', title: name + '名', width: 240, sort: true}
+                , {field: 'fileStatus', align: 'center', title: '状态', width: 246}
+                , {fixed: 'right', title: '操作', align: 'center', width: 250, align: 'center', toolbar: '#barDemo'}
+            ]],
+            data: []
+        }
+        return options;
+    }
+
+
+    //噪声上传
+    layui.use(['table', 'layer', 'laypage', 'form', 'upload'], function () {
+        var $ = layui.jquery
+            , upload = layui.upload
+            , laypage = layui.laypage //分页
+            , table = layui.table; //表格
+
+        //允许批量上传噪声文件数据
+        var files;
+        var file_index = [];
+        var filesData = blackOptions.data;//存储数据
+        var demoListView = $('#fileList')
+
+            , uploadListIns = upload.render({
+            elem: '.layui-btn-upload' //绑定元素
+            , url: '/sys/uploadBlackFile' //上传接口
+            , multiple: true
+            , accept: 'file'
+            , auto: false
+            , bindAction: '#uploadFile'
+            , before: function (obj) {
+
+            }, choose: function (obj) {//选择文件之后的回调函数
+
+                files = this.files = obj.pushFile(); //将每次选择的文件追加到文件队列
+                obj.preview(function (index, file, result) {
+                    //列表显示文件信息
+                    var fileInfo = {
+                        id: filesData.length + 1,
+                        fileName: file.name,
+                        fileStatus: "等待上传"
+                    };
+                    filesData.push(fileInfo);
+                    $.extend(blackOptions, {data: filesData});
+                    table.render(blackOptions);
+                    //监听工具栏按钮
+                    file_index.push(index);
+                    table.on('tool(blackFileTable)', function (obj_tr) {
+                        var data = obj_tr.data;
+                        console.log("删除的数据；" + JSON.stringify(data));
+                        if (obj_tr.event === 'del') {
+                            layer.confirm('真的删除行么', function (index_tr) {
+                                var index_file = file_index[data.id - 1];
+                                file_index.splice(data.id - 1, 1);
+                                delete files[index_file];//更新文件列表
+                                obj_tr.del();
+                                deleArrayById(filesData, data.id);//更新表格列表
+                                $.extend(blackOptions, {data: filesData});
+                                table.render(blackOptions);
+                                layer.close(index_tr);
+                            });
+                        }
+                    });
+                });
+            }
+            , done: function (res, index, upload) {
+                var data = blackOptions.data;
+                if ((res.operationResult == "SUCCESS")) { //上传成功
+                    var index_i = getindexByContent(file_index, index);
+                    data[parseInt(index_i)].fileStatus = "上传成功";
+                    $.extend(blackOptions, {data: data});
+                    table.render(blackOptions);
+                    //tds.eq(3).html(''); //清空操作
+                    console.log(index);
+                    delete files[index]; //删除文件队列已经上传成功的文件
+                    return;
+                }
+                this.error(res, index, upload);
+                //上传完毕回调
+            }
+            , allDone: function (obj) { //当文件全部被提交后，才触发
+                file_index.splice(0, file_index.length);
+                filesData.splice(0, filesData.length);
+                console.log(files);
+            }
+            , error: function (res, index, upload) {
+                var data = blackOptions.data;
+                //获取下标
+                var index_i = getindexByContent(file_index, index);
+                data[parseInt(index_i)].fileStatus = "上传失败";
+                $.extend(blackOptions, {data: data});
+                table.render(blackOptions);
+            }
+        });
+
+    });
+
+
+    function deleArrayById(list, id) {
+        //首先id是顺序排列的
+        list.splice(id - 1, 1);
+
+        for (var i = 0; i < list.length; i++) {
+            if (list[i].id != null)
+                list[i].id = i + 1;
+
+        }
+    }
+
+    function getindexByContent(list, content) {
+        for (var i = 0; i < list.length; i++) {
+            if (list[i] == content)
+                return i;
+        }
+    }
+
+    //数据清空
+    function clearAll() {
+        $.ajax({
+            //请求方式
+            type: 'POST',
+            //路径
+            url: '/clear',
+            data: "",
+            crossDomain: true,
+            //返回的数据类型
+            dataType: "json",
+            success: function (data) {
+                var $ = layui.jquery, layer = layui.layer;
+
+                if ((data.operationResult == "SUCCESS")) {
+                    init();
+                    layerOpen("数据已清除");
+                } else {
+                    layerOpen("数据清除失败");
+                }
+            },
+            error: function () {
+                layerOpen("数据清除失败");
+            }
+
+        });
+
+    }
+
+    function layerOpen(msessage) {
+        layer.open({
+            offset: 1 //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+            , content: '<div style="padding: 20px 100px;">' + msessage + '</div>'
+            , btn: '关闭全部'
+            , btnAlign: 'c' //按钮居中
+            , shade: 0 //不显示遮罩
+            , yes: function () {
+                layer.closeAll();
+            }
+        });
+    }
+
+
 </script>
 </html>

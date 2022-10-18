@@ -104,6 +104,28 @@
         </form>
     </div>
 </div>
+<div class="panel panel-default response_gymComment" hidden>
+    <div class="panel-heading title" style="text-align: center"></div>
+    <div class="layui-card-body">
+        <form class="layui-form " action="" lay-filter="" style="width: 700px;margin-top: 10px">
+            <input name="commentId" hidden/>
+
+            <div class="layui-form-item">
+                <div class="layui-form-label ">回复评论</div>
+                <div class="layui-input-block">
+                    <input type="commentAnswer" name="commentAnswer" placeholder="回复评论" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button type="submit" class="layui-btn" lay-submit="" id="response" lay-filter="">回复</button>
+                    <button class="layui-btn layui-btn-primary" id="btn_cancel">返回</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
 <div class="gymComment_table_div">
     <div id="searchParam" shiro:hasPermission="sys:gymComment:list">
         <div class="layui-form-item">
@@ -158,6 +180,8 @@
     </div>
 </script>
 <script type="text/html" id="tool">
+    <a class="layui-btn layui-btn-xs" lay-event="read" shiro:hasPermission="sys:gymComment:update">已读</a>
+    <a class="layui-btn layui-btn-xs" lay-event="response" shiro:hasPermission="sys:gymComment:update">回复</a>
     <a class="layui-btn layui-btn-xs" lay-event="edit" shiro:hasPermission="sys:gymComment:update">编辑</a>
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del" shiro:hasPermission="sys:gymComment:deleted">删除</a>
 </script>
@@ -355,12 +379,44 @@
                     $(".operation_gymComment input[name=commentAnswer]").val(data.commentAnswer);
                     form.render(); //更新全部
                     break;
+                case 'read':
+                    var commentId = data.commentId;
+                    var username = data.commentCustomerName;
+                    read(commentId,username);
+                    break;
+                case 'response':
+                    $(".gymComment_table_div").hide();
+                    $(".response_gymComment").show();
+                    $(".title").html("回复评论");
+                    $(".response_gymComment input[name=commentId]").val(data.commentId);
+                    $(".response_gymComment input[name=commentAnswer]").val(data.commentAnswer);
+                   /* var commentId = data.commentId;
+                    var commentAnswer = data.commentAnswer;
+                    console.log("回复信息："+data.commentId+"-"+data.commentAnswer)*/
+                    form.render(); //更新全部
+                    // response(commentId,commentAnswer);
+                    break;
             }
         });
         $("#btn_cancel").click(function () {
             $(".gymComment_table_div").show();
             $(".operation_gymComment").hide();
             return false;
+        });
+        $("#response").click(function () {
+            var commentId=$(".response_gymComment input[name=commentId]").val();
+            var commentAnswer=$(".response_gymComment input[name=commentAnswer]").val();
+            var str={"commentId":commentId,"commentAnswer":commentAnswer}
+            console.log("回复："+str)
+            CoreUtil.sendAjax("/sys/responseComment", JSON.stringify(str), function (res) {
+                layer.msg(res.msg);
+                $(".layui-laypage-btn").click();
+              /*  $(".gymComment_table_div").show();
+                $(".response_gymComment").hide();*/
+                // return false;
+            }, "POST", false, function (res) {
+                layer.msg("抱歉！您暂无回复评论的权限");
+            });
         });
         var tipDialog = function (userIds, username) {
             layer.open({
@@ -372,6 +428,38 @@
                         $(".layui-laypage-btn").click();
                     }, "DELETE", false, function (res) {
                         layer.msg("抱歉！您暂无删除用户的权限");
+                    });
+                }
+            });
+        };
+        var read = function (commentId,username) {
+            console.log("已读功能")
+            layer.open({
+                content: '确定要已读' + username + "的评论么?",
+                yes: function (index, layero) {
+                    layer.close(index); //如果设定了yes回调，需进行手工关闭
+                    CoreUtil.sendAjax("/sys/readComment", JSON.stringify(commentId), function (res) {
+                        // console.log("返回信息："+res.msg)
+                        layer.msg(res.msg);
+                        $(".layui-laypage-btn").click();
+                    }, "POST", false, function (res) {
+                        layer.msg("抱歉！您暂无已读评论的权限");
+                    });
+                }
+            });
+        };
+        var response = function (commentId,commentAnswer) {
+            console.log("回复评论功能")
+            layer.open({
+                content: "确定要回复评论么?",
+                yes: function (index, layero) {
+                    layer.close(index); //如果设定了yes回调，需进行手工关闭
+                    CoreUtil.sendAjax("/sys/responseComment", JSON.stringify(commentId,commentAnswer), function (res) {
+                        // console.log("返回信息："+res.msg)
+                        layer.msg(res.msg);
+                        $(".layui-laypage-btn").click();
+                    }, "POST", false, function (res) {
+                        layer.msg("抱歉！您暂无回复评论的权限");
                     });
                 }
             });

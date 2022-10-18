@@ -130,4 +130,22 @@ public class GymCommentServiceImpl implements GymCommentService {
             throw new BusinessException(BaseResponseCode.OPERATION_ERRO);
         }
     }
+
+    @Override
+    public void readGymComments(GymComments gymComments) {
+//        System.out.print("修改读取状态："+gymComments.toString()+"\n");
+        gymCommentsMapper.updateByPrimaryKeySelective(gymComments);
+    }
+
+    @Override
+    public GymComments getByCommentId(String commentId) {
+//        System.out.print("获取评论："+commentId+"\n");
+        return gymCommentsMapper.selectByPrimaryKey(commentId);
+    }
+
+    @Override
+    public void readGymCommentsById(String commentId) {
+//        System.out.print("修改读取状态ById："+commentId+"\n");
+        gymCommentsMapper.readGymCommentsById(commentId);
+    }
 }

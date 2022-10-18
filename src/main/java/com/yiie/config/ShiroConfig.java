@@ -70,6 +70,17 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("/sys/user/token", "anon");
         filterChainDefinitionMap.put("/index/**", "anon");
         filterChainDefinitionMap.put("*.html", "anon");
+        // 后端 统计页面
+        filterChainDefinitionMap.put("/sys/loadPicture", "anon");
+        filterChainDefinitionMap.put("/sys/loadPicture2", "anon");
+        filterChainDefinitionMap.put("/sys/uploadBlackFile", "anon");
+        filterChainDefinitionMap.put("/sys/loadGymPicture", "anon");
+        filterChainDefinitionMap.put("/index/loadGymPicture", "anon");
+        filterChainDefinitionMap.put("/sys/gym/getPicture/**", "anon");
+        //开发所有静态资源
+        filterChainDefinitionMap.put("/static/**", "anon");
+        //图片上传
+        filterChainDefinitionMap.put("/sys/user/token", "anon");
         // 配置H5页面的
         filterChainDefinitionMap.put("/sys/H5Gyms", "anon");
         filterChainDefinitionMap.put("/sys/H5SearchGyms", "anon");

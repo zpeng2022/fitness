@@ -44,8 +44,12 @@ public class CustomAccessControlFilter extends AccessControlFilter {
             System.out.println(HttpContextUtils.isAjaxRequest(request));
             log.info(request.getMethod());
             log.info(request.getRequestURL().toString());
+            System.out.print("CustomAccessControlFilter-47 获取token:\n");
+            System.out.print("request:"+request.toString()+"\n");
+            System.out.print("request:"+request.getHeader(Constant.ACCESS_TOKEN).toString()+"\n");
             String token=request.getHeader(Constant.ACCESS_TOKEN);
             if(StringUtils.isEmpty(token)){
+                System.out.print("token为空\n");
                 throw new BusinessException(BaseResponseCode.TOKEN_ERROR);
             }
             CustomPasswordToken customPasswordToken=new CustomPasswordToken(token);
@@ -74,6 +78,7 @@ public class CustomAccessControlFilter extends AccessControlFilter {
             }
             return false;
         }catch (Exception e) {
+            System.out.print("CustomAccessControlFilter.java:81 报错：e="+e.toString());
             if(HttpContextUtils.isAjaxRequest(request)){
                 if(e.getCause() instanceof BusinessException){
                     BusinessException exception= (BusinessException) e.getCause();

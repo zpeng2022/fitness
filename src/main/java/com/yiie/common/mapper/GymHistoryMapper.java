@@ -2,10 +2,20 @@ package com.yiie.common.mapper;
 
 import com.yiie.entity.GymCustomTags;
 import com.yiie.entity.GymHistory;
+import com.yiie.vo.data.DateSpan;
+import com.yiie.vo.data.GymPeopleMonth;
+import com.yiie.vo.data.PeopleSportTime;
+import com.yiie.vo.data.SportAndValue;
 import com.yiie.vo.request.GymHistoryPageReqVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
+import com.yiie.vo.data.DateSpan;
+import com.yiie.vo.data.GymPeopleMonth;
+import com.yiie.vo.data.PeopleSportTime;
+import com.yiie.vo.data.SportAndValue;
+import javax.xml.crypto.Data;
+import java.util.Date;
 
 import java.util.Date;
 import java.util.List;
@@ -21,4 +31,14 @@ public interface GymHistoryMapper {
     // TODO... test...
     List<GymHistory> getCustomerHistoryWithOnlineStateAndTime(@Param("customerIdentityCard") String customerIdentityCard, @Param("isOnlineUser") Integer isOnlineUser, @Param("createTime") Date createTime);
     int deletedGymHistories(@Param("sysUser") GymHistory sysUser, @Param("list") List<String> list);
+
+    List<SportAndValue> getTypeAndValue(String name);
+
+    List<String> getIdentity(String gymId);
+
+    List<DateSpan> getOrderDateSpan(String gymId);
+
+    List<PeopleSportTime> getPeopleSportTimes(String gymId);
+
+    List<GymPeopleMonth> getPeopleNumMonth(Date monthAgo, Date nowTime);
 }

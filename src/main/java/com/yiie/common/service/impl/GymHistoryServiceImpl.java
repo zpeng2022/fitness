@@ -11,6 +11,10 @@ import com.yiie.enums.BaseResponseCode;
 import com.yiie.exceptions.BusinessException;
 import com.yiie.utils.PageUtils;
 import com.yiie.utils.TokenSettings;
+import com.yiie.vo.data.DateSpan;
+import com.yiie.vo.data.GymPeopleMonth;
+import com.yiie.vo.data.PeopleSportTime;
+import com.yiie.vo.data.SportAndValue;
 import com.yiie.vo.request.*;
 import com.yiie.vo.response.PageVO;
 import lombok.extern.slf4j.Slf4j;
@@ -149,5 +153,30 @@ public class GymHistoryServiceImpl implements GymHistoryService {
         if(result == 0){
             throw new BusinessException(BaseResponseCode.OPERATION_ERRO);
         }
+    }
+
+    @Override
+    public List<SportAndValue> getTypeAndValue(String name) {
+        return gymHistoryMapper.getTypeAndValue(name);
+    }
+
+    @Override
+    public List<String> getIdentity(String gymId) {
+        return gymHistoryMapper.getIdentity(gymId);
+    }
+
+    @Override
+    public List<DateSpan> getOrderDateSpan(String gymId) {
+        return gymHistoryMapper.getOrderDateSpan(gymId);
+    }
+
+    @Override
+    public List<PeopleSportTime> getPeopleSportTimes(String gymId) {
+        return gymHistoryMapper.getPeopleSportTimes(gymId);
+    }
+
+    @Override
+    public List<GymPeopleMonth> getPeopleNumMonth(Date monthAgo, Date nowTime) {
+        return gymHistoryMapper.getPeopleNumMonth(monthAgo,nowTime);
     }
 }

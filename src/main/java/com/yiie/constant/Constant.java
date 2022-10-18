@@ -1,5 +1,5 @@
 package com.yiie.constant;
-
+import io.swagger.models.auth.In;
 /**
  * Time：2020-1-2 9:26
  * Email： yiie315@163.com
@@ -9,6 +9,9 @@ package com.yiie.constant;
  * @version：1.0.0
  */
 public class Constant {
+    /*gym场馆照片默认背景地址*/
+    public static final int gym_pictureNum=3;
+    public static final String gym_defaultPicture="https://bigman1718.oss-cn-hangzhou.aliyuncs.com/gymPicture/default/default2.png";
     /**
      * 正常token
      */

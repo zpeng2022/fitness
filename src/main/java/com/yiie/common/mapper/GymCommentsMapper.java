@@ -19,4 +19,6 @@ public interface GymCommentsMapper {
     int insertSelective(GymComments gymComments);
     int updateByPrimaryKeySelective(GymComments gymComments);
     int deletedGymComments(@Param("sysUser") GymComments sysUser, @Param("list") List<String> list);
+
+    void readGymCommentsById(String commentId);
 }

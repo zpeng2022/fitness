@@ -1,6 +1,9 @@
 server:
   port: 8088
 spring:
+  servlet:
+    multipart:
+      max-request-size: 10MB
   application:
     name: pgman
   datasource:
@@ -52,6 +55,9 @@ spring:
 #    static-path-pattern: /static/**
 mybatis:
   mapper-locations: classpath:mapper/*.xml
+  configuration:
+    #配置mybatis-log-plugin
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 logging:
   file: ${logging.path}/${spring.application.name}.log
   path: logs

@@ -11,6 +11,7 @@ import com.yiie.enums.BaseResponseCode;
 import com.yiie.exceptions.BusinessException;
 import com.yiie.utils.PageUtils;
 import com.yiie.utils.TokenSettings;
+import com.yiie.vo.data.SportAndValue;
 import com.yiie.vo.request.*;
 import com.yiie.vo.response.PageVO;
 import lombok.extern.slf4j.Slf4j;
@@ -291,5 +292,21 @@ public class GymOrderServiceImpl implements GymOrderService {
         if(result == 0){
             throw new BusinessException(BaseResponseCode.OPERATION_ERRO);
         }
+    }
+
+    @Override
+    public List<SportAndValue> getTypeAndValue(String name) {
+        System.out.print("getTypeAndValue:"+name);
+        return gymOrderMapper.getTypeAndValue(name);
+    }
+
+    @Override
+    public List<SportAndValue> getAllTypeAndValue() {
+        return gymOrderMapper.getAllTypeAndValue();
+    }
+
+    @Override
+    public List<SportAndValue> getGymPeopleNum() {
+        return gymOrderMapper.getGymPeopleNum();
     }
 }
