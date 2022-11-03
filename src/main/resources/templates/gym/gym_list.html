@@ -214,6 +214,7 @@
     </div>
 </script>
 <script type="text/html" id="tool">
+    <a class="layui-btn layui-btn-xs" lay-event="closeGym" shiro:hasPermission="sys:gym:update">闭馆</a>
     <a class="layui-btn layui-btn-xs" lay-event="picture" shiro:hasPermission="sys:gym:update">上传场地图片</a>
     <a class="layui-btn layui-btn-xs" lay-event="edit" shiro:hasPermission="sys:gym:update">编辑</a>
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del" shiro:hasPermission="sys:gym:deleted">删除</a>
@@ -661,23 +662,12 @@
                     break;
                 case 'picture':
                     console.log("跳转图上传："+data.gymId)
-                    /*$(".gym_table_div").hide();
-                    $(".picture_gym").show();
-                    $(".title").html("上传场地图片");
-                    $(".picture_gym input[name=gymId]").val(data.gymId);
-                    var Pnums=0;
-                    var Ppath=data.gymPicturesPath;
-                    console.log("该场地图片路径:"+Ppath);
-                    for(var i=0;i<Ppath.length;i++){
-                        // console.log(Ppath.substring(i,i+1))
-                        if(Ppath.substring(i,i+1)==";")
-                            Pnums++;
-                    }
-                    console.log("图片个数:"+Pnums);
-                    $("#pictureNums").html(Pnums);
-                    form.render(); //更新全部*/
                     //直接进行页面跳转
                     toPictureLoad(data.gymId);
+                    break;
+                case 'closeGym':
+                    console.log("闭馆："+data.gymId+":"+data.gymName)
+                    closeGym(data.gymId,data.gymName,data.deptId)
                     break;
             }
         });
@@ -715,6 +705,23 @@
                         $(".layui-laypage-btn").click();
                     }, "POST", false, function (res) {
                         layer.msg("抱歉！您暂无删除用户的权限");
+                    });
+                }
+            });
+        };
+        var closeGym = function (gymId,gymName,deptId) {
+            var gymIdAndDeptId=[];
+            gymIdAndDeptId.push(gymId);
+            gymIdAndDeptId.push(deptId);
+            layer.open({
+                content: '确定关闭场馆:' + gymName + "么?",
+                yes: function (index, layero) {
+                    layer.close(index); //如果设定了yes回调，需进行手工关闭
+                    CoreUtil.sendAjax("/sys/closeGym", JSON.stringify(gymIdAndDeptId), function (res) {
+                        layer.msg(res.msg);
+                        $(".layui-laypage-btn").click();
+                    }, "POST", false, function (res) {
+                        layer.msg("抱歉！您暂无闭馆权限");
                     });
                 }
             });

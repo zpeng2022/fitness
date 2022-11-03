@@ -11,7 +11,7 @@ import com.yiie.enums.BaseResponseCode;
 import com.yiie.exceptions.BusinessException;
 import com.yiie.utils.PageUtils;
 import com.yiie.utils.TokenSettings;
-import com.yiie.vo.data.GymOpenTime;
+import com.yiie.vo.data.GymOpenTimeVO;
 import com.yiie.vo.request.GymAddReqVO;
 import com.yiie.vo.request.GymPageReqVO;
 import com.yiie.vo.request.GymSearchNamePageReqVO;
@@ -189,7 +189,12 @@ public class GymServiceImpl implements GymService {
     }
 
     @Override
-    public List<GymOpenTime> getGymOT() {
+    public List<GymOpenTimeVO> getGymOT() {
         return gymMapper.getGymOT();
+    }
+
+    @Override
+    public List<String> selectAllName() {
+        return gymMapper.selectAllName();
     }
 }

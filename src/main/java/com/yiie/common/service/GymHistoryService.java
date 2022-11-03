@@ -1,10 +1,7 @@
 package com.yiie.common.service;
 
 import com.yiie.entity.GymHistory;
-import com.yiie.vo.data.DateSpan;
-import com.yiie.vo.data.GymPeopleMonth;
-import com.yiie.vo.data.PeopleSportTime;
-import com.yiie.vo.data.SportAndValue;
+import com.yiie.vo.data.*;
 import com.yiie.vo.request.*;
 import com.yiie.vo.response.PageVO;
 
@@ -26,4 +23,5 @@ public interface GymHistoryService {
     List<PeopleSportTime> getPeopleSportTimes(String gymId);
 
     List<GymPeopleMonth> getPeopleNumMonth(Date monthAgo, Date nowTime);
+    List<OnlineNum> getIsOnlineNum(String gymId);
 }

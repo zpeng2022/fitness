@@ -1,5 +1,7 @@
 package com.yiie.constant;
+
 import io.swagger.models.auth.In;
+
 /**
  * Time：2020-1-2 9:26
  * Email： yiie315@163.com
@@ -11,7 +13,10 @@ import io.swagger.models.auth.In;
 public class Constant {
     /*gym场馆照片默认背景地址*/
     public static final int gym_pictureNum=3;
-    public static final String gym_defaultPicture="https://bigman1718.oss-cn-hangzhou.aliyuncs.com/gymPicture/default/default2.png";
+    //    public static final String gym_defaultPicture="https://bigman1718.oss-cn-hangzhou.aliyuncs.com/gymPicture/default/default2.png";
+    public static final String gym_defaultPicture="default2.png";
+    public static final String gym_defaultPath="/pic/";
+    public static final String gym_defaultPicturePath="D:\\研究生\\学习\\2022暑假项目\\预约平台项目\\整体项目\\2022917\\fitness\\src\\main\\resources\\static\\pic\\";
     /**
      * 正常token
      */

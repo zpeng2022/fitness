@@ -3,7 +3,7 @@ package com.yiie.vo.data;
 import lombok.Data;
 
 @Data
-public class GymOpenTime {
+public class GymOpenTimeVO {
     private String gymId;
     private String gymName;
     private String monday;

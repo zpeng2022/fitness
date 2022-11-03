@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:v-on="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>数智驾驶舱</title>
@@ -16,45 +16,59 @@
  -->
     <script src=" https://cdn.staticfile.org/echarts/4.3.0/echarts.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/4.3.0/echarts.min.js"></script>
+    <!--联想搜索-->
+    <script src="/static/js/jquery-3.4.1/jquery-3.4.1.min.js"></script>
 
     <!--    <script src="/static/test/echarts.js"></script>-->
     <script src="/static/echart/echarts.min.js"></script>
+    <style>
+        .show {
+            position: absolute;
+            width: 300px;
+            min-height: 100px;
+            height: auto;
+            border: 1px solid #1a0099;
+            z-index: 999;
+            border-top: 0;
+            background-color: pink;
+            display: none;
+        }
+    </style>
 </head>
 <body>
-<div class="layui-containe co layui-anim" style="z-index:999;width:100%;border-bottom: 0px solid lawngreen">
+<div class="layui-containe co layui-anim" style="z-index:999;width:100%;border-bottom: 0px solid lawngreen;z-index: 999">
 
     <div class="layui-form" action="" lay-filter="" style="width: 100%">
         <div class="layui-form-item">
-<!--            <div class="layui-form-label" style="font-weight: bolder;font-size: 20px">搜索场馆:</div>-->
-            <div class="search" style="display:flex;width: 100%">
-                <div style="width: 10%;line-height:40px;font-weight: bolder;font-size: 20px;margin-left: 20px">
+            <!--            <div class="layui-form-label" style="font-weight: bolder;font-size: 20px">搜索场馆:</div>-->
+            <div class="search" style="display:flex;width: 100%;z-index: 999">
+                <div style="width: 10%;line-height:40px;font-weight: bolder;font-size: 20px;margin-left: 20px;">
                     <p style="">搜索场馆:</p>
                 </div>
-                <div style="width: 320px">
-                    <input type="text" name="gymname" placeholder="输入场馆名" value="杭州电子科技大学" autocomplete="off" class="layui-input" style="width: 300px">
+                <div style="width: 320px;">
+                    <input type="text" name="gymname" id="searchName" placeholder="输入场馆名"
+                           value="" autocomplete="off" class="layui-input" style="width: 300px">
+
+                    <div id="show" class="show"></div>
+
                 </div>
+
                 <div>
                     <button type="" class="layui-btn" lay-submit="" id="search" lay-filter="">搜索</button>
                 </div>
             </div>
         </div>
     </div>
-    <!--<div class="layui-form-item">
-        <div class="top1_1 layui-inline" style="margin-left: 2%">
-            <span style="font-weight: bolder;font-size: 20px">搜索场馆:</span>
-            <input type="text">
-            <button style="cursor:pointer;background-color: deepskyblue;border: 3px solid skyblue;border-radius: 5px;margin: 10px">查询</button>
-        </div>
-        <div class="top1_2 layui-inline" style="margin-left: 12%">
-            <h1 class="headTitle"></h1>
-        </div>
-    </div>-->
 </div>
-<div class="layui-container 1" id="gymname" style="width:90%;min-height:100px;margin-left: 5px">
+
+<div class="layui-container 1" id="gymname" style="width:90%;min-height:100px;margin-left: 5px;z-index: 99">
     <h1 class="headTitle" style="font-weight: bolder;font-size: 30px;"></h1>
 </div>
 <!--    <div class="layui-container co" id="main"></div>-->
 <!--    <div class="layui-container co" id="huan1"></div>-->
+
+<div class="layui-container 1" id="huan4" style="width:100%;min-height:400px;margin-top:5%">
+</div>
 
 <div class="layui-container 1" id="huan1" style="width:100%;min-height:400px;margin-top:5%">
 
@@ -83,6 +97,7 @@
 
 </div>
 </body>
+<!--输入下拉框提示-->
 <script>
     var layer = layui.layer;
     var $ = jQuery = layui.jquery;
@@ -94,8 +109,45 @@
     var fontSize_legend=20;
     var legendMarginTop=10;
     var tuMarginTop=40;
+
+    //联想搜索
+    $("#searchName").mousedown(function () {
+        //2.获取输入的用户名
+        let gymName = $("#searchName").val();
+        //3.判断用户名是否为空
+        if(gymName == null || gymName == "") {
+            //4.如果为空，将联想框隐藏
+            $("#show").hide();
+            return;
+        }
+        //5.如果不为空，发送AJAX请求。并将数据显示到联想框
+        console.log("联想查询")
+        $.ajax({
+            //请求的资源路径
+            url:"/sys/searchGymName",
+            //请求参数
+            data:{"gymName":gymName},
+            //请求方式
+            type:"GET",
+            //响应数据形式
+            dataType:"json",
+            //请求成功后的回调函数
+            success:function (data) {
+                //将返回的数据显示到show的div
+                console.log("data:"+data)
+                let names = "";
+                for(let i = 0; i < data.length; i++) {
+                    names += "<div>"+data[i].name+"</div>";
+                }
+                $("#show").html(names);
+                $("#show").show();
+            }
+        });
+    });
+
     function InitChart(gymname) {
         console.log("初始化图表，先清空");
+        var myChart9 = echarts.init(document.getElementById('huan4'));
         var myChart1 = echarts.init(document.getElementById('huan1'));
         var myChart2 = echarts.init(document.getElementById('huan2'));
         var myChart3 = echarts.init(document.getElementById('zhu1'));
@@ -105,6 +157,7 @@
         var myChart7 = echarts.init(document.getElementById('zhu3'));
         var myChart8 = echarts.init(document.getElementById('zhu4'));
         myChart1.clear();
+        myChart9.clear();
         myChart2.clear();
         myChart3.clear();
         myChart4.clear();
@@ -112,12 +165,64 @@
         myChart6.clear();
         myChart7.clear();
         myChart8.clear();
-        echarts.init(document.getElementById('zhu4')).clear;
+        // echarts.init(document.getElementById('zhu4')).clear;
         CoreUtil.sendAjax("/sys/containData/"+gymname,null,function (res) {
             if(res.data != null){
                 console.log("ajax请求完成:"+res.data.gymName)
                 console.log(res.data)
                 $(".headTitle").html("场馆名称："+res.data.gymName)
+
+                //图9上下线人数比绘制
+                var t9_s1=[]
+                var t9_s2=['名称','数值']
+                t9_s1.push(t9_s2)
+                for(var i=0;i<res.data.onlineNums.length;i++){
+                    t9_s2=[]
+                    if(res.data.onlineNums[i].isOnlineUser==0)
+                        t9_s2.push("线下")
+                    else
+                        t9_s2.push("线上")
+                    t9_s2.push(res.data.onlineNums[i].num)
+                    t9_s1.push(t9_s2)
+                }
+                // console.log("开始绘图..........")
+                option9 = {
+                    title: {
+                        text: '线上线下人数比',
+                        textStyle: {
+                            fontSize:fontSize_Title,
+                        }
+                    },
+                    legend: {
+                        top: legendMarginTop+'%',
+                        "textStyle": {
+                            "fontSize": fontSize_legend
+                        },
+                    },
+                    tooltip: {
+                        trigger: 'axis',
+                        showContent: true
+                    },
+                    dataset: {
+                        source:t9_s1
+                    },
+                    series: [
+                        {
+                            type: 'pie',
+                            id: 'pie',
+                            radius: '50%',
+                            center: ['50%', '60%'],
+                            emphasis: {
+                                focus: 'self'
+                            },
+                            label: {
+                                formatter: '{b}: {@数值} ({d}%)'
+                            },
+                        }
+                    ]
+                };
+                myChart9.setOption(option9);
+
                 //图1绘制
                 var tu1data=res.data.ageList;/*
                 console.log("tu1data:"+tu1data[0].sport)
@@ -299,7 +404,7 @@
                 var tu4value=[];
                 console.log(tu4data)
                 for(var i=0;i<tu4data.length;i++){
-                    tu4name.push(tu4data[i].name);
+                    tu4name.push(tu4data[i].sport);
                     tu4value.push(tu4data[i].value);
                 }
                 option4 = {
@@ -464,33 +569,33 @@
                     tu7data_2.push(tu7data[i].num);
                 }
                 option7 = {
-                        title: {
-                            text: '近一个月场地人数',
-                            textStyle: {
-                                fontSize:fontSize_Title,
-                            }
-                        },
-                        xAxis: {
-                            type: 'category',
-                            data: tu7data_1
-                        },
-                        yAxis: {
-                            type: 'value'
-                        },
-                        series: [
-                            {
-                                itemStyle: {
-                                    color: 'rgba(0, 180, 180, 0.5)'
-                                },
-                                data: tu7data_2,
-                                type: 'bar',
-                                showBackground: true,
-                                backgroundStyle: {
-                                    color: 'rgba(180, 180, 180, 0.2)'
-                                },
-                            }
-                        ]
-                    };
+                    title: {
+                        text: '近一个月场地人数',
+                        textStyle: {
+                            fontSize:fontSize_Title,
+                        }
+                    },
+                    xAxis: {
+                        type: 'category',
+                        data: tu7data_1
+                    },
+                    yAxis: {
+                        type: 'value'
+                    },
+                    series: [
+                        {
+                            itemStyle: {
+                                color: 'rgba(0, 180, 180, 0.5)'
+                            },
+                            data: tu7data_2,
+                            type: 'bar',
+                            showBackground: true,
+                            backgroundStyle: {
+                                color: 'rgba(180, 180, 180, 0.2)'
+                            },
+                        }
+                    ]
+                };
                 myChart7.setOption(option7);
 
                 //图8

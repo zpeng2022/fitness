@@ -11,15 +11,15 @@
     <link rel="stylesheet" href="/css/form.css">
     <script src="/layui/layui.all.js"></script>
     <script src="/js/util.js"></script>
-   <!-- <link rel="stylesheet" href="/layuimini/lib/layui-v2.6.3/css/layui.css" media="all">
-    <link rel="stylesheet" href="/layuimini/lib/font-awesome-4.7.0/css/font-awesome.min.css" media="all">
-    <link rel="stylesheet" href="/layuimini/css/public.css" media="all">-->
+    <!-- <link rel="stylesheet" href="/layuimini/lib/layui-v2.6.3/css/layui.css" media="all">
+     <link rel="stylesheet" href="/layuimini/lib/font-awesome-4.7.0/css/font-awesome.min.css" media="all">
+     <link rel="stylesheet" href="/layuimini/css/public.css" media="all">-->
 
-<!--    <script src="/layui/layui.js" charset="utf-8"></script>-->
+    <!--    <script src="/layui/layui.js" charset="utf-8"></script>-->
     <!--下面的script不要放body下面，全部放这里，以及放在layui文件夹-->
     <script type="text/javascript" src="/layui/my/vue.js"></script>
     <script src="/layui/my/lay-config.js?v=1.0.4" charset="utf-8"></script>
-<!--    <script src="/layui/my/jquery-3.4.1/jquery-3.4.1.min.js"></script>-->
+    <!--    <script src="/layui/my/jquery-3.4.1/jquery-3.4.1.min.js"></script>-->
     <script src="https://cdn.bootcdn.net/ajax/libs/axios/0.19.2/axios.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
     <style>
@@ -64,49 +64,49 @@
         }
     </style>-->
     <style>
-    .wrap{
-        float: left;
-        width: 30%;
-        height: auto;
-        /*background-color: #00FF00;*/
-        margin: 10px;
-    }
-    .diceng{
-        /*overflow: hidden;*/
-        width: 100%;
-        height: auto;
-        float: left;
-    }
-    img{
-        background-color: gainsboro;
-        width: 100%;
-        height: 150px;
-        object-fit: cover;
-    }
-    .zhezhao{
-        width: 100%;
-        height: 30px;
-        /*background-color:gainsboro;*/
-    }
-    .message{
-        width: 100%;
-        height: 100%;
-        line-height: 30px;
-    }
-    .message>div{
-        text-align: center;
-        width: 100%;
-        height: auto;
-        float: left;
-        /*background-color: gainsboro;*/
-        vertical-align: center;
-    }
-    button{
-        margin-top: 5%;
-        float: left;
-        display: flex;
-        /*margin-left: 15%;*/
-    }
+        .wrap{
+            float: left;
+            width: 30%;
+            height: auto;
+            /*background-color: #00FF00;*/
+            margin: 10px;
+        }
+        .diceng{
+            /*overflow: hidden;*/
+            width: 100%;
+            height: auto;
+            float: left;
+        }
+        img{
+            background-color: gainsboro;
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+        }
+        .zhezhao{
+            width: 100%;
+            height: 30px;
+            /*background-color:gainsboro;*/
+        }
+        .message{
+            width: 100%;
+            height: 100%;
+            line-height: 30px;
+        }
+        .message>div{
+            text-align: center;
+            width: 100%;
+            height: auto;
+            float: left;
+            /*background-color: gainsboro;*/
+            vertical-align: center;
+        }
+        button{
+            margin-top: 5%;
+            float: left;
+            display: flex;
+            /*margin-left: 15%;*/
+        }
     </style>
 </head>
 
@@ -117,49 +117,50 @@
         <div id="gymIdC" hidden>[[${gymId}]]</div>
     </fieldset>
     <div class="layuimini-main" id="pictureList" >
-    <!--        <input type="hidden" name="gymId"/>-->
-    <div class="wrap layui-form layuimini-form" v-for="(picture, index) in pictures" :key="picture.id">
-        <input type="hidden" name="pictureId" :value="picture.id"/>
-        <div class="diceng" v-cloak>
-            <img :src="picture.path">
-            <div class="zhezhao" style="text-align: center">
-                <div class="message" v-cloak>
-                    <div class="bookName">图片 {{picture.id}}</div>
-<!--                    <div class="authorName">{{picture.path}}</div>-->
+        <!--        <input type="hidden" name="gymId"/>-->
+        <div class="wrap layui-form layuimini-form" v-for="(picture, index) in pictures" :key="picture.id">
+            <input type="hidden" name="pictureId" :value="picture.id"/>
+            <div class="diceng" v-cloak>
+                <img :src="picture.path">
+                <!--            <img src="/pic/uu.JPG">-->
+                <div class="zhezhao" style="text-align: center">
+                    <div class="message" v-cloak>
+                        <div class="bookName">图片 {{picture.id}}</div>
+                        <!--                    <div class="authorName">{{picture.path}}</div>-->
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="connect" v-cloak>
-<!--            <a :href="picture.path" target="_blank"><button type='button' class='layui-btn  layui-bg-green'>下载</button></a>-->
-            <!--<button type="button" class="layui-btn  layui-bg-green" :onclick="'upload('+picture.id+')'">上传</button>
-            <button type="button" class="layui-btn" id="test3"><i class="layui-icon"></i>上传文件</button>-->
-            <form class="layui-form " action="/index/loadGymPicture" method="post" enctype="multipart/form-data" lay-filter="" style="width: 100%;left: 0%">
-                <input name="gymId" :value="picture.gymId" hidden/>
-                <input name="pictureId" :value="picture.id" hidden/>
+            <div class="connect" v-cloak>
+                <!--            <a :href="picture.path" target="_blank"><button type='button' class='layui-btn  layui-bg-green'>下载</button></a>-->
+                <!--<button type="button" class="layui-btn  layui-bg-green" :onclick="'upload('+picture.id+')'">上传</button>
+                <button type="button" class="layui-btn" id="test3"><i class="layui-icon"></i>上传文件</button>-->
+                <form class="layui-form " action="/index/loadGymPicture" method="post" enctype="multipart/form-data" lay-filter="" style="width: 100%;left: 0%">
+                    <input name="gymId" :value="picture.gymId" hidden/>
+                    <input name="pictureId" :value="picture.id" hidden/>
 
-                <div class="layui-form-item">
-                    <div class="layui-form-label ">选择文件</div>
-                    <div class="layui-input-block">
-                        <input type="file" name="picture" id="pictureC" class="layui-input" onchange="checkFileNum(this,1,3,picture.id)" multiple>
-                        <tip>请上传1-3张图片，<!--已有
+                    <div class="layui-form-item">
+                        <div class="layui-form-label ">选择文件</div>
+                        <div class="layui-input-block">
+                            <input type="file" name="picture" id="pictureC" class="layui-input" onchange="checkFileNum(this,1,3,picture.id)" multiple>
+                            <tip>请上传1-3张图片，<!--已有
                             <p style="display: inline;font-weight: bolder;color: deeppink" id="pictureNums"></p>
                             张图片，若上传数量不能超过3张。-->
-                            <br>
-                            若已存在图片，超出总数量的图片将向后对图片进行顺序覆盖
-                        <br>不选择文件直接上传等同于删除该图片
-                        </tip>
+                                <br>
+                                若已存在图片，超出总数量的图片将向后对图片进行顺序覆盖
+                                <br>不选择文件直接上传等同于删除该图片
+                            </tip>
+                        </div>
                     </div>
-                </div>
 
-                <div class="layui-form-item">
-                    <div class="layui-input-block">
-                        <button type="submit" class="layui-btn" lay-submit="" :id="'loadP'+picture.id" lay-filter="">{{picture.path=="https://bigman1718.oss-cn-hangzhou.aliyuncs.com/gymPicture/default/default2.png"?'上传':'删除'}}</button>
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button type="submit" class="layui-btn" lay-submit="" :id="'loadP'+picture.id" lay-filter="">{{picture.path=="/pic/default2.png"?'上传':'删除'}}</button>
+                        </div>
                     </div>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
     </div>
-</div>
 </div>
 
 <script>

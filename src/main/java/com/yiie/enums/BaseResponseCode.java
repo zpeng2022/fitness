@@ -9,7 +9,9 @@ package com.yiie.enums;
  * @version：1.0.0
  */
 public enum BaseResponseCode implements ResponseCodeInterface {
-    // 评论状态.
+
+    CLOSE(-3,"今日场馆已闭馆"),
+
     READ_YES(-1,"该评论已为已读状态"),
     GYM_NONEXISTENT(-2,"不存在该场馆信息"),
 

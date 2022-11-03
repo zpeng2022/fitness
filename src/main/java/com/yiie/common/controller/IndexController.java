@@ -1,6 +1,6 @@
 package com.yiie.common.controller;
 
-import com.sun.org.apache.xpath.internal.operations.Mod;
+//import com.sun.org.apache.xpath.internal.operations.Mod;
 import com.yiie.aop.annotation.LogAnnotation;
 import com.yiie.common.service.GymService;
 import com.yiie.constant.Constant;
@@ -42,141 +42,8 @@ public class IndexController {
     @Autowired
     private GymService gymService;
 
-
-   /* @PostMapping("/loadPicture")
-    @ApiOperation(value = "场地图片接口")
-    @LogAnnotation(title = "场馆图片",action = "上传图片")
-    public String uploadPhoto(@RequestParam("picture") MultipartFile file, @RequestParam("gymId") String gymId,Model model){
-        System.out.print("进入上传\n");
-        System.out.print("上传文件："+file+"\n");
-        System.out.print("上传id："+gymId+"\n");
-        model.addAttribute("gymId",gymId);
-        if (file.isEmpty()) {
-            System.out.print( "文件为空");
-//            throw new IllegalArgumentException("未上传文件");
-            model.addAttribute("loadPicture",3);
-            return "gym/gym_list";
-        }
-        // 获取文件名
-        String fileName = file.getOriginalFilename();
-        System.out.println("上传的文件名为：" + fileName);
-        // 获取文件的后缀名
-        String suffixName = fileName.substring(fileName.lastIndexOf("."));
-        System.out.println("上传的后缀名为：" + suffixName);
-
-        //获取Id
-        String fileId=fileName.substring(0,fileName.indexOf('.')).replaceAll("_","");
-        System.out.println("gymId：" + gymId);
-        Gym gym=gymService.getById(gymId);
-        if(gym!=null){
-            System.out.print("该gym信息存在:"+gym);
-        }else {
-            System.out.print("该gym信息不存在");
-            model.addAttribute("loadPicture",2);
-            return "gym/gym_list";
-        }
-
-        // 文件上传后的路径
-        String picturePath="D:\\研究生\\学习\\2022暑假项目\\预约平台项目\\gymPicture\\";
-        File dest = new File(picturePath + fileName);
-        // 检测是否存在目录
-        if (!dest.getParentFile().exists()) {
-            dest.getParentFile().mkdirs();
-        }
-        try {
-            file.transferTo(dest);
-            System.out.print( "图片保存成功");
-            GymUpdateReqVO gymUpdateReqVO=new GymUpdateReqVO();
-            BeanUtils.copyProperties(gym,gymUpdateReqVO);
-            gymUpdateReqVO.setGymPicturesPath(picturePath + fileName);
-            gymService.updateGymInfo(gymUpdateReqVO);
-            System.out.print("图片路径加载入数据库");
-        } catch (IllegalStateException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        model.addAttribute("loadPicture",1);
-        return "gym/gym_list";
-    }
-    @PostMapping("/loadPicture2")
-    @ApiOperation(value = "场地图片接口")
-    @LogAnnotation(title = "场馆图片",action = "上传图片")
-    public String uploadPhoto2(@RequestParam("picture") MultipartFile[] files, @RequestParam("gymId") String gymId,Model model){
-        System.out.print("进入上传\n");
-        Gym gym=gymService.getById(gymId);
-        String path=gym.getGymPicturesPath();
-        int pictureNum=0;
-        for(char pc:path.toCharArray()){
-            if(pc==';')
-                pictureNum++;
-        }
-        System.out.print("当前存在图片数："+pictureNum);
-        if(gym!=null){
-            System.out.print(gymId+" :该gym信息存在: "+gym);
-        }else {
-            System.out.print("该gym信息不存在");
-            model.addAttribute("loadPicture",2);
-            return "gym/gym_list";
-        }
-
-        for(MultipartFile file:files){
-            System.out.print("上传文件："+file+"\n");
-            model.addAttribute("gymId",gymId);
-            if (file.isEmpty()) {
-                System.out.print( "文件为空");
-//            throw new IllegalArgumentException("未上传文件");
-                model.addAttribute("loadPicture",3);
-                return "gym/gym_list";
-            }
-            // 获取文件名
-            String fileName = file.getOriginalFilename();
-            System.out.println("上传的文件名为：" + fileName);
-            // 获取文件的后缀名
-            String suffixName = fileName.substring(fileName.lastIndexOf("."));
-            System.out.println("上传的后缀名为：" + suffixName);
-
-            //获取Id
-//            String fileId=fileName.substring(0,fileName.indexOf('.')).replaceAll("_","");
-
-            // 文件上传后的路径
-            String picturePath="D:\\研究生\\学习\\2022暑假项目\\预约平台项目\\gymPicture\\";
-            File dest = new File(picturePath + fileName);
-            // 检测是否存在目录
-            if (!dest.getParentFile().exists()) {
-                dest.getParentFile().mkdirs();
-            }
-            try {
-                file.transferTo(dest);
-                System.out.print( "图片保存成功\n");
-                if(pictureNum==3){
-                    System.out.print( "已满，裁剪\n");
-                    path=path.substring(path.indexOf(";")+1);//裁剪第一个
-                    path+=picturePath+fileName+";";//加上新的
-                    System.out.print( "path:"+path+"\n");
-                }else{
-                    path+=picturePath+fileName+";";//加上新的
-                    pictureNum++;
-                    System.out.print( "path:"+path+"\n");
-                }
-            } catch (IllegalStateException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        GymUpdateReqVO gymUpdateReqVO=new GymUpdateReqVO();
-        BeanUtils.copyProperties(gym,gymUpdateReqVO);
-        gymUpdateReqVO.setGymPicturesPath(path);
-        gymService.updateGymInfo(gymUpdateReqVO);
-        System.out.print("图片路径加载入数据库:"+path);
-        model.addAttribute("loadPicture",1);
-        return "gym/gym_list";
-    }*/
-
-
     @GetMapping("/toPictureLoad/{gymId}")
-    public String toPictureLoad(@PathVariable("gymId") String gymId, Model model){
+    public String toPictureLoad(@PathVariable("gymId") String gymId,Model model){
         System.out.print("跳转gymId:"+gymId+"\n");
         model.addAttribute("gymId",gymId);
         return "/gym/pictureLoad";
@@ -205,6 +72,7 @@ public class IndexController {
             }
         }
         System.out.print("文件集："+files.length+"\n");
+
         for(MultipartFile file:files){
             if(file.isEmpty()){
                 System.out.print("删除："+id+"\n");
@@ -218,13 +86,31 @@ public class IndexController {
             }
             System.out.print("图片非空\n");
             OSS oss=new OSS();
-            String picPath=oss.gymPictureLoad(file);
-            System.out.print("图片存储地址:"+path+"\n");
+            String picPath=oss.saveLocal(file);
+            System.out.print("图片存储地址:"+picPath+"\n");
             if(id-1>=existence.size()){
                 existence.add(picPath);
             }else
                 existence.set(id-1,picPath);//根据id替换新地址
             id++;
+            // 文件上传后的路径
+//            String fileName = file.getOriginalFilename();
+//            String picturePath="D:\\研究生\\学习\\2022暑假项目\\预约平台项目\\整体项目\\2022917\\fitness\\src\\main\\resources\\static\\pic\\";
+            System.out.print("picPath:"+picPath+"\n");
+            String originPath=System.getProperty("user.dir")+"\\src\\main\\resources\\static\\pic\\";
+            File dest = new File(originPath+picPath);
+            // 检测是否存在目录
+            if (!dest.getParentFile().exists()) {
+                dest.getParentFile().mkdirs();
+            }
+            try {
+                file.transferTo(dest);
+                System.out.print( "图片保存成功");
+            } catch (IllegalStateException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         String newPath="";
         for(String s:existence){
@@ -239,6 +125,7 @@ public class IndexController {
         gymService.updateGymInfo(gymUpdateReqVO);
         return "/gym/pictureLoad";
     }
+
 
     @GetMapping("/login")
     public String login(){
@@ -261,9 +148,36 @@ public class IndexController {
         return "users/user_edit";
     }
 
+    @GetMapping("/monitor")
+    public String monitor(){
+        return "gym/monitor";
+    }
+
     @GetMapping("/menus")
     public String menusList(){
         return "menus/menu_list";
+    }
+
+    @GetMapping("/allGymsDate")
+    public String allGym(){
+//        return "show/contain";
+        return "gym/allGymsData";
+    }
+    @GetMapping("/allGymsDateFull")
+    public String allGymFull(){
+//        return "show/contain";
+        return "gym/aGD_full";
+    }
+
+    @GetMapping("/contain")
+    public String contain(){
+//        return "show/contain";
+        return "show/sz_main";
+    }
+    @GetMapping("/gymData_full")
+    public String sz_main(){
+//        return "show/contain";
+        return "gym/gymData";
     }
 
     @GetMapping("/blacklists")

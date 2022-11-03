@@ -1,0 +1,1096 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>数智驾驶舱</title>
+    <script src="/lanhu/allGymsData/flexible.js"></script>
+    <link rel="stylesheet" type="text/css" href="/lanhu/allGymsData/common.css" />
+    <link rel="stylesheet" type="text/css" href="/lanhu/allGymsData/index.css" />
+
+    <link rel="stylesheet" href="/layui/css/layui.css"  media="all">
+    <link rel="stylesheet" href="/css/form.css">
+
+    <link rel="stylesheet" href="/css/febs.css">
+
+    <script src="/layui/layui.all.js"></script>
+    <script src="/js/util.js"></script>
+    <script src=" https://cdn.staticfile.org/echarts/4.3.0/echarts.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/4.3.0/echarts.min.js"></script>
+    <!--联想搜索-->
+    <script src="/static/js/jquery-3.4.1/jquery-3.4.1.min.js"></script>
+    <script src="/static/echart/echarts.min.js"></script>
+</head>
+<style>
+    body{
+        background-color: rgb(0,8,54);
+        transform: scale(0.65);
+        position: absolute;
+        top: 0%;
+    }
+</style>
+<body>
+<div class="page flex-col">
+    <div id="full" onclick="getFull()">
+        <!--放大键-->
+    </div>
+    <script>
+        function getFull() {
+            window.open("/index/allGymsDateFull");
+        }
+    </script>
+    <div class="box_1 flex-col">
+        <div class="group_1 flex-col">
+            <div class="section_1 flex-col">
+                <div class="text-wrapper_1 flex-col">
+                    <span class="text_1">体育场馆预约驾驶舱</span>
+                </div>
+                <div class="block_1 flex-col">
+                    <div class="box_2 flex-row justify-between">
+                        <div class="block_2 flex-col">
+                            <span class="text_2">所有场馆运动项目占比</span>
+                            <div class="layui-container 5" id="huan3" style="width:100%;height:350px;margin-top: 5%">
+                            </div>
+                        </div>
+                        <div class="block_3 flex-col">
+                            <div class="text-wrapper_2 flex-row">
+                                <span class="text_13">全市场馆开放时长分析</span>
+                            </div>
+                            <div class="layui-container 7" id="zhu4" style="width:90%;height:300px;margin-top: 5%">
+
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="box_17 flex-col">
+                        <div class="text-wrapper_3 flex-row">
+                            <span class="text_31">近一个月场地人数</span>
+                        </div>
+                        <div class="layui-container 6" id="zhu3" style="width:100%;height:400px;margin-top: 0%">
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    var layer = layui.layer;
+    var $ = jQuery = layui.jquery;
+    var form = layui.form;
+    var element = layui.element;
+
+    var gymname=$("input[name=gymname]").val();
+    var fontSize_Title=30;
+    var fontSize_legend=25;
+    var legendMarginTop=10;
+    var tuMarginTop=40;
+
+    //联想搜索
+    $("#searchName").mousedown(function () {
+        //2.获取输入的用户名
+        let gymName = $("#searchName").val();
+        //3.判断用户名是否为空
+        if(gymName == null || gymName == "") {
+            //4.如果为空，将联想框隐藏
+            $("#show").hide();
+            return;
+        }
+        //5.如果不为空，发送AJAX请求。并将数据显示到联想框
+        console.log("联想查询")
+        $.ajax({
+            //请求的资源路径
+            url:"/sys/searchGymName",
+            //请求参数
+            data:{"gymName":gymName},
+            //请求方式
+            type:"GET",
+            //响应数据形式
+            dataType:"json",
+            //请求成功后的回调函数
+            success:function (data) {
+                //将返回的数据显示到show的div
+                console.log("data:"+data)
+                let names = "";
+                for(let i = 0; i < data.length; i++) {
+                    names += "<div>"+data[i].name+"</div>";
+                }
+            }
+        });
+    });
+
+    function InitChart(gymname) {
+        console.log("初始化图表，先清空");
+        // var myChart9 = echarts.init(document.getElementById('huan4'));
+        // var myChart1 = echarts.init(document.getElementById('huan1'));
+        // var myChart2 = echarts.init(document.getElementById('huan2'));
+        // var myChart3 = echarts.init(document.getElementById('zhu1'));
+        // var myChart4 = echarts.init(document.getElementById('zhu2'));
+        // var myChart5 = echarts.init(document.getElementById('zhe1'));
+        var myChart6 = echarts.init(document.getElementById('huan3'));
+        var myChart7 = echarts.init(document.getElementById('zhu3'));
+        var myChart8 = echarts.init(document.getElementById('zhu4'));
+        // myChart1.clear();
+        // myChart9.clear();
+        // myChart2.clear();
+        // myChart3.clear();
+        // myChart4.clear();
+        // myChart5.clear();
+        myChart6.clear();
+        myChart7.clear();
+        myChart8.clear();
+        // echarts.init(document.getElementById('zhu4')).clear;
+        CoreUtil.sendAjax("/sys/containData/"+gymname,null,function (res) {
+            if(res.data != null){
+                console.log("ajax请求完成:"+res.data.gymName)
+                console.log(res.data)
+
+                $(".headTitle").html("场馆名称："+res.data.gymName)
+                $("#gymName").html(res.data.gymName)
+                //图9上下线人数比绘制
+                var t9_s1=[]
+                var t9_s2=['名称','数值']
+                t9_s1.push(t9_s2)
+                for(var i=0;i<res.data.onlineNums.length;i++){
+                    t9_s2=[]
+                    if(res.data.onlineNums[i].isOnlineUser==0)
+                        t9_s2.push("线下")
+                    else
+                        t9_s2.push("线上")
+                    t9_s2.push(res.data.onlineNums[i].num)
+                    t9_s1.push(t9_s2)
+                }
+                // console.log("开始绘图..........")
+                option9 = {
+                    title: {
+                        text: '线上线下人数比',
+                        textStyle: {
+                            fontSize:fontSize_Title,
+                        }
+                    },
+                    legend: {
+                        top: legendMarginTop+'%',
+                        "textStyle": {
+                            "fontSize": fontSize_legend
+                        },
+                    },
+                    tooltip: {
+                        trigger: 'axis',
+                        showContent: true
+                    },
+                    dataset: {
+                        source:t9_s1
+                    },
+                    series: [
+                        {
+                            type: 'pie',
+                            id: 'pie',
+                            radius: '50%',
+                            center: ['50%', '60%'],
+                            emphasis: {
+                                focus: 'self'
+                            },
+                            label: {
+                                formatter: '{b}: {@数值} ({d}%)'
+                            },
+                        }
+                    ]
+                };
+                // myChart9.setOption(option9);
+
+                //图1绘制
+                var tu1data=res.data.ageList;/*
+                console.log("tu1data:"+tu1data[0].sport)
+                console.log("tu1data:"+tu1data[0].value)*/
+                var t1_s1=[]
+                var t1_s2={};
+                for(var i=0;i<tu1data.length;i++){
+                    t1_s2={"name":tu1data[i].sport,"value":tu1data[i].value}
+                    t1_s1.push(t1_s2)
+                }
+                var tu1 = [t1_s1];
+                option1 = {
+                    title: {
+                        // text: '预约成员分析',
+                        textStyle: {
+                            fontSize:fontSize_Title,
+                        }
+                    },
+                    legend: {
+                        top: legendMarginTop+'%',
+                        left: 'center',
+                        "textStyle": {
+                            "fontSize": fontSize_legend,
+                            color:'#ffffff'
+                        },
+                    },
+                    color:['#37FFC9','rgb(0,132,255)','rgb(25,214,255)','rgb(255,231,119)'],
+                    series: tu1.map(function (data, idx) {
+                        var top = idx * 33.3;
+                        return {
+                            type: 'pie',
+                            radius: [60, 80],
+                            top: tuMarginTop + '%',
+                            height: '30%',
+                            // minAngle:5,
+                            avoidLabelOverlap: true,//防止标签重叠
+                            startAngle:170, //起始角度
+                            left: 'center',
+                            center:['50%','60%'],
+                            width: 1000,
+                            itemStyle: {
+                                borderColor: '#fff',
+                                borderWidth: 1
+                            },
+                            label: {
+                                alignTo: 'edge',
+                                // formatter: '{@}：{@value}\n{d} %',
+                                formatter: '{b}: {@数值}\n {d}%',
+                                minMargin: 10,
+                                edgeDistance: 20,//标签与饼图距离
+                                lineHeight: 25,
+                                rich: {
+                                    time: {
+                                        color: '#999'
+                                    }
+                                },
+                                "textStyle": {
+                                    "fontSize": 20
+                                },
+                            },
+                            labelLine: {
+                                length: 20,
+                                length2: 50,
+                                maxSurfaceAngle: 80
+                            },
+                            labelLayout: function (params) {
+                                const isLeft = params.labelRect.x < myChart.getWidth() / 2;
+                                const points = params.labelLinePoints;
+                                // Update the end point.
+                                points[2][0] = isLeft
+                                    ? params.labelRect.x
+                                    : params.labelRect.x + params.labelRect.width;
+                                return {
+                                    labelLinePoints: points
+                                };
+                            },
+                            data: data
+                        };
+                    })
+                };
+                // myChart1.setOption(option1);
+
+                //图二绘制
+                var t2_s1=[]
+                var t2_s2=['名称','数值']
+                t2_s1.push(t2_s2)
+                for(var i=0;i<res.data.evList.length;i++){
+                    t2_s2=[]
+                    t2_s2.push(res.data.evList[i].sport)
+                    t2_s2.push(res.data.evList[i].value)
+                    t2_s1.push(t2_s2)
+                }
+                // console.log(sportandvalue.length)
+                // console.log(s1)
+                console.log("开始绘图..........")
+                option2 = {
+                    title: {
+                        // text: '运动人数占比',
+                        textStyle: {
+                            fontSize:fontSize_Title,
+                        }
+                    },
+                    legend: {
+                        top: legendMarginTop+'%',
+                        "textStyle": {
+                            "fontSize": fontSize_legend,
+                            "color":"#ffffff"
+                        },
+                    },
+                    tooltip: {
+                        trigger: 'axis',
+                        showContent: true
+                    },
+                    dataset: {
+                        source:t2_s1
+                        /*
+                            // ['product', '2012', '2013', '2014', '2015', '2016', '2017'],
+                            ['足球', 56.5],
+                            ['篮球', 30],
+                            ['乒乓球', 40.1],
+                            ['棒球',10],
+                            ['羽毛球',100]*/
+
+                    },
+                    color:['#37FFC9','rgb(0,132,255)','rgb(25,214,255)','rgb(255,231,119)'],
+                    // xAxis: { type: 'category' },
+                    // yAxis: { gridIndex: 0 },
+                    // grid: {},
+                    series: [
+                        {
+                            type: 'pie',
+                            id: 'pie',
+                            radius: '40%',
+                            center: ['55%', '60%'],
+                            emphasis: {
+                                focus: 'self'
+                            },
+                            labelLine:{
+                                normal:{
+                                    length:35
+                                }
+                            },
+                            label: {
+                                formatter: '{b}: {@数值} \n({d}%)',
+                                minMargin: 20,
+                                edgeDistance: 30,//标签与饼图距离
+                                lineHeight: 25,
+                                "textStyle": {
+                                    "fontSize": 20
+                                },
+                            },
+                        }
+                    ]
+                };
+                // myChart2.setOption(option2);
+
+                //图三绘制
+
+                var tu3data=res.data.orderTimeList,
+                    option3 = {
+                        title: {
+                            // text: '场地预约时间分布',
+                            textStyle: {
+                                fontSize:fontSize_Title,
+                            }
+                        },
+                        xAxis: {
+                            axisLabel: {
+                                textStyle: {
+                                    fontSize: '17',
+                                },
+                            },
+                            axisLine: {
+                                lineStyle: {
+                                    color: 'rgb(4,189,195)',
+                                    width: 2, //这里是为了突出显示加上的
+                                }
+                            },
+                            splitLine:{ //修改背景线条样式
+                                show:false,//是否展示
+                                lineStyle:{
+                                    color:"red",//线条颜色
+                                    type:"dashed"//线条样式，默认是实现，dashed是虚线
+                                }
+                            },
+                            type: 'category',
+                            data: ['8:00', '9:00', '10:00', '11:00','12:00', '13:00','14:00', '15:00','16:00', '17:00','18:00']
+                        },
+                        yAxis: {
+                            name:"小时",
+                            nameTextStyle :{
+                                fontSize: 20
+                            },
+                            axisLabel: {
+                                textStyle: {
+                                    fontSize: '20',
+                                },
+                            },
+                            axisLine: {
+                                lineStyle: {
+                                    color: 'rgb(4,189,195)',
+                                    width: 2, //这里是为了突出显示加上的
+                                }
+                            },
+                            splitLine:{ //修改背景线条样式
+                                show:false,//是否展示
+                                lineStyle:{
+                                    color:"red",//线条颜色
+                                    type:"dashed"//线条样式，默认是实现，dashed是虚线
+                                }
+                            },
+                            type: 'value'
+                        },
+                        series: [
+                            {
+                                label: {
+                                    formatter: "{c}"+"小时",
+                                    position: "top",
+                                    show: true,
+                                    textStyle: {
+                                        fontWeight: "bolder",
+                                        fontSize: "17",
+                                        color: "rgb(0,235,214)"
+                                    }
+                                },
+                                itemStyle: {
+                                    barBorderRadius: [2, 2, 0, 0], //柱体圆角
+                                    color: new echarts.graphic.LinearGradient(
+                                        //前四个参数用于配置渐变色的起止位置，这四个参数依次对应 右下左上 四个方位。也就是从右边开始顺时针方向。
+                                        //通过修改前4个参数，可以实现不同的渐变方向
+                                        /*第五个参数则是一个数组，用于配置颜色的渐变过程。
+                                          每项为一个对象，包含offset和color两个参数
+                                        */
+                                        0, 1, 0, 0, [{//代表渐变色从正上方开始
+                                            offset: 0, //offset范围是0~1，用于表示位置，0是指0%处的颜色
+                                            color: 'rgb(1,163,248)'
+                                        }, //柱图渐变色
+                                            {
+                                                offset: 1, //指100%处的颜色
+                                                color: 'rgb(0,235,214)'
+                                            }
+                                        ]
+                                    ),
+                                },
+                                data: tu3data,
+                                type: 'bar',
+                                showBackground: true,
+                                backgroundStyle: {
+                                    color: 'rgba(180, 180, 180, 0.2)'
+                                },
+                            }
+                        ]
+                    };
+                // myChart3.setOption(option3);
+
+                //图4绘制
+                var tu4data=res.data.sportRank;
+                var tu4name=[];
+                var tu4value=[];
+                console.log(tu4data)
+                for(var i=0;i<tu4data.length;i++){
+                    tu4name.push(tu4data[i].sport);
+                    tu4value.push(tu4data[i].value);
+                }
+                option4 = {
+                    title: {
+                        // text: '运动排行榜',
+                        textStyle: {
+                            fontSize:fontSize_Title,
+                        }
+                    },
+                    tooltip: {
+                        trigger: 'axis',
+                        axisPointer: {
+                            // Use axis to trigger tooltip
+                            type: 'shadow' // 'shadow' as default; can also be 'line' or 'shadow'
+                        }
+                    },
+                    /*legend: {
+                      "textStyle": {
+                        "fontSize": fontSize_legend,
+                        color:'#ffffff'
+                      },},*/
+                    grid: {
+                        left: '3%',
+                        right: '4%',
+                        bottom: '3%',
+                        containLabel: true
+                    },
+                    xAxis: {
+                        type: 'value',
+                        axisLabel: {
+                            textStyle: {
+                                fontSize: '17',
+                            },
+                        },
+                        axisLine: {
+                            lineStyle: {
+                                color: 'rgb(4,189,195)',
+                                width: 2, //这里是为了突出显示加上的
+                            }
+                        },
+                        splitLine:{ //修改背景线条样式
+                            show:false,//是否展示
+                            lineStyle:{
+                                color:"red",//线条颜色
+                                type:"dashed"//线条样式，默认是实现，dashed是虚线
+                            }
+                        },
+                    },
+                    yAxis: {
+                        type: 'category',
+                        data: tu4name,
+                        axisLabel: {
+                            textStyle: {
+                                fontSize: '20',
+                            },
+                        },
+                        axisLine: {
+                            lineStyle: {
+                                color: 'rgb(4,189,195)',
+                                width: 2, //这里是为了突出显示加上的
+                            }
+                        },
+                        splitLine:{ //修改背景线条样式
+                            show:false,//是否展示
+                            lineStyle:{
+                                color:"red",//线条颜色
+                                type:"dashed"//线条样式，默认是实现，dashed是虚线
+                            }
+                        },
+                    },
+                    series: [
+                        {
+                            name: '排行榜',
+                            type: 'bar',
+                            stack: 'total',
+                            label: {
+                                formatter: "{c}"+"小时",
+                                position: "right",
+                                show: true,
+                                textStyle: {
+                                    fontWeight: "bolder",
+                                    fontSize: "17",
+                                    color: "rgb(0,235,214)"
+                                }
+                            },
+                            emphasis: {
+                                focus: 'series'
+                            },
+                            itemStyle: {
+                                barBorderRadius: [2, 2, 0, 0], //柱体圆角
+                                color: new echarts.graphic.LinearGradient(
+                                    //前四个参数用于配置渐变色的起止位置，这四个参数依次对应 右下左上 四个方位。也就是从右边开始顺时针方向。
+                                    //通过修改前4个参数，可以实现不同的渐变方向
+                                    /*第五个参数则是一个数组，用于配置颜色的渐变过程。
+                                      每项为一个对象，包含offset和color两个参数
+                                    */
+                                    0, 0, 1, 0, [{//代表渐变色从正上方开始
+                                        offset: 0, //offset范围是0~1，用于表示位置，0是指0%处的颜色
+                                        color: 'rgb(1,163,248)'
+                                    }, //柱图渐变色
+                                        {
+                                            offset: 1, //指100%处的颜色
+                                            color: 'rgb(0,235,214)'
+                                        }
+                                    ]
+                                ),
+                            },
+                            data: tu4value
+                        },
+                    ]
+                };
+                // myChart4.setOption(option4);
+
+                //图5绘制
+                var tu5data=res.data.todayPeoples;
+                var totalPeople=0;
+                for(var tp=0;tp<tu5data.length;tp++){
+                    totalPeople+=tu5data[i];
+                }
+                totalPeople=totalPeople.toString();
+                // totalPeople="985";
+                var numContext="<span class=\"text_13\">当日总人数</span>\n";
+                for(var i=0;i<totalPeople.length;i++){
+                    var nnn=totalPeople.substring(i,i+1);
+                    console.log("nnn"+nnn)
+                    numContext+="                  <div class=\"text-wrapper_2 flex-col\">\n" +
+                        "                  <span class=\"text_14\">"+nnn+"</span>\n" +
+                        "                  </div>\n";
+                }
+                numContext+="<span class=\"text_17\">人</span>\n";
+                $("#totalNum").html(numContext);
+                option5 = {
+                    title: {
+                        // text: '今日人数变化',
+                        textStyle: {
+                            fontSize:fontSize_Title,
+                        }
+                    },
+                    xAxis: {
+                        axisLine: {
+                            lineStyle: {
+                                color: 'rgb(4,189,195)',
+                                width: 2, //这里是为了突出显示加上的
+                            }
+                        },
+                        splitLine:{ //修改背景线条样式
+                            show:false,//是否展示
+                            lineStyle:{
+                                color:"red",//线条颜色
+                                type:"dashed"//线条样式，默认是实现，dashed是虚线
+                            }
+                        },
+                        type: 'category',
+                        axisLabel: {
+                            textStyle: {
+                                fontSize: '14',
+                            },
+                        },
+                        data: ['8:00', '9:00', '10:00', '11:00','12:00', '13:00','14:00', '15:00','16:00', '17:00','18:00']
+                    },
+                    yAxis: {
+                        axisLine: {
+                            lineStyle: {
+                                color: 'rgb(4,189,195)',
+                                width: 2, //这里是为了突出显示加上的
+                            }
+                        },
+                        splitLine:{ //修改背景线条样式
+                            show:true,//是否展示
+                            lineStyle:{
+                                color:"gray",//线条颜色
+                                type:"dashed"//线条样式，默认是实现，dashed是虚线
+                            }
+                        },
+                        type: 'value',
+                        axisLabel: {
+                            textStyle: {
+                                fontSize: '17',
+                            },
+                        }
+                    },
+                    series: [
+                        /*{
+                          data: tu5data,
+                          type: 'line',
+                          itemStyle: {
+                            color: 'rgb(4,189,195)',
+                          },
+                        }*/
+                        {
+                            name: 'Line 1',
+                            type: 'line',
+                            smooth: true,//变为曲线 默认false折线
+                            stack: 'Total',
+                            smooth: true,
+                            lineStyle: {
+                                width: 0
+                            },
+                            showSymbol: false,
+                            areaStyle: {
+                                normal: {
+                                    color: {
+                                        x: 0,
+                                        y: 0,
+                                        x2: 0,
+                                        y2: 1,
+                                        colorStops: [
+                                            {
+                                                offset: 0.1,
+                                                color: 'rgb(2,241,250)' // 0% 处的颜色
+                                            },
+                                            {
+                                                offset: 0.5,
+                                                color: 'rgba(2,241,250, 0.3)' // 0% 处的颜色
+                                            },
+                                            {
+                                                offset: 0.7,
+                                                color: 'rgba(2,241,250, 0.1)' // 0% 处的颜色
+                                            },
+                                            {
+                                                offset: 0.9,
+                                                color: 'rgba(2,241,250, 0.1)' // 100% 处的颜色
+                                            }
+                                        ],
+                                        globalCoord: false // 缺省为 false
+                                    }
+                                }
+                            },
+                            emphasis: {
+                                focus: 'series'
+                            },
+                            data: tu5data
+                        },
+                    ]
+                };
+                // myChart5.setOption(option5);
+
+                //图6绘制
+                var tu6data=res.data.evList;/*
+                console.log("tu1data:"+tu1data[0].sport)
+                console.log("tu1data:"+tu1data[0].value)*/
+                var t6_s1=[]
+                var t6_s2={};
+                for(var i=0;i<tu6data.length;i++){
+                    t6_s2={"name":tu6data[i].sport,"value":tu6data[i].value}
+                    t6_s1.push(t6_s2)
+                }
+                var tu6 = [t6_s1];
+                option6 = {
+                    title: {
+                        // text: '所有场馆运动项目占比',
+                        textStyle: {
+                            fontSize:fontSize_Title,
+                        }
+                    },
+                    legend: {
+                        top: legendMarginTop+'%',
+                        left: 'center',
+                        "textStyle": {
+                            "fontSize": fontSize_legend,
+                            color:'#ffffff'
+                        },
+                    },
+                    color:['#37FFC9','rgb(0,132,255)','rgb(25,214,255)','rgb(255,231,119)'],
+                    series: tu6.map(function (data, idx) {
+                        var top = idx * 33.3;
+                        return {
+                            type: 'pie',
+                            radius: [40, 80],
+                            top: '100%',
+                            height: '50%',
+                            // minAngle:5,
+                            avoidLabelOverlap: true,//防止标签重叠
+                            startAngle:170, //起始角度
+                            left: 'center',
+                            center:['50%','70%'],
+                            width: 1000,
+                            itemStyle: {
+                                borderColor: '#fff',
+                                borderWidth: 1
+                            },
+                            label: {
+                                alignTo: 'edge',
+                                // formatter: '{@}：{@value}\n{d} %',
+                                formatter: '{b}: {@数值}\n {d}%',
+                                minMargin: 10,
+                                edgeDistance: 20,
+                                lineHeight: 25,
+                                rich: {
+                                    time: {
+                                        color: '#999'
+                                    }
+                                },
+                                "textStyle": {
+                                    "fontSize": 20
+                                },
+                            },
+                            labelLine: {
+                                length: 20,
+                                length2: 50,
+                                maxSurfaceAngle: 80
+                            },
+                            labelLayout: function (params) {
+                                const isLeft = params.labelRect.x < myChart.getWidth() / 2;
+                                const points = params.labelLinePoints;
+                                // Update the end point.
+                                points[2][0] = isLeft
+                                    ? params.labelRect.x
+                                    : params.labelRect.x + params.labelRect.width;
+                                return {
+                                    labelLinePoints: points
+                                };
+                            },
+                            data: data
+                        };
+                    })
+                };
+                myChart6.setOption(option6);
+
+                //图7绘制
+                var tu7data=res.data.lastMonthPeople;
+                var tu7data_1=[];
+                var tu7data_2=[];
+                for(var i=0;i<tu7data.length;i++){
+                    tu7data_1.push(tu7data[i].gymName);
+                    tu7data_2.push(tu7data[i].num);
+                }
+                option7 = {
+                    title: {
+                        // text: '近一个月场地人数',
+                        textStyle: {
+                            fontSize:fontSize_Title,
+                        }
+                    },
+                    xAxis: {
+                        axisLabel: {
+                            textStyle: {
+                                fontSize: '20',
+                            },
+                        },
+                        axisLine: {
+                            lineStyle: {
+                                color: 'rgb(4,189,195)',
+                                width: 2, //这里是为了突出显示加上的
+                            }
+                        },
+                        splitLine:{ //修改背景线条样式
+                            show:false,//是否展示
+                            lineStyle:{
+                                color:"red",//线条颜色
+                                type:"dashed"//线条样式，默认是实现，dashed是虚线
+                            }
+                        },
+                        type: 'category',
+                        data: tu7data_1
+                    },
+                    yAxis: {
+                        name:"个人",
+                        nameTextStyle :{
+                            fontSize: 20
+                        },
+                        axisLabel: {
+                            textStyle: {
+                                fontSize: '20',
+                            },
+                        },
+                        axisLine: {
+                            lineStyle: {
+                                color: 'rgb(4,189,195)',
+                                width: 2, //这里是为了突出显示加上的
+                            }
+                        },
+                        splitLine:{ //修改背景线条样式
+                            show:false,//是否展示
+                            lineStyle:{
+                                color:"red",//线条颜色
+                                type:"dashed"//线条样式，默认是实现，dashed是虚线
+                            }
+                        },
+                        type: 'value'
+                    },
+                    series: [
+                        {
+                            label: {
+                                formatter: "{c}"+"个人",
+                                position: "top",
+                                show: true,
+                                textStyle: {
+                                    fontWeight: "bolder",
+                                    fontSize: "17",
+                                    color: "rgb(0,235,214)"
+                                }
+                            },
+                            itemStyle: {
+                                barBorderRadius: [2, 2, 0, 0], //柱体圆角
+                                color: new echarts.graphic.LinearGradient(
+                                    //前四个参数用于配置渐变色的起止位置，这四个参数依次对应 右下左上 四个方位。也就是从右边开始顺时针方向。
+                                    //通过修改前4个参数，可以实现不同的渐变方向
+                                    /*第五个参数则是一个数组，用于配置颜色的渐变过程。
+                                      每项为一个对象，包含offset和color两个参数
+                                    */
+                                    0, 1, 0, 0, [{//代表渐变色从正上方开始
+                                        offset: 0, //offset范围是0~1，用于表示位置，0是指0%处的颜色
+                                        color: 'rgb(1,163,248)'
+                                    }, //柱图渐变色
+                                        {
+                                            offset: 1, //指100%处的颜色
+                                            color: 'rgb(0,235,214)'
+                                        }
+                                    ]
+                                ),
+                            },
+                            data: tu7data_2,
+                            type: 'bar',
+                            showBackground: true,
+                            backgroundStyle: {
+                                color: 'rgba(180, 180, 180, 0.2)'
+                            },
+                        }
+                    ]
+                };
+                myChart7.setOption(option7);
+
+                //图8
+                var tu81data=res.data.exceptOpenTime;
+                var tu82data=res.data.actualOpenTime;
+                var tu83data=res.data.openTime;//日期
+                option8 = {
+                    title: {
+                        // text: '全市场馆开放时长分析表',
+                        textStyle: {
+                            fontSize:fontSize_Title,
+                        }
+                    },
+                    tooltip: {
+                        trigger: 'axis',
+                        axisPointer: {
+                            type: 'shadow'
+                        }
+                    },
+                    legend: {
+                        // top: legendMarginTop+'%',
+                        left: 'center',
+                        "textStyle": {
+                            "fontSize": fontSize_legend,
+                            color:'#ffffff'
+                        },
+                    },
+                    grid: {
+                        left: '3%',
+                        right: '4%',
+                        bottom: '3%',
+                        containLabel: true
+                    },
+                    xAxis: {
+                        name:"小时",
+                        nameTextStyle :{
+                            fontSize: 15
+                        },
+                        axisLabel: {
+                            textStyle: {
+                                fontSize: '20',
+                            },
+                        },
+                        axisLine: {
+                            lineStyle: {
+                                color: 'rgb(4,189,195)',
+                                width: 2, //这里是为了突出显示加上的
+                            }
+                        },
+                        splitLine:{ //修改背景线条样式
+                            show:false,//是否展示
+                            lineStyle:{
+                                color:"red",//线条颜色
+                                type:"dashed"//线条样式，默认是实现，dashed是虚线
+                            }
+                        },
+                        type: 'value',
+                        boundaryGap: [0, 0.01]
+                    },
+                    yAxis: {
+                        name:"日期",
+                        nameTextStyle :{
+                            fontSize: 20
+                        },
+                        axisLabel: {
+                            textStyle: {
+                                fontSize: '20',
+                            },
+                        },
+                        axisLine: {
+                            lineStyle: {
+                                color: 'rgb(4,189,195)',
+                                width: 2, //这里是为了突出显示加上的
+                            }
+                        },
+                        splitLine:{ //修改背景线条样式
+                            show:false,//是否展示
+                            lineStyle:{
+                                color:"red",//线条颜色
+                                type:"dashed"//线条样式，默认是实现，dashed是虚线
+                            }
+                        },
+                        type: 'category',
+                        data: tu83data
+                    },
+                    series: [
+                        {
+                            name: '实际开放时长',
+                            color:'rgb(30,130,254)',
+                            label: {
+                                formatter: "{c}"+"小时",
+                                position: "right",
+                                show: true,
+                                textStyle: {
+                                    fontWeight: "bolder",
+                                    fontSize: "17",
+                                    color: "rgb(30,130,254)"
+                                }
+                            },
+                            itemStyle: {
+                                barBorderRadius: [2, 2, 0, 0], //柱体圆角
+                                color: new echarts.graphic.LinearGradient(
+                                    //前四个参数用于配置渐变色的起止位置，这四个参数依次对应 右下左上 四个方位。也就是从右边开始顺时针方向。
+                                    //通过修改前4个参数，可以实现不同的渐变方向
+                                    /*第五个参数则是一个数组，用于配置颜色的渐变过程。
+                                      每项为一个对象，包含offset和color两个参数
+                                    */
+                                    0, 0, 1, 0, [{//代表渐变色从正上方开始
+                                        offset: 0, //offset范围是0~1，用于表示位置，0是指0%处的颜色
+                                        color: 'rgb(30,130,254,0)'
+                                    }, //柱图渐变色
+                                        {
+                                            offset: 1, //指100%处的颜色
+                                            color: 'rgb(30,130,254,1)'
+                                        }
+                                    ]
+                                ),
+                            },
+                            type: 'bar',
+                            data: tu81data
+                        },
+                        {
+                            name: '计划开放时长',
+                            color:'rgb(0,255,228)',
+                            label: {
+                                formatter: "{c}"+"小时",
+                                position: "right",
+                                show: true,
+                                textStyle: {
+                                    fontWeight: "bolder",
+                                    fontSize: "17",
+                                    color: "rgb(0,255,228)"
+                                }
+                            },
+                            itemStyle: {
+                                barBorderRadius: [2, 2, 0, 0], //柱体圆角
+                                color: new echarts.graphic.LinearGradient(
+                                    //前四个参数用于配置渐变色的起止位置，这四个参数依次对应 右下左上 四个方位。也就是从右边开始顺时针方向。
+                                    //通过修改前4个参数，可以实现不同的渐变方向
+                                    /*第五个参数则是一个数组，用于配置颜色的渐变过程。
+                                      每项为一个对象，包含offset和color两个参数
+                                    */
+                                    0, 0, 1, 0, [{//代表渐变色从正上方开始
+                                        offset: 0, //offset范围是0~1，用于表示位置，0是指0%处的颜色
+                                        color: 'rgb(0,255,228,0)'
+                                    }, //柱图渐变色
+                                        {
+                                            offset: 1, //指100%处的颜色
+                                            color: 'rgb(0,255,228,1)'
+                                        }
+                                    ]
+                                ),
+                            },
+                            type: 'bar',
+                            data: tu82data
+                        }
+                    ]
+                };
+                myChart8.setOption(option8);
+            }
+            else{
+                console.log("数据为空");
+                layer.msg("<span style=\"font-size:50px\">未搜索到该场馆的信息!!!</span>",
+                    { time: 3000,
+                        shift: 5,offset:"rb",
+                        area:['800px','200px'] });
+            }
+        },"GET",false);
+    }
+
+    $(function () {
+        console.log("调用初始化方法")
+        // gymname="303050b2-2c89-4cbf-899f-cc7af8cedadb";//默认场馆id
+        gymname="杭州电子科技大学";//默认场馆id
+        InitChart(gymname);
+    })
+    $("#search").click(function () {
+        // var gymname=document.getElementById("gymSelect").val();
+        var gymname=$('#gymSelect option:selected').text();//选中的文本
+        console.log("搜索场馆")
+        if (gymname!="") {
+            console.log("场馆名称："+gymname)
+            InitChart(gymname)
+        } else {
+            console.log("搜索名为空")
+            layer.msg("<span style=\"font-size:50px\">搜索名为空，请输入场馆名称！</span>",
+                { time: 3000,
+                    shift: 5,offset:"rb",
+                    area:['800px','200px'] });
+        }
+    });
+
+    layui.use(['table', 'laypage', 'layer', 'laydate', 'tree', 'transfer'], function () {
+
+        form.on('submit(submit)', function (data) {
+            if (data.field.gymname!="") {
+                console.log("搜索场馆："+data.field.gymname)
+                InitChart(data.field.gymname)
+            } else {
+                console.log("搜索名为空")
+                layer.msg("<span style=\"font-size:50px\">抱歉！您暂无编辑用户的权限！</span>",
+                    { time: 3000,
+                        shift: 5,offset:"rb",
+                        area:['800px','200px'] });
+            }
+            return false;
+        });
+    });
+</script>
+</html>

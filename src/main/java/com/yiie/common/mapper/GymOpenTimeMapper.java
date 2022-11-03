@@ -24,4 +24,5 @@ public interface GymOpenTimeMapper {
     int deletedGymOpenTime(@Param("sysUser") GymOpenTime sysUser, @Param("list") List<String> list);
 
     List<GymCloseTime> getGymCT(String gymId, Date today, Date fiveDaysAgo);
+    GymOpenTime getByIdAndDay(String s, Date today);
 }

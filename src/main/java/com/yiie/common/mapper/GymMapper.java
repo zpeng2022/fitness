@@ -1,7 +1,7 @@
 package com.yiie.common.mapper;
 
 import com.yiie.entity.Gym;
-import com.yiie.vo.data.GymOpenTime;
+import com.yiie.vo.data.GymOpenTimeVO;
 import com.yiie.vo.request.GymPageReqVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -12,7 +12,7 @@ import java.util.List;
 @Repository
 @Mapper
 public interface GymMapper {
-    List<Gym> getAllGymsByDeptID(String deptId);
+//    List<Gym> getAllGymsByDeptID(String deptId);
     List<Gym> selectAllGymsByDeptID(GymPageReqVO vo);
     List<Gym> h5GetAllGyms(GymPageReqVO vo);
     Gym selectByPrimaryKey(String gymId);
@@ -26,5 +26,7 @@ public interface GymMapper {
 
     List<Gym>  getByName(String name);
 
-    List<GymOpenTime> getGymOT();
+    List<GymOpenTimeVO> getGymOT();
+
+    List<String> selectAllName();
 }

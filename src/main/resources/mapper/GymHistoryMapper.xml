@@ -166,6 +166,13 @@
         </where>
     </select>
 
+    <select id="getIsOnlineNum" resultType="com.yiie.vo.data.OnlineNum">
+        SELECT isOnlineUser,COUNT(historyId) as num
+        FROM gym_history
+        where gymId=#{gymId}
+        GROUP BY isOnlineUser
+    </select>
+
     <insert id="insertSelective" parameterType="com.yiie.entity.GymHistory">
         insert into gym_history
         <trim prefix="(" suffix=")" suffixOverrides=",">

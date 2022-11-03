@@ -35,7 +35,7 @@ public class BagManApplicationTest {
         String videoAvatarName=filePath.substring(filePath.lastIndexOf("\\")+1);
         String bookBucketAddress="gymPicture/"+videoAvatarName;
         OSS util=new OSS();
-        util.bookUpload(filePath,bookBucketAddress);
+//        util.bookUpload(filePath,bookBucketAddress);
     }
 
     @Test

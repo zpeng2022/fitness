@@ -4,6 +4,8 @@ import com.yiie.aop.annotation.LogAnnotation;
 import com.yiie.common.service.*;
 import com.yiie.constant.Constant;
 import com.yiie.entity.Gym;
+import com.yiie.entity.GymOpenTime;
+import com.yiie.enums.BaseResponseCode;
 import com.yiie.utils.*;
 import com.yiie.vo.data.*;
 import com.yiie.vo.request.*;
@@ -45,6 +47,14 @@ public class gymController {
     @Autowired
     private GymOpenTimeService gymOpenTimeService;
 
+    @ApiOperation("查询场馆名称")
+    @PostMapping("/searchGymName")
+    public DataResult searchGymName(){
+        System.out.print("查询场馆名称\n");
+        return DataResult.success();
+    }
+
+
     @ApiOperation("一键审批")
     @PostMapping("/autopass")
     public DataResult autoPass(HttpServletRequest request){
@@ -54,34 +64,53 @@ public class gymController {
         return DataResult.success();
     }
 
+    @ApiOperation("闭馆")
+    @PostMapping("/closeGym")
+    public DataResult colseGym(HttpServletRequest request,@RequestBody List<String> id) throws ParseException {
+        GymOpenTime gymOpenTime=new GymOpenTime();
+        SimpleDateFormat format=new SimpleDateFormat("HH:mm");
+        Date date=new Date();
+        Date today=TimeUtile.toIntegral(date);//整点:获取年月日
+        String time=format.format(date);//获取小时与分钟
+        GymOpenTime is=gymOpenTimeService.getByIdAndDay(id.get(0),today);
+        if(is!=null){
+            return DataResult.getResult(BaseResponseCode.CLOSE);
+        }
+
+        String OTId=UUID.randomUUID().toString();
+
+        gymOpenTime.setOpenTimeId(OTId);
+        gymOpenTime.setGymId(id.get(0));
+        gymOpenTime.setDeptId(id.get(1));
+        gymOpenTime.setWhichDay(today);
+        gymOpenTime.setCloseTime(time);
+        gymOpenTime.setDeleted(1);
+        System.out.print("gymOpenTime:"+gymOpenTime.toString()+"\n");
+        gymOpenTimeService.addCloseTime(gymOpenTime);
+        return DataResult.success("关闭成功");
+    }
+
     @ApiOperation("查询Gym图片路径")
     @GetMapping("/gym/getPicture/{gymId}")
-    public ResponseEntity<Object> getCollectionBook(HttpServletRequest request, @PathVariable("gymId") String gymId) {
+    public ResponseEntity<Object> getCollectionBook(HttpServletRequest request,@PathVariable("gymId") String gymId) {
         System.out.print("查询Gym："+gymId+"\n");
         String path=gymService.getById(gymId).getGymPicturesPath();
         System.out.print("图片路径："+path+"\n");
         List<GymPath> gymPaths=new ArrayList<>();
         int index=1;
         while(index<=Constant.gym_pictureNum){
-            GymPath gymPath=new GymPath(gymId,index,Constant.gym_defaultPicture);
+            GymPath gymPath=new GymPath(gymId,index,Constant.gym_defaultPath+Constant.gym_defaultPicture);
             System.out.print("GymPath："+gymPath.toString()+"\n");
             if(path.length()>0){
                 String p=path.substring(0,path.indexOf(";"));
                 System.out.print("p："+p+"\n");
-                gymPath.setPath(p);//修改地址
+                gymPath.setPath(Constant.gym_defaultPath+p);//修改地址
                 path=path.substring(path.indexOf(";")+1);
             }
             gymPaths.add(gymPath);
             index++;
         }
-        /*while(path.length()>0){
-            String p=path.substring(0,path.indexOf(";"));
-            GymPath gymPath=new GymPath(id,p);
-            System.out.print("GymPath："+gymPath.toString()+"\n");
-            gymPaths.add(gymPath);
-            id++;
-            path=path.substring(path.indexOf(";")+1);
-        }*/
+//        System.out.print("gymPaths:"+gymPaths+"\n");
         return new ResponseEntity<>(gymPaths, HttpStatus.OK);
     }
 
@@ -99,6 +128,14 @@ public class gymController {
         String gymName=gym.getGymName();//场馆名称
         String gymId=gym.getGymId();//场馆Id
         List<SportAndValue> ageList = new ArrayList<>();
+
+        //上下线人数获取
+        List<OnlineNum> onlineNums;
+        {
+            onlineNums=gymHistoryService.getIsOnlineNum(gymId);
+//            System.out.print("asdsad:"+isOnline.toString()+"\n");
+        }
+
 
         //年龄段数据获取
         {
@@ -168,6 +205,9 @@ public class gymController {
             for(PeopleSportTime p:peopleSportTimes){
 //                System.out.print("p:"+p.toString()+"\n");
                 String pid=p.getIdcard();
+                if(p.getEnd()==null){//没有outtime，默认为starttime+4h
+                    p.setEnd(TimeUtile.stepHour(p.getStart(),4));
+                }
                 String pname=p.getName();
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(p.getStart());
@@ -208,7 +248,7 @@ public class gymController {
         }
 
         //近五天的场馆的实际开放时长和预计开放时长
-        List<GymOpenTime> gymOpenTimes;
+        List<GymOpenTimeVO> gymOpenTimes;
         int[][] openTime;
         List<GymCloseTime> gymCloseTimes;
         List<Integer> except=new ArrayList<>();
@@ -233,14 +273,22 @@ public class gymController {
             gymOpenTimes=gymService.getGymOT();
 
             //处理数据，计算每个每个场馆近五天每天开放时长
+            System.out.print("gymOpenTimes:"+gymOpenTimes.size()+"\n");
             openTime=new int[5][2];//近五天所有场馆的预期开放与实际开放累积存储
-            Arrays.fill(openTime,new int[]{0,0});//初始化
+            for(int dateT=0;dateT<openTime.length;dateT++){
+                openTime[dateT][0]=0;
+                openTime[dateT][1]=0;
+            }
+//            Arrays.fill(openTime,new int[]{0,0});//初始化,这里不能这样,会导致时间段完全一样,因为是用的引用地址
+            System.out.print("近五天的场馆的实际开放时长和预计开放时长\n");
             for(int i=0;i<gymOpenTimes.size();i++){
                 String sG=gymOpenTimes.get(i).getGymId();
+                System.out.print("gymOpenTimes:"+i+"  id:"+gymOpenTimes.get(i).getGymId()+"\n");
                 //该场馆近五天的闭馆时间:按whichDay时间降序，故一个一个向后判断即可
                 gymCloseTimes=gymOpenTimeService.getGymCT(sG,today,fiveDaysAgo);
                 int index=0;
                 for(int j=0;j<5;j++){//五天
+//                    System.out.print("五天:"+j+"\n");
                     Date agoDay=TimeUtile.stepDay(today,-(j+1));//往前(j+1)天计算日期
                     if(datesI<5){//填充日期数组
                         dates.add(df3.format(agoDay).replace("-","."));//月.日
@@ -280,8 +328,14 @@ public class gymController {
                     differ4=TimeUtile.getHourDiffer(h3,h4,closeTime);
                     //计算实际开放
                     //考虑到可能出现缺少闭馆数据
-                    if(closeDay!=null&&agoDay==closeDay){
+                    if(closeDay==null){
+                        System.out.print("第"+i+"天的第"+j+"个体育馆closeDay缺失");
+                    }else {
+                        System.out.print("agoDay  :"+agoDay+"\ncloseDay:"+closeDay+"  "+(agoDay.toString()).equals(closeDay.toString())+"\n\n");
+                    }
+                    if(closeDay!=null&&(agoDay.toString()).equals(closeDay.toString())){
                         closeTime=gymCloseTimes.get(index).getCloseTime();//获取该日闭馆时间
+                        System.out.print("闭馆时间:"+closeTime+"\n");
                         differ1=TimeUtile.getHourDiffer(h1,h2,closeTime);
                         differ2=TimeUtile.getHourDiffer(h3,h4,closeTime);
                         index++;//该日期被用掉了
@@ -290,12 +344,14 @@ public class gymController {
                         differ2=TimeUtile.getHourDiffer(h3,h4,closeTime);
                     }
                     weekDay--;//星期向前走一天
-                    openTime[i][0]+=differ3+differ4;//累计预计时间
-                    openTime[i][1]+=differ1+differ2;//累计实际时间
+                    System.out.print("differ3-differ4-differ1-differ2:"+differ3+"-"+differ4+"-"+differ1+"-"+differ2+"\n");
+                    openTime[j][0]+=differ3+differ4;//累计预计时间
+                    openTime[j][1]+=differ1+differ2;//累计实际时间
                 }
             }
             //处理openTime，产出三个数组，预期时长，实际时长，日期数组
             for(int dateT=0;dateT<openTime.length;dateT++){
+                System.out.print("最终openTime:"+openTime[dateT][0]+"-"+openTime[dateT][1]+"\n");
                 except.add(openTime[dateT][0]);
                 actual.add(openTime[dateT][1]);
             }
@@ -307,6 +363,7 @@ public class gymController {
         {
             containData.setGymId(gymId);
             containData.setGymName(gymName);
+            containData.setOnlineNums(onlineNums);
             containData.setAgeList(ageList);
             containData.setEvList(evList);
             containData.setOrderTimeList(timeList);
@@ -316,6 +373,9 @@ public class gymController {
             containData.setOpenTime(dates);
             containData.setExceptOpenTime(except);
             containData.setActualOpenTime(actual);
+            //加入所有场馆名称
+            List<String> gymsName=gymService.selectAllName();
+            containData.setAllGymName(gymsName);
             result.setData(containData);
         }
         System.out.print("containData--------------------\n");

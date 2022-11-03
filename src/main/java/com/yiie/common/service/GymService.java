@@ -1,7 +1,7 @@
 package com.yiie.common.service;
 
 import com.yiie.entity.Gym;
-import com.yiie.vo.data.GymOpenTime;
+import com.yiie.vo.data.GymOpenTimeVO;
 import com.yiie.vo.request.*;
 import com.yiie.vo.response.PageVO;
 
@@ -22,5 +22,7 @@ public interface GymService {
 
     List<Gym>  getByName(String name);
 
-    List<GymOpenTime> getGymOT();
+    List<GymOpenTimeVO> getGymOT();
+
+    List<String> selectAllName();
 }

@@ -35,6 +35,10 @@
         WHERE deleted=1 and whichDay>=#{fiveDaysAgo} and #{today}>=whichDay and gymId=#{gymId}
         ORDER BY whichDay DESC
     </select>
+    <select id="getByIdAndDay" resultType="com.yiie.entity.GymOpenTime">
+        select * from gym_opentime
+        where gymId=#{s} and whichDay=#{today}
+    </select>
 
     <insert id="insertSelective" parameterType="com.yiie.entity.GymOpenTime">
         insert into gym_opentime

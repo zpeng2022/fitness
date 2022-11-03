@@ -8,6 +8,7 @@ import java.util.List;
 public class ContainData {
     private String gymId;//Id
     private String gymName;//场馆名称
+    private List<OnlineNum> onlineNums;//上下线人数
     private List<SportAndValue> ageList;//场馆预约成员年龄分布
     private List<SportAndValue> evList;//场馆各运动类型人数分布
     private List<Integer> orderTimeList;//场地预约时间分布
@@ -17,6 +18,7 @@ public class ContainData {
     private List<String> openTime;//计算开放时长的日期
     private List<Integer> exceptOpenTime;//预计开放时长
     private List<Integer> actualOpenTime;//实际开放时长
+    private List<String> allGymName;//所有场馆名称
 
     @Override
     public String toString() {

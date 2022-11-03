@@ -1,5 +1,7 @@
 package com.yiie.utils;
 
+import io.swagger.models.auth.In;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -46,6 +48,12 @@ public class TimeUtile {
      *      * @return
      *
      */
+    public static Date stepHour(Date sourceDate, int hour) {
+        Calendar c = Calendar.getInstance();
+        c.setTime(sourceDate);
+        c.add(Calendar.HOUR, hour);
+        return c.getTime();
+    }
     public static Date stepMonth(Date sourceDate, int month) {
         Calendar c = Calendar.getInstance();
         c.setTime(sourceDate);
@@ -60,7 +68,7 @@ public class TimeUtile {
     }
     public static Date toIntegral(Date sourceDate) throws ParseException {//转整点
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd 00:00:00");
-        SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//        SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         SimpleDateFormat df2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date day=df2.parse(df.format(sourceDate));
         return day;

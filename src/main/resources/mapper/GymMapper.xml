@@ -97,7 +97,7 @@
         where gymName like concat('%',#{name},'%')
     </select>
 
-    <select id="getGymOT" resultType="com.yiie.vo.data.GymOpenTime">
+    <select id="getGymOT" resultType="com.yiie.vo.data.GymOpenTimeVO">
         SELECT DISTINCT gymId,gymName,monday,saturday
         from gym
         WHERE deleted=1
@@ -170,6 +170,10 @@
                 AND updateTime = #{updateTime}
             </if>
         </where>
+    </select>
+
+    <select id="selectAllName" resultType="java.lang.String">
+        SELECT DISTINCT gymName FROM `gym` where deleted=1
     </select>
 
     <insert id="insertSelective" parameterType="com.yiie.entity.Gym">
