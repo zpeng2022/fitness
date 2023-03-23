@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yiie.common.mapper.PhysicalTestMapper">
+
+    <resultMap id="BaseResultMap" type="com.yiie.entity.PhysicalTestData">
+        <id column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="identitycard" jdbcType="VARCHAR" property="identitycard"/>
+        <result column="exempt" property="exempt"/>
+        <result column="height" jdbcType="VARCHAR" property="height"/>
+        <result column="weight" jdbcType="VARCHAR" property="weight"/>
+        <result column="vitalCapacity" jdbcType="VARCHAR" property="vitalCapacity"/>
+        <result column="runFifty" jdbcType="VARCHAR" property="runFifty"/>
+        <result column="settingForward" jdbcType="VARCHAR" property="settingForward"/>
+        <result column="skippingRope" jdbcType="VARCHAR" property="skippingRope"/>
+        <result column="leftVision" jdbcType="VARCHAR" property="leftVision"/>
+        <result column="rightVision" jdbcType="VARCHAR" property="rightVision"/>
+        <result column="leftError" jdbcType="VARCHAR" property="leftError"/>
+        <result column="rightError" jdbcType="VARCHAR" property="rightError"/>
+        <result column="leftMirror" jdbcType="VARCHAR" property="leftMirror"/>
+        <result column="rightMirror" jdbcType="VARCHAR" property="rightMirror"/>
+        <result column="abdominalCurl" jdbcType="VARCHAR" property="abdominalCurl"/>
+        <result column="runBack" jdbcType="VARCHAR" property="runBack"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="deleted" jdbcType="TINYINT" property="deleted"/>
+        <collection property="customer" resultMap="Customer">
+
+        </collection>
+    </resultMap>
+    <resultMap id="Customer" type="com.yiie.entity.Customer">
+        <id column="customer_id" jdbcType="VARCHAR" property="customer_id" />
+        <result column="customer_identity_card" jdbcType="VARCHAR" property="customer_identity_card" />
+        <result column="customer_name" jdbcType="VARCHAR" property="customer_name" />
+        <result column="customer_nickname" jdbcType="VARCHAR" property="customer_nickname" />
+        <result column="customer_weight" jdbcType="DOUBLE" property="customer_weight" />
+        <result column="customer_height" jdbcType="DOUBLE" property="customer_height" />
+        <result column="customer_birthday" jdbcType="TIMESTAMP" property="customer_birthday" />
+        <result column="customer_location" jdbcType="VARCHAR" property="customer_location" />
+        <result column="customer_hobby" jdbcType="VARCHAR" property="customer_hobby" />
+        <result column="customer_disease" jdbcType="VARCHAR" property="customer_disease" />
+        <result column="customer_picture" jdbcType="VARCHAR" property="customer_picture" />
+        <result column="customer_gender" jdbcType="TINYINT" property="customer_gender" />
+        <result column="customer_phone" jdbcType="VARCHAR" property="customer_phone" />
+        <result column="customer_fitness_QRCode" jdbcType="VARCHAR" property="customer_fitness_QRCode" />
+        <result column="customer_contacts_id" jdbcType="VARCHAR" property="customer_contacts_id" />
+        <result column="customer_info_id" jdbcType="VARCHAR" property="customer_info_id" />
+        <result column="customer_create_time" jdbcType="TIMESTAMP" property="customer_create_time" />
+        <result column="customer_update_time" jdbcType="TIMESTAMP" property="customer_update_time" />
+        <result column="customer_deleted" jdbcType="TINYINT" property="customer_deleted" />
+    </resultMap>
+    <insert id="addPhysical" parameterType="com.yiie.entity.PhysicalTestData">
+        insert into physicaltestdata
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="identitycard != null">
+                identitycard,
+            </if>
+            <if test="exempt != null">
+                exempt,
+            </if>
+            <if test="height != null">
+                height,
+            </if>
+            <if test="weight!=null">
+                weight,
+            </if>
+            <if test="createTime != null">
+                createTime,
+            </if>
+            <if test="updateTime!=null">
+                updateTime,
+            </if>
+            <if test="deleted != null">
+                deleted,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id},
+            </if>
+            <if test="identitycard != null">
+                #{identitycard},
+            </if>
+            <if test="exempt != null">
+                #{exempt},
+            </if>
+            <if test="height!=null">
+                #{height},
+            </if>
+            <if test="weight!=null">
+                #{weight},
+            </if>
+            <if test="createTime != null">
+                #{createTime},
+            </if>
+            <if test="updateTime!=null">
+                #{updateTime},
+            </if>
+            <if test="deleted != null">
+                #{deleted},
+            </if>
+        </trim>
+    </insert>
+    <update id="deletedPs" parameterType="com.yiie.entity.PhysicalTestData">
+        update physicaltestdata
+        <set>
+            deleted = 0,
+            <if test="sysUser.updateTime != null">
+                updateTime = #{sysUser.updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id in
+        <foreach collection="list" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+    </update>
+    <update id="updateByPrimaryKeySelective" parameterType="com.yiie.entity.PhysicalTestData">
+        update physicaltestdata
+        <set>
+            <if test="id != null">
+                id=#{id},
+            </if>
+            <if test="identitycard != null">
+                identitycard=#{identitycard},
+            </if>
+            <if test="exempt != null">
+                exempt=#{exempt},
+            </if>
+            <if test="height!=null">
+                height=#{height},
+            </if>
+            <if test="weight!=null">
+                weight=#{weight},
+            </if>
+            <if test="createTime != null">
+                createTime = #{createTime,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null">
+                updateTime = #{updateTime,jdbcType=VARCHAR},
+            </if>
+            <if test="deleted != null">
+                deleted = #{deleted,jdbcType=TINYINT},
+            </if>
+        </set>
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
+
+    <select id="selectData" resultMap="BaseResultMap">
+        SELECT * FROM physicaltestdata p
+        left join customer
+        on p.identitycard=customer.customer_identity_card
+        <where>
+            p.deleted=1
+            <if test="identitycard!=null and identitycard!=''">
+                AND identitycard=#{identitycard}
+            </if>
+            <if test="exempt!=null and exempt!=''">
+                AND exempt=#{exempt}
+            </if>
+            <if test="updateTime1!=null and updateTime1!='' and updateTime2!=null and updateTime2!=''">
+                AND updateTime between #{updateTime1} and #{updateTime2}
+            </if>
+        </where>
+    </select>
+    <!--<select id="selectByPrimaryKey" resultType="com.yiie.entity.Article">
+        select * from gym_article
+        where id=#{articleId}
+    </select>-->
+
+</mapper>

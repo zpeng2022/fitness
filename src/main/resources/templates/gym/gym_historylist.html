@@ -52,57 +52,64 @@
 
             <div class="layui-form-item">
                 <div class="layui-form-label ">是否是禁入人员</div>
-                <div class="layui-input-block">
-                    <input type="isBlackUser" name="isBlackUser" placeholder="1表示是,0表示否" autocomplete="off" class="layui-input">
-                </div>
+                <select id="isBlackUser" name="isBlackUser">
+                    <option value="0">否</option>
+                    <option value="1">是</option>
+                </select>
             </div>
 
             <div class="layui-form-item">
                 <div class="layui-form-label ">是否是在线预约人员</div>
-                <div class="layui-input-block">
+           <!--     <div class="layui-input-block">
                     <input type="isOnlineUser" name="isOnlineUser" placeholder="请输入是否是在线预约人员" autocomplete="off" class="layui-input">
-                </div>
+                </div>-->
+                <select id="isOnlineUser2" name="isOnlineUser">
+                    <option value="0">线下</option>
+                    <option value="1">线上</option>
+                </select>
             </div>
 
             <div class="layui-form-item">
-                <div class="layui-form-label ">预约开始时间</div>
+                <div class="layui-form-label ">预约时间</div>
                 <div class="layui-input-block">
-                    <input type="orderStartTime" name="orderStartTime" placeholder="预约开始时间" autocomplete="off" class="layui-input"
-                    >
+                    <input type="orderStartTime" name="orderStartTime" id="orderTime"
+                           placeholder="预约开始时间" autocomplete="off" class="layui-input">
                 </div>
-            </div>
+            </div><!--
 
             <div class="layui-form-item">
                 <div class="layui-form-label ">预约结束时间</div>
                 <div class="layui-input-block">
-                    <input type="orderEndTime" name="orderEndTime" placeholder="预约结束时间" autocomplete="off" class="layui-input"
+                    <input type="orderEndTime" name="orderEndTime" id="orderEndTime"
+                           placeholder="预约结束时间" autocomplete="off" class="layui-input"
                     >
                 </div>
-            </div>
+            </div>-->
 
             <div class="layui-form-item">
                 <div class="layui-form-label ">训练类型</div>
                 <div class="layui-input-block">
-                    <input type="exerciseType" name="exerciseType" placeholder="训练类型" autocomplete="off" class="layui-input"
-                    >
+                    <input type="exerciseType" name="exerciseType"
+                           placeholder="训练类型" autocomplete="off" class="layui-input">
                 </div>
             </div>
 
             <div class="layui-form-item">
-                <div class="layui-form-label ">进入时间</div>
+                <div class="layui-form-label ">出入场时间</div>
                 <div class="layui-input-block">
-                    <input type="inTime" name="inTime" placeholder="进入时间" autocomplete="off" class="layui-input"
+                    <input type="inTime" name="inTime" id="InAndOutTime"
+                           placeholder="进入时间" autocomplete="off" class="layui-input"
                     >
                 </div>
             </div>
 
-            <div class="layui-form-item">
+            <!--<div class="layui-form-item">
                 <div class="layui-form-label ">出去时间</div>
                 <div class="layui-input-block">
                     <input type="outTime" name="outTime" placeholder="出去时间" autocomplete="off" class="layui-input"
                     >
                 </div>
-            </div>
+            </div>-->
 
             <div class="layui-form-item">
                 <div class="layui-input-block">
@@ -131,13 +138,29 @@
             <div class="layui-input-inline layui-form">
                 <select id="isOnlineUser">
                     <option value="">请选择状态</option>
-                    <option value="1">在线预约</option>
                     <option value="0">线下进入</option>
+                    <option value="1">在线预约</option>
                 </select>
             </div>
 
             <div class="layui-input-inline">
-                <input type="text" class="layui-input" id="createTime" placeholder="选择创建时间区间" style="width: 290px">
+                <input type="text" class="layui-input" id="createTime" placeholder="选择创建时间区间">
+            </div>
+
+            <div class="layui-input-inline layui-form" id="deptSelect" style="display:none;">
+                <select id="deptInfo" name="deptId">
+                </select>
+            </div>
+            <div class="layui-input-inline layui-form" id="gymSelect" style="display:none;">
+                <select id="gymInfo" name="gymId">
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <button id="Reset" type="reset" class="layui-btn layui-btn-primary">
+                    <i class="layui-icon layui-icon-fonts-clear"></i> 清 空
+                </button>
             </div>
         </div>
     </div>
@@ -159,15 +182,15 @@
             <i class="layui-icon">&#xe608;</i> 批量删除
         </button>
     </div>
-    <div class="layui-btn-group">
+    <!--<div class="layui-btn-group">
         <button type="button" class="layui-btn layui-btn-normal" lay-event="addNewUser"
                 shiro:hasPermission="sys:gymHistory:add">
             <i class="layui-icon">&#xe608;</i> 新增历史信息
         </button>
-    </div>
+    </div>-->
 </script>
 <script type="text/html" id="tool">
-    <a class="layui-btn layui-btn-xs" lay-event="edit" shiro:hasPermission="sys:gymHistory:update">编辑</a>
+<!--    <a class="layui-btn layui-btn-xs" lay-event="edit" shiro:hasPermission="sys:gymHistory:update">编辑</a>-->
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del" shiro:hasPermission="sys:gymHistory:deleted">删除</a>
 </script>
 <script type="text/html" id="blackTpl">
@@ -194,12 +217,93 @@
     var tree = layui.tree;
     var transfer = layui.transfer;
     layui.use(['table', 'laypage', 'layer', 'laydate', 'tree', 'transfer'], function () {
+
+        //清空条件
+        $('#Reset').on('click', function(){
+            console.log("清空")
+            $("#customerName").val("");
+            $("#customerPhone").val("");
+            $("#customerIdentityCard").val("");
+            $("#isOnlineUser").val("请选择状态");
+            $("#createTime").val("");
+            $("#deptInfo").val("所有机关单位");
+            $("#gymInfo").val("所有场馆");
+            searchParam.startTime=null;
+            searchParam.endTime=null;
+            form.render("select") //重新渲染单下拉框
+        });
+
+        var tagData = [];//这里的tag不管是不是deleted，因为历史不能受现在的运动类型影响
+        //填充类型：要放layui里面，不然request无效
+        CoreUtil.sendAjax("/sys/getAllDept", null, function (res) {
+            console.log("获取机关单位.......")
+            if (res.data != null) {
+                document.getElementById("deptSelect").style.display="block";
+                var types = res.data;
+                console.log("type:" + JSON.stringify(types))
+                var typeK = document.getElementById("deptInfo");
+                typeK.options.length = 0;//清空
+                typeK.options.add(new Option("所有机关单位", ""));
+                for (var index = 0; index < types.length; index++) {
+                    console.log("type:"+types[index]);
+                    var name = types[index].name;
+                    var tid = types[index].id;
+                    typeK.options.add(new Option(name, tid));//Option("文本","值")
+                }
+                // typeK.innerText=typeInner;
+                form.render();//不添加不会显示
+            }
+        }, "POST", false, function (res) {
+            // layer.msg("抱歉！您暂无获取机关单位的权限");
+        });
+        CoreUtil.sendAjax("/sys/getGymListByDept", null, function (res) {
+            console.log("获取场馆.......")
+            if (res.data != null) {
+                document.getElementById("gymSelect").style.display="block";
+                var types = res.data;
+                // console.log("type:" + JSON.stringify(types))
+                var typeK = document.getElementById("gymInfo");
+                typeK.options.length = 0;//清空
+                typeK.options.add(new Option("所有场馆", ""));
+                for (var index = 0; index < types.length; index++) {
+                    console.log("type:"+types[index]);
+                    var name = types[index].gymName;
+                    var tid = types[index].gymId;
+                    typeK.options.add(new Option(name, tid));//Option("文本","值")
+                }
+                // typeK.innerText=typeInner;
+                form.render();//不添加不会显示
+            }
+        }, "GET", false, function (res) {
+            // layer.msg("抱歉！您暂无获取机关单位的权限");
+        });
+        //填充类型
+        CoreUtil.sendAjax("/sys/getExerciseTypeWithOutDeleted", null, function (res) {
+            console.log("获取所有运动类型.......")
+            if (res.data != null) {
+                var types=res.data;
+                exerciseTypeNum=types.length;
+                //处理tagData
+                for(var index=0;index<types.length;index++){
+                    var name=types[index].typeName;
+                    var tid=types[index].typeId;
+                    var type={"id":tid,"name":name,"status":1};
+                    tagData.push(type);
+                    // table.render();
+                }
+            }
+        }, "GET", false, function (res) {
+            layer.msg("抱歉！您暂无获取类型的权限");
+        });
+
         form.render();
         var searchParam = {
             customerName: null,
             customerPhone: null,
             customerIdentityCard:null,
             isOnlineUser:null,
+            deptId:null,
+            gymId:null,
             createTime: null,
             startTime: null,
             endTime: null,
@@ -251,32 +355,114 @@
                         {type: 'checkbox', fixed: 'left'},
                         {field: 'customerName', align: 'center', title: '用户名', width: 110},
                         {field: 'customerPhone', align: 'center', title: '手机号', width: 120},
-                        {field: 'customerIdentityCard', align: 'center', title: '身份证', width: 120},
-                        {field: 'isBlackUser', align: 'center', title: '是否是禁入人员', width: 60, templet: '#blackTpl'},
-                        {field: 'isOnlineUser', align: 'center', title: '是否是在线预约人员', align: 'center', width: 60, templet: '#statusTpl'},
-                        {field: 'exerciseType', align: 'center', title: '运动类型'},
+                        {field: 'customerIdentityCard', align: 'center', title: '身份证',width:200},
+                        {field: 'isBlackUser', align: 'center', title: '是否是禁入人员', width: 160, templet: '#blackTpl'},
+                        {field: 'isOnlineUser', align: 'center', title: '是否是在线预约人员', align: 'center', width: 160, templet: '#statusTpl'},
                         {
-                            field: 'orderStartTime', align: 'center', title: '预约开始时间', width: 170, templet: function (item) {
+                            field: 'gymName', align: 'center', title: '场馆名称', align: 'center', templet: function (data) {
+                                return data.gym.gymName;
+                            }
+                        },
+                        {
+                            field: 'deptName', align: 'center', title: '机关单位', align: 'center', templet: function (data) {
+                                return data.dept.name;
+                            }
+                        },
+                        {field: 'exerciseType', align: 'center', title: '运动类型',templet: function (data) {
+                                let tagListStr = "";
+                                let types=data.exerciseType.split("-");
+                                // console.log("types:"+JSON.stringify(types));
+                                for(let t=0;t<types.length;t++){
+                                    // console.log("tagData:"+JSON.stringify(tagData))
+                                    //types取值记得-1，不然要超出界限，或者undefined
+                                    for(let td=0;td<tagData.length;td++){//可能出现类型被删除找不到，所以要做遍历查找
+                                        if(tagData[td].id==types[t]){
+                                            let str = '<span class="layui-badge" style="background-color: pink;' +
+                                                'color: #666666;margin-right: 3px">' + tagData[td].name + '</span>';
+                                            tagListStr += str;
+                                        }
+                                    }
+                                }
+                                return tagListStr.length==0?"空":tagListStr;
+                            }
+                        },
+                        {
+                            field: "follows", align: 'center', title: '随行者', templet: function (data) {
+                                let follows=data.follows;
+                                let otherListStr = "";
+                                if(!(follows==null||follows==undefined||follows.length==0)){
+                                    let fNames = follows.followNames;
+                                    let fIDs = follows.followIdentityCards;
+                                    let fPhones = follows.followPhones;
+                                    let fComes = follows.followComings;
+
+                                    console.log("随行者：" + fNames+ "--" + fIDs + "--" +fPhones + "--" +fComes)
+                                    let fName = [];
+                                    let fID = [];
+                                    let fPhone =[];
+                                    let fCome = [];
+                                    // let fFollow=[];
+                                    if(!(fNames==null||fNames==undefined||fNames.length==0)){
+                                        fName = fNames.split("#");
+                                    }
+                                    if(!(fIDs==null||fIDs==undefined||fIDs.length==0)){
+                                        fID = fIDs.split("#")
+                                    }
+                                    if(!(fPhones==null||fPhones==undefined||fPhones.length==0)){
+                                        fPhone = fPhones.split("#")
+                                    }
+                                    if(!(fComes==null||fComes==undefined||fComes.length==0)){
+                                        fCome = fComes.split("#")
+                                    }
+                                    /*if(!(follows==null||follows==undefined||follows.length==0)){
+                                        fFollow = follows.split("#")
+                                    }*/
+                                    for (let index = 0; index < fID.length; index++) {
+                                        let n = "名字", i = "身份证", p = "电话", b = "已来", color = "skyblue";
+                                        if (index < fName.length)
+                                            n = fName[index];
+                                        if (index < fPhone.length)
+                                            p = fPhone[index];
+                                        if (index < fCome.length) {
+                                            if (fCome[index] == 1){
+                                                color="orange"
+                                                b = "未来";
+                                            }
+                                        }
+                                        let str = '<span class="layui-badge" style="background-color: ' + color +
+                                            ';color: #666666;margin-right: 3px">'
+                                            + n +  '   ' + b+
+                                            '</span>';
+                                        console.log("str:"+str)
+                                        otherListStr += str;
+                                    }
+                                }
+                                /*'   ' + fID[index] + '   ' + p +*/
+                                return otherListStr.length == 0 ? "无" : otherListStr;
+                            }
+                        },
+                        {
+                            field: 'orderStartTime', align: 'center', title: '预约开始时间',hide:true, templet: function (item) {
                                 return CoreUtil.formattime(item.orderStartTime);
                             }
                         },
                         {
-                            field: 'orderEndTime', align: 'center', title: '预约结束时间', width: 170, templet: function (item) {
+                            field: 'orderEndTime', align: 'center', title: '预约结束时间', hide:true, templet: function (item) {
                                 return CoreUtil.formattime(item.orderEndTime);
                             }
                         },
                         {
-                            field: 'inTime', align: 'center', title: '进入时间', width: 170, templet: function (item) {
+                            field: 'inTime', align: 'center', title: '进入时间', hide:true, templet: function (item) {
                                 return CoreUtil.formattime(item.inTime);
                             }
                         },
                         {
-                            field: 'outTime', align: 'center', title: '出去时间', width: 170, templet: function (item) {
+                            field: 'outTime', align: 'center', title: '出去时间', hide:true, templet: function (item) {
                                 return CoreUtil.formattime(item.outTime);
                             }
                         },
                         {
-                            field: 'createTime', align: 'center', title: '创建时间？', width: 170, templet: function (item) {
+                            field: 'createTime', align: 'center', title: '创建时间', hide:true, templet: function (item) {
                                 return CoreUtil.formattime(item.createTime);
                             }
                         },
@@ -296,13 +482,25 @@
             , range: '~'
             , done: function (value, date, endDate) {
                 if (value != null && value != undefined && value != "") {
-                    searchParam.startTime = value.split("~")[0];
-                    searchParam.endTime = value.split("~")[1];
+                    searchParam.startTime = value.split(" ~ ")[0];
+                    searchParam.endTime = value.split(" ~ ")[1];
+                    searchParam.createTime=value;
+                    console.log("value:"+searchParam.startTime+searchParam.endTime)
                 } else {
                     searchParam.startTime = null;
                     searchParam.endTime = null;
                 }
             }
+        });
+        laydate.render({
+            elem: '#InAndOutTime'
+            , type: 'datetime'
+            , range: '~'
+        });
+        laydate.render({
+            elem: '#orderTime'
+            , type: 'datetime'
+            , range: '~'
         });
 
 
@@ -314,7 +512,7 @@
                     var checkStatus = table.checkStatus(obj.config.id);
                     var data = checkStatus.data;
                     if (data.length == 0) {
-                        layer.msg("请选择要批量删除的用户");
+                        layer.msg("请选择要批量删除的历史数据");
                     } else {
                         var userIds = [];
                         $(data).each(function (index, item) {
@@ -350,6 +548,8 @@
                     searchParam.isOnlineUser = $("#isOnlineUser").val();
                     searchParam.createTime = $("#createTime").val();
                     searchParam.pageNum = 1;
+                    searchParam.deptId = $("#deptInfo").val();
+                    searchParam.gymId = $("#gymInfo").val();
                     CoreUtil.sendAjax("/sys/gymHistories", JSON.stringify(searchParam), function (res) {
                         laypageTable(res.data.totalRows, searchParam.pageNum);
                         if (res.data.list != null) {
@@ -384,9 +584,13 @@
                     $(".operation_gymHistory input[name=customerIdentityCard]").val(data.customerIdentityCard);
                     $(".operation_gymHistory input[name=isBlackUser]").val(data.isBlackUser);
                     $(".operation_gymHistory input[name=isOnlineUser]").val(data.isOnlineUser);
+                    //处理时间
+
                     $(".operation_gymHistory input[name=orderStartTime]").val(data.orderStartTime);
                     $(".operation_gymHistory input[name=orderEndTime]").val(data.orderEndTime);
+
                     $(".operation_gymHistory input[name=exerciseType]").val(data.exerciseType);
+
                     $(".operation_gymHistory input[name=inTime]").val(data.inTime);
                     $(".operation_gymHistory input[name=outTime]").val(data.outTime);
                     form.render(); //更新全部
@@ -417,7 +621,7 @@
 
         });
         form.on('submit(submit)', function (data) {
-            if (data.field.id === undefined || data.field.id === null || data.field.id === "") {
+            if (data.field.historyId === undefined || data.field.historyId === null || data.field.historyId === "") {
                 CoreUtil.sendAjax("/sys/gymHistory", JSON.stringify(data.field), function (res) {
                     $(".gymHistory_table_div").show();
                     $(".operation_gymHistory").hide();

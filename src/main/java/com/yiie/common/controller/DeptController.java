@@ -2,9 +2,13 @@ package com.yiie.common.controller;
 
 import com.yiie.aop.annotation.LogAnnotation;
 import com.yiie.common.service.DeptService;
+import com.yiie.common.service.UserService;
+import com.yiie.constant.Constant;
+import com.yiie.entity.BlackUserType;
 import com.yiie.entity.Dept;
 import com.yiie.entity.User;
 import com.yiie.utils.DataResult;
+import com.yiie.utils.JwtTokenUtil;
 import com.yiie.vo.request.DeptAddReqVO;
 import com.yiie.vo.request.DeptPageReqVO;
 import com.yiie.vo.request.DeptUpdateReqVO;
@@ -19,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -37,6 +42,26 @@ public class DeptController {
 
     @Autowired
     private DeptService deptService;
+
+    @Autowired
+    private UserService userService;
+
+    @PostMapping("/getAllDept")
+    @ApiOperation(value = "教体局获取机关单位接口")
+    @RequiresPermissions("sys:dept:list")
+    public DataResult getBUType(HttpServletRequest request){
+        String userId = JwtTokenUtil.getUserId(request.getHeader(Constant.ACCESS_TOKEN));
+        String deptId=userService.getDeptIdFromUserId(userId);
+        System.out.print("\n\n\n获取黑名单类型："+deptId+"\n\n\n");
+        if(deptId!=null&&deptId.length()>0){//如果是机关单位搜索则返回空
+            System.out.print("\n\n\n机关单位访问\n\n\n");
+            return DataResult.success();
+        }
+        Dept dept=new Dept();
+        dept.setId(deptId);
+        List<Dept> type=deptService.getAllDept();
+        return DataResult.success(type);
+    }
 
     @GetMapping("/dept/tree")
     @ApiOperation(value = "树型组织列表接口")

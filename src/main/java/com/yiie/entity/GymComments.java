@@ -1,5 +1,7 @@
 package com.yiie.entity;
 
+import io.swagger.annotations.ApiModelProperty;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -42,6 +44,26 @@ public class GymComments implements Serializable {
     private Date createTime;
     private Date updateTime;
     private Integer deleted;
+    private Gym gym;
+
+    @ApiModelProperty("机关单位")
+    private Dept dept;
+
+    public Dept getDept() {
+        return dept;
+    }
+
+    public void setDept(Dept dept) {
+        this.dept = dept;
+    }
+
+    public Gym getGym() {
+        return gym;
+    }
+
+    public void setGym(Gym gym) {
+        this.gym = gym;
+    }
 
     public String getCommentTagContent() {
         return commentTagContent;

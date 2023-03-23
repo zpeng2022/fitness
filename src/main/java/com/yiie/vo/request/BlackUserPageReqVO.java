@@ -3,6 +3,8 @@ package com.yiie.vo.request;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.Date;
+
 @Data
 public class BlackUserPageReqVO {
     public BlackUserPageReqVO(int pageNum, int pageSize) {
@@ -23,7 +25,7 @@ public class BlackUserPageReqVO {
     private String identityCard;
 
     @ApiModelProperty(value = "部门ID")
-    private String deptID;
+    private String deptId;
 
     @ApiModelProperty(value = "账号")
     private String username;
@@ -35,7 +37,10 @@ public class BlackUserPageReqVO {
     private String typeInfo;
 
     @ApiModelProperty(value = "导入时间")
-    private Integer importTime;
+    private String importTime1;
+
+    @ApiModelProperty(value = "导入时间")
+    private String importTime2;
 
     @ApiModelProperty(value = "更新时间")
     private Integer updateTime;

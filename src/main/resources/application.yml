@@ -4,6 +4,7 @@ spring:
   servlet:
     multipart:
       max-request-size: 10MB
+      max-file-size: 10MB
   application:
     name: pgman
   datasource:
@@ -11,10 +12,11 @@ spring:
     druid:
       driver-class-name: com.mysql.jdbc.Driver
       # url: jdbc:mysql://localhost:13306/bgman?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&useSSL=false
-      url: jdbc:mysql://localhost:3306/bigman?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&useSSL=false&serverTimezone=GMT%2b8
+      url: jdbc:mysql://localhost:3306/bigman_yt?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&useSSL=false&serverTimezone=UTC
+#      url: jdbc:mysql://123.60.165.20:13306/bgman?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&useSSL=false&serverTimezone=GMT%2b8
       username: root
       password: root
-      # password: fitnessBooking_2022_hdu
+#      password: fitnessBooking_2022_hdu
       initial-size: 5
       max-active: 20
       min-idle: 5

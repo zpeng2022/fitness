@@ -13,6 +13,7 @@ import com.yiie.utils.PageUtils;
 import com.yiie.utils.TokenSettings;
 import com.yiie.vo.data.*;
 import com.yiie.vo.request.*;
+import com.yiie.vo.response.GymHistoryFollow;
 import com.yiie.vo.response.PageVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -67,8 +69,35 @@ public class GymHistoryServiceImpl implements GymHistoryService {
     @Override
     public PageVO<GymHistory> pageInfo(GymHistoryPageReqVO vo) {
         PageHelper.startPage(vo.getPageNum(),vo.getPageSize());
-        List<GymHistory> GymHistory = gymHistoryMapper.selectAllGymHistoriesByDeptID(vo);
-        return PageUtils.getPageVO(GymHistory);
+//        System.out.print("Impl："+vo+"\n\n\n");
+        List<GymHistory> GymHistoryList = gymHistoryMapper.selectAllGymHistoriesByDeptID2(vo);
+        for(GymHistory g:GymHistoryList){
+            GymHistoryFollow follow=g.getFollows();
+            System.out.print("\n\n\n##################################\n");
+            System.out.print("follow："+follow);
+            System.out.print("\n\n\n##################################\n");
+            if(follow!=null){
+                String[] identityList=follow.getFollowIdentityCards().split("#");//得到随行人员身份证
+                Date orderStart=g.getOrderStartTime();//得到预约开始时间
+                Date orderEnd=g.getOrderEndTime();//得到预约开始时间
+                int[] come=new int[identityList.length];//随行人员是否来了
+                for(int i=0;i<identityList.length;i++){//判断每一个随行人员是否来了
+                    int isCome=gymHistoryMapper.checkIsComing(identityList[i],orderStart,orderEnd);
+                    if(isCome>0){//表示有入馆记录,则随行来了
+                        come[i]=1;
+                    }
+                }
+                StringBuffer s=new StringBuffer();
+                for(int c=0;c<come.length-1;c++){
+                    s.append(c+"#");
+                }
+                s.append(come[come.length-1]);
+                follow.setFollowComings(s.toString());
+                g.setFollows(follow);//更新follow
+            }
+        }
+//        System.out.print("GymHistory："+GymHistoryList+"\n\n\n");
+        return PageUtils.getPageVO(GymHistoryList);
     }
 
     @Override
@@ -168,8 +197,37 @@ public class GymHistoryServiceImpl implements GymHistoryService {
     }
 
     @Override
+    public List<PeopleSportTime> getPeopleSportToday(String gymId,Date S,Date E) {
+        return gymHistoryMapper.getPeopleSportToday(gymId,S,E);
+    }
+    @Override
     public List<PeopleSportTime> getPeopleSportTimes(String gymId) {
         return gymHistoryMapper.getPeopleSportTimes(gymId);
+    }
+
+    @Override
+    public List<GymPeopleMonth> getPeopleNumMonthByDeptId(Date monthAgo, Date todayTime, String deptId) {
+        return gymHistoryMapper.getPeopleNumMonthByDeptId(monthAgo,todayTime,deptId);
+    }
+
+    @Override
+    public int getCustomerSportDay(String customerIdentityCard) {
+        return gymHistoryMapper.getCustomerSportDay(customerIdentityCard);
+    }
+
+    @Override
+    public int getCustomerGymNum(String customerIdentityCard) {
+        return gymHistoryMapper.getCustomerGymNum(customerIdentityCard);
+    }
+
+    @Override
+    public List<PeopleSportTime> getPeopleSportTimesByCustomerId(String customer_identity_card,int year) {
+        return gymHistoryMapper.getPeopleSportTimesByCustomerId(customer_identity_card,year);
+    }
+
+    @Override
+    public List<PeopleSportTime> getPeopleSportTimesByCustomerId2(String customer_identity_card) {
+        return gymHistoryMapper.getPeopleSportTimesByCustomerId2(customer_identity_card);
     }
 
     @Override
@@ -181,4 +239,16 @@ public class GymHistoryServiceImpl implements GymHistoryService {
     public List<OnlineNum> getIsOnlineNum(String gymId) {
         return gymHistoryMapper.getIsOnlineNum(gymId);
     }
+
+    @Override
+    public List<String> getTypeAndValueByIDCard(String customerIdentityCard) {
+        return gymHistoryMapper.getTypeAndValueByIDCard(customerIdentityCard);
+    }
+
+    @Override
+    public List<PeopleSportTime> getUserSportTimes(String userIdentityCard) {
+        return gymHistoryMapper.getUserSportTimes(userIdentityCard);
+    }
+
+
 }

@@ -9,6 +9,23 @@
         <result column="createTime" jdbcType="VARCHAR" property="createTime" />
         <result column="updateTime" jdbcType="VARCHAR" property="updateTime" />
         <result column="deleted" jdbcType="TINYINT" property="deleted" />
+        <collection property="dept" resultMap="Dept">
+
+        </collection>
+    </resultMap>
+    <resultMap id="Dept" type="com.yiie.entity.Dept">
+        <id column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="deptNo" jdbcType="VARCHAR" property="deptNo"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="pid" jdbcType="VARCHAR" property="pid"/>
+        <result column="pidName" jdbcType="VARCHAR" property="pidName"/>
+        <result column="status" jdbcType="VARCHAR" property="status"/>
+        <result column="relationCode" jdbcType="VARCHAR" property="relationCode"/>
+        <result column="deptManagerId" jdbcType="VARCHAR" property="deptManagerId"/>
+        <result column="managerName" jdbcType="VARCHAR" property="managerName"/>
+        <result column="phone" jdbcType="TINYINT" property="phone"/>
+        <result column="createTime" jdbcType="TINYINT" property="createTime"/>
+        <result column="updateTime" jdbcType="VARCHAR" property="updateTime"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -30,28 +47,33 @@
     </select>
 
     <select id="selectAllGymCustomTagsByDeptID" resultMap="BaseResultMap" parameterType="com.yiie.vo.request.GymCommentTagPageReqVO">
-        select <include refid="Base_Column_List"></include>
-        from gym_customtag
+        select tagId,e.deptId,tagCount,tagContent,e.createTime,e.updateTime,e.deleted,
+        dept.id,dept.dept_no,dept.name,dept.pid,dept.status,dept.relation_code,dept.dept_manager_id,dept.manager_name,dept.phone,dept.create_time,dept.update_time,dept.deleted
+        from gym_customtag e
+        left join dept
+        on e.deptId=dept.id
         <where>
-            deleted=1
-            AND deptId = #{deptId}
+            e.deleted=1
+            <if test="deptId != null and deptId != ''">
+                AND e.deptId = #{deptId}
+            </if>
             <if test="tagId != null and tagId != ''">
                 AND tagId = #{tagId}
             </if>
-            <if test="deptId != null and deptId != ''">
-                AND deptId = #{deptId}
-            </if>
-            <!--<if test="tagCount != null and tagCount != ''">
+            <if test="tagCount != null and tagCount != ''">
                 AND tagCount = #{tagCount}
-            </if>-->
-            <if test="tagContent != null and tagContent != ''">
-                AND tagContent = #{tagContent}
             </if>
-            <if test="createTime != null and createTime != ''">
+            <if test="tagContent != null and tagContent != ''">
+                AND tagContent like CONCAT('%',#{tagContent},'%')
+            </if>
+            <!--<if test="createTime != null and createTime != ''">
                 AND createTime = #{createTime}
+            </if>-->
+            <if test="startTime!=null and startTime!='' and endTime!=null and endTime!=''">
+                AND e.createTime BETWEEN #{startTime} and #{endTime}
             </if>
             <if test="updateTime != null and updateTime != ''">
-                AND updateTime = #{updateTime}
+                AND e.updateTime = #{updateTime}
             </if>
         </where>
     </select>
@@ -109,9 +131,6 @@
     <update id="updateByPrimaryKeySelective" parameterType="com.yiie.entity.GymCustomTags">
         update gym_customtag
         <set>
-            <if test="tagId != null">
-                tagId = #{tagId,jdbcType=VARCHAR},
-            </if>
             <if test="deptId != null">
                 deptId = #{deptId,jdbcType=VARCHAR},
             </if>
@@ -131,8 +150,10 @@
                 deleted = #{deleted,jdbcType=TINYINT},
             </if>
         </set>
-        where commentId = #{commentId,jdbcType=VARCHAR}
+        where
+        tagId = #{tagId}
     </update>
+<!--    where commentId = #{commentId,jdbcType=VARCHAR}-->
 
     <update id="deletedGymCustomTags" parameterType="com.yiie.entity.GymCustomTags">
         update gym_customtag

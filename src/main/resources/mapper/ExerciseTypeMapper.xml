@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yiie.common.mapper.ExerciseTypeMapper">
+    <resultMap id="BaseResultMap" type="com.yiie.entity.ExerciseType">
+        <id column="typeId" jdbcType="VARCHAR" property="typeId"/>
+        <id column="deptId" jdbcType="VARCHAR" property="deptId"/>
+        <id column="typeName" jdbcType="VARCHAR" property="typeName"/>
+        <result column="description" jdbcType="VARCHAR" property="description"/>
+        <result column="create_time" jdbcType="TINYINT" property="createTime"/>
+        <result column="update_time" jdbcType="TINYINT" property="updateTime"/>
+        <result column="deleted" jdbcType="TINYINT" property="deleted"/>
+        <collection property="dept" resultMap="Dept">
+
+        </collection>
+    </resultMap>
+    <resultMap id="Dept" type="com.yiie.entity.Dept">
+        <id column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="deptNo" jdbcType="VARCHAR" property="deptNo"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="pid" jdbcType="VARCHAR" property="pid"/>
+        <result column="pidName" jdbcType="VARCHAR" property="pidName"/>
+        <result column="status" jdbcType="VARCHAR" property="status"/>
+        <result column="relationCode" jdbcType="VARCHAR" property="relationCode"/>
+        <result column="deptManagerId" jdbcType="VARCHAR" property="deptManagerId"/>
+        <result column="managerName" jdbcType="VARCHAR" property="managerName"/>
+        <result column="phone" jdbcType="TINYINT" property="phone"/>
+        <result column="createTime" jdbcType="TINYINT" property="createTime"/>
+        <result column="updateTime" jdbcType="VARCHAR" property="updateTime"/>
+    </resultMap>
+
+    <insert id="insertSelective" parameterType="com.yiie.entity.ExerciseType">
+        insert into exercisetype
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="typeId != null">
+                typeId,
+            </if>
+            <if test="typeName != null">
+                typeName,
+            </if>
+            <if test="description != null">
+                description,
+            </if>
+            <if test="createTime!=null">
+                createTime,
+            </if>
+            <if test="updateTime != null">
+                updateTime,
+            </if>
+            <if test="deleted != null">
+                deleted,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="typeId != null">
+                #{typeId},
+            </if>
+            <if test="typeName != null">
+                #{typeName},
+            </if>
+            <if test="description != null">
+                #{description,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime!=null">
+                #{createTime},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime},
+            </if>
+            <if test="deleted != null">
+                #{deleted},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="deletedExerciseType" parameterType="com.yiie.entity.ExerciseType">
+        update exercisetype
+        <set>
+            deleted = 0,
+            <if test="exerciseType.updateTime != null">
+                updateTime = #{exerciseType.updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where typeId in
+        <foreach collection="list" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+    </update>
+    <update id="updateByPrimaryKeySelective" parameterType="com.yiie.entity.ExerciseType">
+        update exercisetype
+        <set>
+
+            <if test="typeName != null">
+                typeName = #{typeName,jdbcType=VARCHAR},
+            </if>
+            <if test="description != null">
+                description = #{description,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null">
+                updateTime = #{updateTime,jdbcType=VARCHAR},
+            </if>
+            <if test="deleted != null">
+                deleted = #{deleted,jdbcType=TINYINT},
+            </if>
+        </set>
+        where typeId = #{typeId,jdbcType=VARCHAR}
+    </update>
+
+    <select id="getAllType" resultType="com.yiie.entity.ExerciseType">
+        select * from exercisetype
+        where deleted=1
+    </select>
+    <select id="selectAllCustomersInfo" resultMap="BaseResultMap" parameterType="com.yiie.vo.request.ExerciseTypePageReqVO">
+        select typeId,e.deptId,typeName,description,e.createTime,e.updateTime,e.deleted,
+        dept.id,dept.dept_no,dept.name,dept.pid,dept.status,dept.relation_code,dept.dept_manager_id,dept.manager_name,dept.phone,dept.create_time,dept.update_time
+        from exercisetype e
+        left join dept
+        on e.deptId=dept.id
+        <where>
+            e.deleted=1
+            <if test="typeId!=null and typeId!=''">
+                AND typeId=#{typeId}
+            </if>
+            <if test="typeName!=null and typeName!=''">
+                AND typeName like CONCAT("%", #{typeName},"%")
+            </if>
+            <if test="descripton!=null and descripton!=''">
+                AND descripton like CONCAT("%", #{descripton},"%")
+            </if>
+            <if test="deptId!=null and deptId!=''">
+                AND e.deptId =#{deptId}
+            </if>
+            <if test="startTime!=null and startTime!='' and endTime!=null and endTime!=''">
+                AND e.createTime between #{startTime} and #{endTime}
+            </if>
+        </where>
+    </select>
+    <select id="selectByPrimaryKey" resultType="com.yiie.entity.ExerciseType">
+        select * from exercisetype
+        where typeId=#{typeId}
+    </select>
+    <select id="getAllTypeWithOutDeleted" resultType="com.yiie.entity.ExerciseType">
+        select * from exercisetype
+    </select>
+    <select id="getTypeByDeptId" resultType="com.yiie.entity.ExerciseType">
+        select * from exercisetype
+        where deptId=#{deptId}
+    </select>
+</mapper>

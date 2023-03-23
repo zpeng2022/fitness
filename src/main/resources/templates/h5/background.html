@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head> <!--xmlns:th="http://www.thymeleaf.org"-->
+    <meta charset="utf-8">
+    <title>H5背景图片图片上传</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <link rel="stylesheet" href="/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="/css/form.css">
+    <script src="/layui/layui.all.js"></script>
+    <script src="/js/util.js"></script>
+    <!-- <link rel="stylesheet" href="/layuimini/lib/layui-v2.6.3/css/layui.css" media="all">
+     <link rel="stylesheet" href="/layuimini/lib/font-awesome-4.7.0/css/font-awesome.min.css" media="all">
+     <link rel="stylesheet" href="/layuimini/css/public.css" media="all">-->
+
+    <!--    <script src="/layui/layui.js" charset="utf-8"></script>-->
+    <!--下面的script不要放body下面，全部放这里，以及放在layui文件夹-->
+    <script type="text/javascript" src="/layui/my/vue.js"></script>
+    <script src="/layui/my/lay-config.js?v=1.0.4" charset="utf-8"></script>
+    <!--    <script src="/layui/my/jquery-3.4.1/jquery-3.4.1.min.js"></script>-->
+    <script src="https://cdn.bootcdn.net/ajax/libs/axios/0.19.2/axios.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+    <style>
+        .layui-card {border:1px solid #f2f2f2;border-radius:5px;}
+        .icon {margin-right:10px;color:#1aa094;}
+        .icon-cray {color:#ffb800!important;}
+        .icon-blue {color:#1e9fff!important;}
+        .icon-tip {color:#ff5722!important;}
+        .layuimini-qiuck-module {text-align:center;margin-top: 10px}
+        .layuimini-qiuck-module a i {display:inline-block;width:100%;height:60px;line-height:60px;text-align:center;border-radius:2px;font-size:30px;background-color:#F8F8F8;color:#333;transition:all .3s;-webkit-transition:all .3s;}
+        .layuimini-qiuck-module a cite {position:relative;top:2px;display:block;color:#666;text-overflow:ellipsis;overflow:hidden;white-space:nowrap;font-size:14px;}
+        .welcome-module {width:100%;height:210px;}
+        .panel {background-color:#fff;border:1px solid transparent;border-radius:3px;-webkit-box-shadow:0 1px 1px rgba(0,0,0,.05);box-shadow:0 1px 1px rgba(0,0,0,.05)}
+        .panel-body {padding:10px}
+        .panel-title {margin-top:0;margin-bottom:0;font-size:12px;color:inherit}
+        .label {display:inline;padding:.2em .6em .3em;font-size:75%;font-weight:700;line-height:1;color:#fff;text-align:center;white-space:nowrap;vertical-align:baseline;border-radius:.25em;margin-top: .3em;}
+        .layui-red {color:red}
+        .main_btn > p {height:40px;}
+        .layui-bg-number {background-color:#F8F8F8;}
+        .layuimini-notice:hover {background:#f6f6f6;}
+        .layuimini-notice {padding:7px 16px;clear:both;font-size:12px !important;cursor:pointer;position:relative;transition:background 0.2s ease-in-out;}
+        .layuimini-notice-title,.layuimini-notice-label {
+            padding-right: 70px !important;text-overflow:ellipsis!important;overflow:hidden!important;white-space:nowrap!important;}
+        .layuimini-notice-title {line-height:28px;font-size:14px;}
+        .layuimini-notice-extra {position:absolute;top:50%;margin-top:-8px;right:16px;display:inline-block;height:16px;color:#999;}
+        .agree,.disagree{
+            background-color: rgba(0, 102, 255, 0.15);
+        }
+        .like{
+            background-color:#FFB6C1;
+        }
+        [v-cloak]{
+            display: none;
+        }
+    </style>
+
+    <!--<style>
+        img{
+            width: 300px;
+            height: auto;
+            display: flex;
+        }
+    </style>-->
+    <style>
+        .wrap{
+            float: left;
+            width: 30%;
+            height: auto;
+            /*background-color: #00FF00;*/
+            margin: 10px;
+        }
+        .diceng{
+            /*overflow: hidden;*/
+            width: 100%;
+            height: auto;
+            float: left;
+        }
+        img{
+            background-color: gainsboro;
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+        }
+        .zhezhao{
+            width: 100%;
+            height: 30px;
+            /*background-color:gainsboro;*/
+        }
+        .message{
+            width: 100%;
+            height: 100%;
+            line-height: 30px;
+        }
+        .message>div{
+            text-align: center;
+            width: 100%;
+            height: auto;
+            float: left;
+            /*background-color: gainsboro;*/
+            vertical-align: center;
+        }
+        button{
+            margin-top: 5%;
+            float: left;
+            display: flex;
+            /*margin-left: 15%;*/
+        }
+    </style>
+</head>
+
+<body>
+<div class="layuimini-container">
+    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
+        <legend>H5背景图片图片上传</legend>
+    </fieldset>
+    <div class="layuimini-main" id="pictureList" >
+        <!--        <input type="hidden" name="gymId"/>-->
+        <div class="wrap layui-form layuimini-form" v-for="(picture, index) in pictures" :key="picture.id">
+            <div class="diceng" v-cloak>
+                <img :src="picture.path">
+            </div>
+            <div class="connect" v-cloak>
+                <form class="layui-form " action="/index/changeH5Background" method="post" enctype="multipart/form-data" lay-filter="" style="width: 100%;left: 0%">
+                    <div class="layui-form-item">
+                        <div class="layui-form-label ">选择文件</div>
+                        <div class="layui-input-block">
+                            <input type="file" name="picture" id="pictureC" class="layui-input" onchange="checkFileNum(this)">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button type="submit" class="layui-btn" lay-submit="" lay-filter="">上传</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function checkFileNum(fileObj){
+        if (window.File && window.FileList) {
+            var fileCount = fileObj.files.length;
+            if (fileCount ==0) {
+                window.alert('文件为空');
+                fileObj.value=null;
+                return false;
+            }
+        }
+    }
+
+    layui.use(['layer','form','upload'], function () {
+        var $ = layui.jquery,
+            layer = layui.layer,
+            // miniTab = layui.miniTab,
+            // echarts = layui.echarts,
+            upload=layui.upload,
+            form=layui.form;
+
+
+        const taskMain = new Vue({
+            el: '#pictureList',
+            data: {
+                pictures:[],
+            },
+            methods: {
+                getData: function () {
+                    axios({
+                        url: '/H5/getH5Background',
+                        method: 'POST',
+                    }).then((result) => {
+                        let data = result.data;
+                        console.log("获取图片路径:"+JSON.stringify(data));
+                        console.log("pictures:"+data)
+                        this.pictures=data;
+                        /*this.$nextTick(function () {
+                            this.initChart();
+                        })*/
+                    });
+                },
+            },
+            created() {
+                this.getData();
+            },
+        });
+
+        //指定允许上传的文件类型
+        upload.render({
+            elem: '#test3'
+            ,url: '/sys/loadGymPicture' //此处配置你自己的上传接口即可
+            ,accept: 'file' //普通文件
+            ,auto:true
+            ,done: function(res){
+                layer.msg('上传成功');
+                console.log(res);
+            }
+        });
+    });
+</script>
+</body>
+</html>

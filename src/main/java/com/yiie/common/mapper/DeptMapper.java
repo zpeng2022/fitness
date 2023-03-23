@@ -45,4 +45,10 @@ public interface DeptMapper {
     List<String> selectChildIds(String relationCode);
 
     List<Dept> selectAllByNotContainChild(List<String> list);
+
+    List<Dept> getAllDept();
+
+    Dept getByName(String deptName);
+
+    Dept getById(String deptId);
 }

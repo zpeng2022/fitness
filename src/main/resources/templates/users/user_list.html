@@ -8,6 +8,14 @@
     <script src="/layui/layui.all.js"></script>
     <script src="/js/util.js"></script>
 </head>
+<style>
+    -webkit-scrollbar-track {
+        background-color:red;/*transparent*/
+        -webkit-border-radius: 2em;
+        -moz-border-radius: 2em;
+        border-radius: 2em;
+    }
+</style>
 <body>
 <div class="panel panel-default operation_user" hidden>
     <div class="panel-heading title" style="text-align: center"></div>
@@ -99,14 +107,14 @@
                     <option value="3">保密</option>
                 </select>
             </div>
-            <div class="layui-input-inline layui-form">
+            <!--<div class="layui-input-inline layui-form">
                 <select class="" id="createWhere">
                     <option value="">请选择来源</option>
                     <option value="1">Web</option>
                     <option value="2">Android</option>
                     <option value="3">Ios</option>
                 </select>
-            </div>
+            </div>-->
             <div class="layui-input-inline layui-form ">
                 <select class="" id="status">
                     <option value="">请选择账号状态</option>
@@ -117,6 +125,11 @@
             <div class="layui-input-inline">
                 <input type="text" class="layui-input" id="createTime" placeholder="选择创建时间区间" style="width: 290px">
             </div>
+        </div>
+        <div class="layui-inline">
+            <button id="Reset" type="reset" class="layui-btn layui-btn-primary" style="margin-top: 0px">
+                <i class="layui-icon layui-icon-fonts-clear"></i> 清 空
+            </button>
         </div>
     </div>
     <table class="layui-hide" id="user_table" lay-filter="user_table"></table>
@@ -179,6 +192,7 @@
     var laydate = layui.laydate;
     var tree = layui.tree;
     var transfer = layui.transfer;
+
     layui.use(['table', 'laypage', 'layer', 'laydate', 'tree', 'transfer'], function () {
         form.render();
         var searchParam = {
@@ -194,6 +208,19 @@
             pageNum: 1,
             pageSize: 10
         }
+        //清空条件
+        $('#Reset').on('click', function(){
+            console.log("清空")
+            $("#username").val("");
+            $("#realName").val("");
+            $("#sex").val("请选择性别");
+            $("#status").val("请选择账号状态");
+            $("#createTime").val("");
+            searchParam.startTime=null;
+            searchParam.endTime=null;
+            form.render("select") //重新渲染单下拉框
+        });
+
         CoreUtil.sendAjax("/sys/users", JSON.stringify(searchParam), function (res) {
             laypageTable(res.data.totalRows, searchParam.pageNum);
             if (res.data.list != null) {
@@ -240,11 +267,11 @@
                         {field: 'username', align: 'center', title: '用户名', width: 110},
                         {field: 'realName', align: 'center', title: '真实名称', width: 90},
                         {field: 'deptName', align: 'center', title: '所属部门', width: 120},
-                        {field: 'createWhere', align: 'center', title: '来源', width: 80, templet: '#sourceTpl'},
+                        // {field: 'createWhere', align: 'center', title: '来源', width: 80, templet: '#sourceTpl'},
                         {field: 'phone', align: 'center', title: '手机号', width: 120},
                         {field: 'email', align: 'center', title: '邮箱'},
 
-                        {field: 'sex', title: '性别', align: 'center', width: 60, templet: '#sexTpl'},
+                        {field: 'sex', title: '性别', align: 'center', width: 60, templet: '#sexTpl',hide:true},
                         {
                             field: 'createTime', align: 'center', title: '创建时间', width: 170, templet: function (item) {
                                 return CoreUtil.formattime(item.createTime);
@@ -336,6 +363,7 @@
                     searchParam.nickName = $("#nickName").val();
                     searchParam.pageNum = 1;
                     CoreUtil.sendAjax("/sys/users", JSON.stringify(searchParam), function (res) {
+                        // console.log("gymList:"+JSON.stringify(searchParam))
                         laypageTable(res.data.totalRows, searchParam.pageNum);
                         if (res.data.list != null) {
                             loadTable(res.data.list);

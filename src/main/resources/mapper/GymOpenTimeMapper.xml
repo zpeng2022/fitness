@@ -39,6 +39,13 @@
         select * from gym_opentime
         where gymId=#{s} and whichDay=#{today}
     </select>
+    <select id="getGymCT2" resultType="com.yiie.vo.data.GymCloseTime">
+         SELECT DISTINCT gymId,whichDay,closeTime
+        FROM gym_opentime
+        WHERE deleted=1 and whichDay>=#{fiveDaysAgo} and #{today}>=whichDay and gymId=#{sG}
+        and deptId=#{deptId}
+        ORDER BY whichDay DESC
+    </select>
 
     <insert id="insertSelective" parameterType="com.yiie.entity.GymOpenTime">
         insert into gym_opentime

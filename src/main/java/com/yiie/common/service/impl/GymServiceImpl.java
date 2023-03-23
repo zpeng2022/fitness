@@ -11,6 +11,7 @@ import com.yiie.enums.BaseResponseCode;
 import com.yiie.exceptions.BusinessException;
 import com.yiie.utils.PageUtils;
 import com.yiie.utils.TokenSettings;
+import com.yiie.vo.data.GymIsClose;
 import com.yiie.vo.data.GymOpenTimeVO;
 import com.yiie.vo.request.GymAddReqVO;
 import com.yiie.vo.request.GymPageReqVO;
@@ -24,6 +25,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -122,8 +124,8 @@ public class GymServiceImpl implements GymService {
         gym.setGymId(UUID.randomUUID().toString());
         gym.setDeptId(vo.getDeptId());
         gym.setGymName(vo.getGymName());
-        gym.setMonday(vo.getMonday());
-        gym.setSaturday(vo.getMonday());
+        gym.setMonday(vo.getWorkDay1()+" "+vo.getWorkDay2());
+        gym.setSaturday(vo.getWeekend1()+" "+vo.getWeekend2());
         gym.setGymPhone(vo.getGymPhone());
         gym.setGymCapacity(vo.getGymCapacity());
         // TODO... add images
@@ -156,6 +158,12 @@ public class GymServiceImpl implements GymService {
         BeanUtils.copyProperties(vo,gym);
         gym.setDeleted(1);
         gym.setUpdateTime(new Date());
+        //更新时间格式
+        if(vo.getWorkDay1()!=null&&vo.getWorkDay2()!=null)
+            gym.setMonday(vo.getWorkDay1()+" "+vo.getWorkDay2());
+        if(vo.getWeekend1()!=null&&vo.getWeekend2()!=null)
+            gym.setSaturday(vo.getWeekend1()+" "+vo.getWeekend2());
+//        System.out.print("\n\n\n图片上传gym:"+gym+"\n\n");
         int count = gymMapper.updateByPrimaryKeySelective(gym);
         if(count != 1){
             throw new BusinessException(BaseResponseCode.OPERATION_ERRO);
@@ -175,7 +183,8 @@ public class GymServiceImpl implements GymService {
 
     @Override
     public Gym getById(String gymId) {
-        return gymMapper.selectByPrimaryKey(gymId);
+//        return gymMapper.selectByPrimaryKey(gymId);
+        return gymMapper.getPicPath(gymId);
     }
 
     @Override
@@ -184,8 +193,8 @@ public class GymServiceImpl implements GymService {
     }
 
     @Override
-    public List<Gym>  getByName(String name) {
-        return gymMapper.getByName(name);
+    public List<Gym>  getByName(String name,String deptId) {
+        return gymMapper.getByName(name,deptId);
     }
 
     @Override
@@ -196,5 +205,50 @@ public class GymServiceImpl implements GymService {
     @Override
     public List<String> selectAllName() {
         return gymMapper.selectAllName();
+    }
+
+    @Override
+    public List<GymIsClose> getIsClose() {
+        return gymMapper.getIsClose();
+    }
+
+    @Override
+    public List<String> getAllTypes() {
+        return gymMapper.getAllTypes();
+    }
+
+    @Override
+    public List<Gym> getByDeptId(String deptId) {
+        return gymMapper.getByDeptId(deptId);
+    }
+
+    @Override
+    public List<String> selectAllNameById(String deptId) {
+        return gymMapper.selectAllNameById(deptId);
+    }
+
+    @Override
+    public List<Gym> getAllGym(String name) {
+        return gymMapper.getAllGym(name);
+    }
+
+    @Override
+    public List<GymOpenTimeVO> getGymOTByDeptId(String deptId) {
+        return gymMapper.getGymOTByDeptId(deptId);
+    }
+
+    @Override
+    public List<Gym> getAll() {
+        return gymMapper.getAll();
+    }
+
+    @Override
+    public List<String> getTypesByDeptId(String deptId) {
+        return gymMapper.getTypesByDeptId(deptId);
+    }
+
+    @Override
+    public List<Gym> getGymByDeptId(String deptId) {
+        return gymMapper.getGymByDeptId(deptId);
     }
 }

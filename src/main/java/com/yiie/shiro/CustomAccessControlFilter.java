@@ -39,15 +39,15 @@ public class CustomAccessControlFilter extends AccessControlFilter {
         HttpServletRequest request= (HttpServletRequest) servletRequest;
         try {
             Subject subject=getSubject(servletRequest,servletResponse);
-            System.out.println(subject.isAuthenticated()+"");
+//            System.out.println(subject.isAuthenticated()+"");
 
-            System.out.println(HttpContextUtils.isAjaxRequest(request));
+//            System.out.println(HttpContextUtils.isAjaxRequest(request));
             log.info(request.getMethod());
             log.info(request.getRequestURL().toString());
-            System.out.print("CustomAccessControlFilter-47 获取token:\n");
-            System.out.print("request:"+request.toString()+"\n");
-            System.out.print("request:"+request.getHeader(Constant.ACCESS_TOKEN).toString()+"\n");
+//            System.out.print("CustomAccessControlFilter-47 获取token:\n");
+//            System.out.print("request:"+request.toString()+"\n");
             String token=request.getHeader(Constant.ACCESS_TOKEN);
+//            System.out.print("CustomAccessControlFilter 50 token:"+token+"\n");
             if(StringUtils.isEmpty(token)){
                 System.out.print("token为空\n");
                 throw new BusinessException(BaseResponseCode.TOKEN_ERROR);
@@ -58,6 +58,7 @@ public class CustomAccessControlFilter extends AccessControlFilter {
             if(HttpContextUtils.isAjaxRequest(request)){
                 customRsponse(exception.getMessageCode(),exception.getDetailMessage(),servletResponse);
             }else if(exception.getMessageCode()==BaseResponseCode.TOKEN_ERROR.getCode()){
+                System.out.print("TOKEN_ERROR\n");
                 servletRequest.getRequestDispatcher("/index/login").forward(servletRequest,servletResponse);
             }else if(exception.getMessageCode()==BaseResponseCode.UNAUTHORIZED_ERROR.getCode()){
                 servletRequest.getRequestDispatcher("/index/403").forward(servletRequest,servletResponse);
@@ -78,7 +79,7 @@ public class CustomAccessControlFilter extends AccessControlFilter {
             }
             return false;
         }catch (Exception e) {
-            System.out.print("CustomAccessControlFilter.java:81 报错：e="+e.toString());
+//            System.out.print("CustomAccessControlFilter.java:81 报错：e="+e.toString());
             if(HttpContextUtils.isAjaxRequest(request)){
                 if(e.getCause() instanceof BusinessException){
                     BusinessException exception= (BusinessException) e.getCause();

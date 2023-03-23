@@ -19,7 +19,7 @@
             <div class="layui-form-item">
                 <label class="layui-form-label">评价标签号</label>
                 <div class="layui-input-block">
-                    <input type="tagCount" name="tagCount" placeholder="请输入评价标签" autocomplete="off" class="layui-input">
+                    <input type="tagCount" name="tagCount" id="tagCount" placeholder="请输入评价标签" autocomplete="off" class="layui-input">
                 </div>
             </div>
             <div class="layui-form-item">
@@ -42,14 +42,23 @@
     <div id="searchParam" shiro:hasPermission="sys:gymCommentTag:list">
         <div class="layui-form-item">
             <div class="layui-input-inline">
-                <input type="text" id="tagCount" class="layui-input" autocomplete="off" placeholder="请输入标签号">
+                <input type="text" id="tagCount1" class="layui-input" autocomplete="off" placeholder="请输入标签号">
             </div>
             <div class="layui-input-inline">
                 <input type="text" id="tagContent" class="layui-input" autocomplete="off" placeholder="请输标签内容">
             </div>
             <div class="layui-input-inline">
-                <input type="text" class="layui-input" id="createTime" placeholder="选择创建时间区间" style="width: 290px">
+                <input type="text" class="layui-input" id="createTime" placeholder="选择创建时间区间">
             </div>
+            <div class="layui-input-inline layui-form" id="deptSelect" style="display:none;">
+                <select id="deptInfo" name="deptId">
+                </select>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <button id="Reset" type="reset" class="layui-btn layui-btn-primary" style="margin-top: 10px">
+                <i class="layui-icon layui-icon-fonts-clear"></i> 清 空
+            </button>
         </div>
     </div>
     <table class="layui-hide" id="customTag_table" lay-filter="customTag_table"></table>
@@ -91,17 +100,54 @@
     var laydate = layui.laydate;
     var tree = layui.tree;
     var transfer = layui.transfer;
+
     layui.use(['table', 'laypage', 'layer', 'laydate', 'tree', 'transfer'], function () {
         form.render();
         var searchParam = {
             tagId: null,
             tagCount: null,
             tagContent:null,
+            createTime:null,
+            deptId:null,
             startTime: null,
             endTime: null,
             pageNum: 1,
             pageSize: 10
         }
+        //清空条件
+        $('#Reset').on('click', function(){
+            console.log("清空")
+            $("#tagCount1").val("");
+            $("#tagContent").val("");
+            $("#createTime").val("");
+            $("#deptInfo").val("所有机关单位");
+            searchParam.createTime=null;
+            searchParam.startTime=null;
+            searchParam.endTime=null;
+        });
+        //填充类型：要放layui里面，不然request无效
+        CoreUtil.sendAjax("/sys/getAllDept", null, function (res) {
+            console.log("获取机关单位.......")
+            if (res.data != null) {
+                document.getElementById("deptSelect").style.display="block";
+                var types = res.data;
+                console.log("type:" + JSON.stringify(types))
+                var typeK = document.getElementById("deptInfo");
+                typeK.options.length = 0;//清空
+                typeK.options.add(new Option("所有机关单位", ""));
+                for (var index = 0; index < types.length; index++) {
+                    console.log("type:"+types[index]);
+                    var name = types[index].name;
+                    var tid = types[index].id;
+                    typeK.options.add(new Option(name, tid));//Option("文本","值")
+                }
+                // typeK.innerText=typeInner;
+                form.render();//不添加不会显示
+            }
+        }, "POST", false, function (res) {
+            // layer.msg("抱歉！您暂无获取机关单位的权限");
+        });
+
         CoreUtil.sendAjax("/sys/gymCommentTags", JSON.stringify(searchParam), function (res) {
             laypageTable(res.data.totalRows, searchParam.pageNum);
             if (res.data.list != null) {
@@ -148,6 +194,11 @@
                         {field: 'tagCount', align: 'center', title: '标签号', width: 110},
                         {field: 'tagContent', align: 'center', title: '标签内容', width: 90},
                         {
+                            field: 'deptName', align: 'center', title: '机关单位', align: 'center', templet: function (data) {
+                                return data.dept.name;
+                            }
+                        },
+                        {
                             field: 'createTime', align: 'center', title: '创建时间', width: 170, templet: function (item) {
                                 return CoreUtil.formattime(item.createTime);
                             }
@@ -168,8 +219,10 @@
             , range: '~'
             , done: function (value, date, endDate) {
                 if (value != null && value != undefined && value != "") {
-                    searchParam.startTime = value.split("~")[0];
-                    searchParam.endTime = value.split("~")[1];
+                    searchParam.startTime = value.split(" ~ ")[0];
+                    searchParam.endTime = value.split(" ~ ")[1];
+                    searchParam.createTime=value;
+                    console.log("value:"+searchParam.startTime+searchParam.endTime)
                 } else {
                     searchParam.startTime = null;
                     searchParam.endTime = null;
@@ -179,18 +232,18 @@
 
 
         table.on('toolbar(customTag_table)', function (obj) {
-
             var checkStatus = table.checkStatus(obj.config.id);
             switch (obj.event) {
                 case 'batchDeleted':
                     var checkStatus = table.checkStatus(obj.config.id);
                     var data = checkStatus.data;
+                    // console.log("批量删除："+JSON.stringify(data))
                     if (data.length == 0) {
                         layer.msg("请选择要批量删除的标签");
                     } else {
                         var userIds = [];
                         $(data).each(function (index, item) {
-                            userIds.push(item.id);
+                            userIds.push(item.tagId);
                         });
                         tipDialog(userIds, "选中的");
                     }
@@ -208,10 +261,11 @@
                     break;
                 case 'search':
                     searchParam.tagId = $("#tagId").val();
-                    searchParam.tagCount = $("#tagCount").val();
+                    searchParam.tagCount = $("#tagCount1").val();
                     searchParam.tagContent = $("#tagContent").val();
-                    searchParam.startTime = $("#startTime").val();
-                    searchParam.endTime = $("#endTime").val();
+                    searchParam.deptId = $("#deptInfo").val();
+                    /*searchParam.startTime = $("#startTime").val();
+                    searchParam.endTime = $("#endTime").val();*/
                     searchParam.pageNum = 1;
                     CoreUtil.sendAjax("/sys/gymCommentTags", JSON.stringify(searchParam), function (res) {
                         laypageTable(res.data.totalRows, searchParam.pageNum);
@@ -270,7 +324,14 @@
 
         });
         form.on('submit(submit)', function (data) {
-            if (data.field.id === undefined || data.field.id === null || data.field.id === "") {
+            if (data.field.tagId === undefined || data.field.tagId === null || data.field.tagId === "") {
+                var tagN=data.field.tagCount;
+                var is=!isNaN(tagN);
+                if(!is){
+                    layer.msg("评价标签号请输入数字!");
+                    $("#tagCount").val("");
+                    return false;
+                }
                 CoreUtil.sendAjax("/sys/gymCommentTag", JSON.stringify(data.field), function (res) {
                     $(".customTag_table_div").show();
                     $(".operation_customTag").hide();

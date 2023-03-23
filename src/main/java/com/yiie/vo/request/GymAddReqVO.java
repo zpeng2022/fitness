@@ -23,10 +23,16 @@ public class GymAddReqVO {
     private String deptName;
 
     @ApiModelProperty(value = "周一至周五开放时间")
-    private String monday;
+    private String workDay1;
+
+    @ApiModelProperty(value = "周一至周五开放时间")
+    private String workDay2;
 
     @ApiModelProperty(value = "周六周日开放时间, 不开放默认为空")
-    private String saturday;
+    private String weekend1;
+
+    @ApiModelProperty(value = "周六周日开放时间, 不开放默认为空")
+    private String weekend2;
 
     @ApiModelProperty(value = "场地电话")
     private String gymPhone;

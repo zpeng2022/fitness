@@ -42,8 +42,9 @@ public class gymCommentTagController {
     public DataResult<PageVO<GymCustomTags>> h5PageInfo(@RequestBody GymCommentTagPageReqVO vo, HttpServletRequest request){
         DataResult<PageVO<GymCustomTags>> result= DataResult.success();
         Gym gym = gymService.getGymById(vo.getGymId());
-        String deptID = gym.getDeptId();
-        vo.setDeptId(deptID);
+        String deptId = gym.getDeptId();
+        if(deptId!=null&&deptId.length()!=0&&deptId!="")
+            vo.setDeptId(deptId);
         result.setData(gymCommentTagService.pageInfo(vo));
         return result;
     }
@@ -55,8 +56,17 @@ public class gymCommentTagController {
     public DataResult<PageVO<GymCustomTags>> pageInfo(@RequestBody GymCommentTagPageReqVO vo, HttpServletRequest request){
         DataResult<PageVO<GymCustomTags>> result= DataResult.success();
         String userId = JwtTokenUtil.getUserId(request.getHeader(Constant.ACCESS_TOKEN));
-        String deptID = userService.getDeptIdFromUserId(userId);
-        vo.setDeptId(deptID);
+        String deptId= userService.getDeptIdFromUserId(userId);
+        if(deptId!=null&&deptId.length()!=0&&deptId!="")
+            vo.setDeptId(deptId);
+        System.out.print("\n\n评价标签信息接口："+vo+"\n\n");
+        String t=vo.getCreateTime();
+       /* if(t!=null&&t!=""){
+            String s=t.substring(0,t.indexOf(" ~ "));
+            String e=t.substring(t.indexOf(" ~ ")+1);
+            vo.setStartTime(s);
+            vo.setEndTime(e);
+        }*/
         result.setData(gymCommentTagService.pageInfo(vo));
         return result;
     }
@@ -67,6 +77,7 @@ public class gymCommentTagController {
     @RequiresPermissions("sys:gymCommentTag:deleted")
     public DataResult deletedGymCustomTags(@RequestBody @ApiParam(value = "用户id集合") List<String> userIds, HttpServletRequest request){
         String operationId= JwtTokenUtil.getUserId(request.getHeader(Constant.ACCESS_TOKEN));
+//        System.out.print("删除评价标签信息:"+userIds+"\n\n");
         gymCommentTagService.deletedGymCustomTags(userIds);
         return DataResult.success();
     }

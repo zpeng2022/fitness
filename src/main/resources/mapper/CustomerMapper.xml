@@ -46,7 +46,7 @@
     <select id="getCustomerByIdentityCard" resultMap="BaseResultMap">
         SELECT <include refid="Base_Column_List"></include>
         FROM customer
-        WHERE customer_identity_card=#{customer_identity_card,jdbcType=VARCHAR}
+        WHERE customer_identity_card=#{identityCard,jdbcType=VARCHAR}
         AND customer_deleted=1
     </select>
 
@@ -145,6 +145,23 @@
         </foreach>
         and customer_deleted=1
     </select>
+    <select id="getIDCardByUserId" resultType="java.lang.String">
+        select customer_identity_card
+        from customer
+        where customer_id=#{userId}
+    </select>
+    <select id="getUserInfoByName" resultType="com.yiie.entity.Customer">
+        SELECT <include refid="Base_Column_List"></include>
+        FROM customer
+        WHERE use=#{userName}
+        AND deleted=1
+    </select>
+    <select id="getBackground" resultType="com.yiie.entity.H5Background">
+        select * from background where id=1
+    </select>
+    <select id="getBackgroundByUserId" resultType="com.yiie.entity.H5Background">
+        select * from background where id=#{userId}
+    </select>
 
     <insert id="insertSelective" parameterType="com.yiie.entity.Customer">
         insert into customer
@@ -153,58 +170,58 @@
                 customer_id,
             </if>
             <if test="customer_identity_card!=null">
-                AND customer_identity_card=#{customer_identity_card}
+                customer_identity_card,
             </if>
             <if test="customer_name!=null">
-                AND customer_name=#{customer_name}
+                customer_name,
             </if>
             <if test="customer_nickname!=null">
-                AND customer_nickname=#{customer_nickname}
+                customer_nickname,
             </if>
             <if test="customer_weight!=null">
-                AND customer_weight=#{customer_weight}
+                customer_weight,
             </if>
             <if test="customer_height!=null">
-                AND customer_height=#{customer_height}
+                customer_height,
             </if>
             <if test="customer_birthday!=null">
-                AND customer_birthday=#{customer_birthday}
-            </if>
-            <if test="customer_birthday!=null">
-                AND customer_birthday=#{customer_birthday}
+                customer_birthday,
             </if>
             <if test="customer_location!=null">
-                AND customer_location=#{customer_location}
+                customer_location,
             </if>
             <if test="customer_hobby!=null">
-                AND customer_hobby=#{customer_hobby}
+                customer_hobby,
             </if>
             <if test="customer_disease!=null">
-                AND customer_disease=#{customer_disease}
+                customer_disease,
             </if>
             <if test="customer_picture!=null">
-                AND customer_picture=#{customer_picture}
+                customer_picture,
             </if>
             <if test="customer_gender!=null">
-                AND customer_gender=#{customer_gender}
+                customer_gender,
             </if>
             <if test="customer_phone!=null">
-                AND customer_phone=#{customer_phone}
+                customer_phone,
             </if>
             <if test="customer_fitness_QRCode!=null">
-                AND customer_fitness_QRCode=#{customer_fitness_QRCode}
+                customer_fitness_QRCode,
             </if>
             <if test="customer_contacts_id!=null">
-                AND customer_contacts_id=#{customer_contacts_id}
+                customer_contacts_id,
             </if>
             <if test="customer_info_id!=null">
-                AND customer_info_id=#{customer_info_id}
+                customer_info_id,
             </if>
             <if test="customer_create_time!=null">
-                AND customer_create_time=#{customer_create_time}
+                customer_create_time,
             </if>
             <if test="customer_update_time!=null">
-                AND customer_update_time=#{customer_update_time}
+                customer_update_time,
+            </if>
+            <if test="customer_deleted!=null">
+                customer_deleted,
             </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -262,7 +279,16 @@
             <if test="customer_update_time != null">
                 #{customer_update_time,jdbcType=TIMESTAMP},
             </if>
+            <if test="customer_deleted != null">
+                #{customer_deleted},
+            </if>
         </trim>
+    </insert>
+    <insert id="insetBackground">
+        INSERT INTO background(`id`, `background`, `createtime`, `updatetime`) VALUES (#{id}, #{background}, #{createtime}, NULL);
+    </insert>
+    <insert id="customerInsetBackground">
+        INSERT INTO background(`id`, `background`, `createtime`, `updatetime`) VALUES (#{id}, #{background}, #{createtime}, NULL);
     </insert>
 
     <update id="updateByPrimaryKeySelective" parameterType="com.yiie.entity.Customer">
@@ -338,5 +364,11 @@
         <foreach collection="list" open="(" close=")" separator="," item="item">
             #{item}
         </foreach>
+    </update>
+    <update id="changeBackground" parameterType="com.yiie.entity.H5Background">
+        update background set background=#{background},updatetime=#{updatetime} where id=1
+    </update>
+    <update id="customerChangeBackground" parameterType="com.yiie.entity.H5Background">
+        update background set background=#{background},updatetime=#{updatetime} where id=#{id}
     </update>
 </mapper>

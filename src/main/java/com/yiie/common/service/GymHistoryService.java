@@ -20,8 +20,24 @@ public interface GymHistoryService {
 
     List<DateSpan> getOrderDateSpan(String gymId);
 
-    List<PeopleSportTime> getPeopleSportTimes(String gymId);
+    List<PeopleSportTime> getPeopleSportToday(String gymId,Date S,Date E);
 
     List<GymPeopleMonth> getPeopleNumMonth(Date monthAgo, Date nowTime);
     List<OnlineNum> getIsOnlineNum(String gymId);
+
+    List<String> getTypeAndValueByIDCard(String customerIdentityCard);
+
+    List<PeopleSportTime> getUserSportTimes(String userIdentityCard);
+
+    List<PeopleSportTime> getPeopleSportTimes(String gymId);
+
+    List<GymPeopleMonth> getPeopleNumMonthByDeptId(Date monthAgo, Date todayTime, String deptId);
+
+    int getCustomerSportDay(String customerIdentityCard);
+
+    int getCustomerGymNum(String customerIdentityCard);
+
+    List<PeopleSportTime> getPeopleSportTimesByCustomerId(String customer_identity_card,int year);
+
+    List<PeopleSportTime> getPeopleSportTimesByCustomerId2(String customer_identity_card);
 }

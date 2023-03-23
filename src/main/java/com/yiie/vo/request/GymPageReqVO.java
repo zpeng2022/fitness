@@ -39,6 +39,9 @@ public class GymPageReqVO {
     @ApiModelProperty(value = "周六周日开放时间, 不开放默认为空")
     private String saturday;
 
+    @ApiModelProperty(value = "运动类型")
+    private String exerciseType;
+
     @ApiModelProperty(value = "场地电话")
     private String gymPhone;
 
@@ -65,10 +68,21 @@ public class GymPageReqVO {
 
     @ApiModelProperty(value = "场地创建时间")
     private String createTime;
+    @ApiModelProperty(value = "场地创建时间")
+    private String startTime;
+
+    @ApiModelProperty(value = "场地创建时间")
+    private String endTime;
 
     @ApiModelProperty(value = "场地更新时间")
     private String updateTime;
 
     @ApiModelProperty(value = "场地是否删除")
     private Integer deleted;
+
+    @ApiModelProperty(value = "是否已经闭馆：1-闭，0-未闭")
+    private Integer isClose;
+
+    @ApiModelProperty(value = "是否已经闭馆：1-闭，0-未闭")
+    private List<String> gymPicturesPathList;
 }

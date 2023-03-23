@@ -1,7 +1,11 @@
 package com.yiie.entity;
 
+import com.yiie.vo.response.FollowsInfo;
+import io.swagger.annotations.ApiModelProperty;
+
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 预约表, 用于审核
@@ -40,11 +44,86 @@ public class GymOrder implements Serializable {
     private String otherCustomerIdentityCards;
     private String otherCustomerNames;
     private String otherCustomerPhones;
+    private String otherIsBlack;
     private Date orderStartTime;
     private Date orderEndTime;
     private Date createTime;
     private Date updateTime;
     private Integer deleted;
+
+    private Gym gym;
+
+    @ApiModelProperty("机关单位")
+    private Dept dept;
+
+    private Integer readStatus;
+
+    private String cancelReason;
+
+    public Integer getReadStatus() {
+        return readStatus;
+    }
+
+    public void setReadStatus(Integer readStatus) {
+        this.readStatus = readStatus;
+    }
+
+    public String getCancelReason() {
+        return cancelReason;
+    }
+
+    public void setCancelReason(String cancelReason) {
+        this.cancelReason = cancelReason;
+    }
+
+    public Dept getDept() {
+        return dept;
+    }
+
+    public void setDept(Dept dept) {
+        this.dept = dept;
+    }
+
+    public Gym getGym() {
+        return gym;
+    }
+
+    public void setGym(Gym gym) {
+        this.gym = gym;
+    }
+
+    @Override
+    public String toString() {
+        return "GymOrder{" +
+                "orderId='" + orderId + '\'' +
+                ", gymId='" + gymId + '\'' +
+                ", deptId='" + deptId + '\'' +
+                ", customerId='" + customerId + '\'' +
+                ", customerName='" + customerName + '\'' +
+                ", customerPhone='" + customerPhone + '\'' +
+                ", customerIdentityCard='" + customerIdentityCard + '\'' +
+                ", exerciseType='" + exerciseType + '\'' +
+                ", existBlackUser=" + existBlackUser +
+                ", orderStatus=" + orderStatus +
+                ", orderFailComment='" + orderFailComment + '\'' +
+                ", otherCustomerIdentityCards='" + otherCustomerIdentityCards + '\'' +
+                ", otherCustomerNames='" + otherCustomerNames + '\'' +
+                ", otherCustomerPhones='" + otherCustomerPhones + '\'' +
+                ", otherIsBlack='" + otherIsBlack + '\'' +
+                ", orderStartTime=" + orderStartTime +
+                ", orderEndTime=" + orderEndTime +
+                ", createTime=" + createTime +
+                ", updateTime=" + updateTime +
+                '}';
+    }
+
+    public String getOtherIsBlack() {
+        return otherIsBlack;
+    }
+
+    public void setOtherIsBlack(String otherIsBlack) {
+        this.otherIsBlack = otherIsBlack;
+    }
 
     public String getOrderId() {
         return orderId;
@@ -198,28 +277,4 @@ public class GymOrder implements Serializable {
         this.otherCustomerPhones = otherCustomerPhones;
     }
 
-    @Override
-    public String toString() {
-        return "GymOrder{" +
-                "orderId='" + orderId + '\'' +
-                ", gymId='" + gymId + '\'' +
-                ", deptId='" + deptId + '\'' +
-                ", customerId='" + customerId + '\'' +
-                ", customerName='" + customerName + '\'' +
-                ", customerPhone='" + customerPhone + '\'' +
-                ", customerIdentityCard='" + customerIdentityCard + '\'' +
-                ", exerciseType='" + exerciseType + '\'' +
-                ", existBlackUser=" + existBlackUser +
-                ", orderStatus=" + orderStatus +
-                ", orderFailComment='" + orderFailComment + '\'' +
-                ", otherCustomerIdentityCards='" + otherCustomerIdentityCards + '\'' +
-                ", otherCustomerNames='" + otherCustomerNames + '\'' +
-                ", otherCustomerPhones='" + otherCustomerPhones + '\'' +
-                ", orderStartTime=" + orderStartTime +
-                ", orderEndTime=" + orderEndTime +
-                ", createTime=" + createTime +
-                ", updateTime=" + updateTime +
-                ", deleted=" + deleted +
-                '}';
-    }
 }

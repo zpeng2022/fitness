@@ -9,13 +9,23 @@ import lombok.SneakyThrows;
 import java.util.Map;
 
 public class ExcelListener extends AnalysisEventListener<ExcelBlackInfoVO> {
+    private String deptId;
+
+    public String getDeptId() {
+        return deptId;
+    }
+
+    public void setDeptId(String deptId) {
+        this.deptId = deptId;
+    }
+
     //一行一行读取excel内容
     @SneakyThrows
     @Override
     public void invoke(ExcelBlackInfoVO excelBlackInfoVO, AnalysisContext analysisContext) {
         System.out.print("数据："+excelBlackInfoVO+"\n");
         ssc ssc=new ssc();
-        ssc.insertDataByEntity(excelBlackInfoVO);
+        ssc.insertDataByEntity(excelBlackInfoVO,deptId);
     }
 
     //读取表头

@@ -22,12 +22,14 @@
     <script src="/static/echart/echarts.min.js"></script>
   </head>
   <style>
+    body::-webkit-scrollbar {
+      display: none;
+    }
     body{
-      /*width: 100%;*/
-      transform: scale(0.53);
-      position: absolute;
-      top: 0%;
-      /*left: -43%;*/
+      /*transform: scale(0.63);*/
+      transform-origin:top left;//防止放缩后位移
+      width: 100%;
+      height: auto;
     }
     #full{
       position: absolute;
@@ -49,12 +51,57 @@
     }
   </style>
   <body>
+  <script type="text/javascript">
+    var width=document.body.clientWidth;
+    var high=document.body.clientHeight;
+    var width3=document.body.offsetWidth;
+    // var width1=window.screen.availWidth ;
+    // var high1=window.screen.availHeight ;
+
+    var width_y=1920;//原1950，改全屏后1920
+    console.log("长宽：");
+    console.log("width - high："+width+"-"+high);
+    console.log("width3："+width3);
+    console.log("r："+width/width_y);
+    console.log("r1："+width3/width_y);
+    var raito=width/width_y;
+    // body.style.transform="scale (" + ratio + ")";
+    // body.setAttribute("style","transform: scale(0.63)");
+    // document.body.style.cssText += '; -moz-transform: scale(' + size + ');-moz-transform-origin: 0 0; ';
+    document.body.style.transform="scale("+raito+")";
+    console.log("body:"+JSON.stringify(document.body.style.transform))
+  </script>
+  <div class="layui-containe co layui-anim" id="deptSearch" style="position:absolute;z-index:999;top: 0px !important;display: none">
+    <div class="layui-form" action="" lay-filter="" style="width: 100%">
+      <div class="layui-form-item">
+        <!--            <div class="layui-form-label" style="font-weight: bolder;font-size: 20px">搜索场馆:</div>-->
+        <div class="search" style="width: 200px;z-index: 999">
+          <div style="width: 200px;line-height:40px;font-weight: bolder;font-size: 20px;margin-left: 0px;">
+            <p style="color: white">机关单位搜索:</p>
+          </div>
+          <div style="width: 320px;display: flex">
+            <select id="deptSelect" name="skills" style="display: block;width: 100px">
+            </select>
+
+            <button type="" class="layui-btn" lay-submit="" id="searchByDeptName" lay-filter="">搜索</button>
+            <div id="show" class="show"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
     <div class="page flex-col">
       <div id="full" onclick="getFull()">
         <!--放大键-->
       </div>
       <script>
         function getFull() {
+          var choose=document.getElementById("deptSelect").value;
+          var  params = {
+            "select": choose,
+          };
+          console.log("deptSelect:"+choose);
+          window["select"]=params;
           window.open("/index/allGymsDateFull");
         }
       </script>
@@ -62,7 +109,7 @@
         <div class="group_1 flex-col">
           <div class="section_1 flex-col">
             <div class="text-wrapper_1 flex-col">
-              <span class="text_1">体育场馆预约驾驶舱</span>
+              <span class="text_1" id="deptName" style="vertical-align: center;text-align:center">体育场馆预约驾驶舱</span>
             </div>
             <div class="block_1 flex-col">
               <div class="box_2 flex-row justify-between">
@@ -102,46 +149,14 @@
     var form = layui.form;
     var element = layui.element;
 
-    var gymname=$("input[name=gymname]").val();
+    var deptdName;
+
     var fontSize_Title=30;
     var fontSize_legend=25;
     var legendMarginTop=10;
     var tuMarginTop=40;
 
-    //联想搜索
-    $("#searchName").mousedown(function () {
-      //2.获取输入的用户名
-      let gymName = $("#searchName").val();
-      //3.判断用户名是否为空
-      if(gymName == null || gymName == "") {
-        //4.如果为空，将联想框隐藏
-        $("#show").hide();
-        return;
-      }
-      //5.如果不为空，发送AJAX请求。并将数据显示到联想框
-      console.log("联想查询")
-      $.ajax({
-        //请求的资源路径
-        url:"/sys/searchGymName",
-        //请求参数
-        data:{"gymName":gymName},
-        //请求方式
-        type:"GET",
-        //响应数据形式
-        dataType:"json",
-        //请求成功后的回调函数
-        success:function (data) {
-          //将返回的数据显示到show的div
-          console.log("data:"+data)
-          let names = "";
-          for(let i = 0; i < data.length; i++) {
-            names += "<div>"+data[i].name+"</div>";
-          }
-        }
-      });
-    });
-
-    function InitChart(gymname) {
+    function InitChart(deptdName) {
       console.log("初始化图表，先清空");
       // var myChart9 = echarts.init(document.getElementById('huan4'));
       // var myChart1 = echarts.init(document.getElementById('huan1'));
@@ -162,18 +177,32 @@
       myChart7.clear();
       myChart8.clear();
       // echarts.init(document.getElementById('zhu4')).clear;
-      CoreUtil.sendAjax("/sys/containData/"+gymname,null,function (res) {
+      CoreUtil.sendAjax("/sys/containData/getAllData/"+deptdName,null,function (res) {
         if(res.data != null){
           console.log("ajax请求完成:"+res.data.gymName)
           console.log(res.data)
 
-          $(".headTitle").html("场馆名称："+res.data.gymName)
-          $("#gymName").html(res.data.gymName)
-          //图9上下线人数比绘制
+          var allNames=res.data.allGymName;
+          document.getElementById("deptSelect").options.length = 0;//清空
+          for(var names=0;names<allNames.length;names++){
+            console.log("dept:"+allNames[names])
+            document.getElementById("deptSelect").options.add(new Option(allNames[names], allNames[names]))
+          }
+          if(allNames.length>1){
+            document.getElementById("deptSearch").style.display="block";
+          }else{
+            document.getElementById("deptSearch").style.display="none";
+          }
+
+          $(".headTitle").html("机关单位名称："+res.data.gymName)
+          document.getElementById("deptSelect").value=res.data.gymName;
+          $("#deptName").html(res.data.gymName)
+
+         /* //图9上下线人数比绘制
           var t9_s1=[]
           var t9_s2=['名称','数值']
-          t9_s1.push(t9_s2)
-          for(var i=0;i<res.data.onlineNums.length;i++){
+          t9_s1.push(t9_s2)*/
+          /*for(var i=0;i<res.data.onlineNums.length;i++){
             t9_s2=[]
             if(res.data.onlineNums[i].isOnlineUser==0)
               t9_s2.push("线下")
@@ -181,49 +210,49 @@
               t9_s2.push("线上")
             t9_s2.push(res.data.onlineNums[i].num)
             t9_s1.push(t9_s2)
-          }
+          }*/
           // console.log("开始绘图..........")
-          option9 = {
-            title: {
-              text: '线上线下人数比',
-              textStyle: {
-                fontSize:fontSize_Title,
-              }
-            },
-            legend: {
-              top: legendMarginTop+'%',
-              "textStyle": {
-                "fontSize": fontSize_legend
-              },
-            },
-            tooltip: {
-              trigger: 'axis',
-              showContent: true
-            },
-            dataset: {
-              source:t9_s1
-            },
-            series: [
-              {
-                type: 'pie',
-                id: 'pie',
-                radius: '50%',
-                center: ['50%', '60%'],
-                emphasis: {
-                  focus: 'self'
-                },
-                label: {
-                  formatter: '{b}: {@数值} ({d}%)'
-                },
-              }
-            ]
-          };
+          // option9 = {
+          //   title: {
+          //     text: '线上线下人数比',
+          //     textStyle: {
+          //       fontSize:fontSize_Title,
+          //     }
+          //   },
+          //   legend: {
+          //     top: legendMarginTop+'%',
+          //     "textStyle": {
+          //       "fontSize": fontSize_legend
+          //     },
+          //   },
+          //   tooltip: {
+          //     trigger: 'axis',
+          //     showContent: true
+          //   },
+          //   dataset: {
+          //     source:t9_s1
+          //   },
+          //   series: [
+          //     {
+          //       type: 'pie',
+          //       id: 'pie',
+          //       radius: '50%',
+          //       center: ['50%', '60%'],
+          //       emphasis: {
+          //         focus: 'self'
+          //       },
+          //       label: {
+          //         formatter: '{b}: {@数值} ({d}%)'
+          //       },
+          //     }
+          //   ]
+          // };
           // myChart9.setOption(option9);
 
           //图1绘制
-          var tu1data=res.data.ageList;/*
+         /* var tu1data=res.data.ageList;/!*
                 console.log("tu1data:"+tu1data[0].sport)
-                console.log("tu1data:"+tu1data[0].value)*/
+                console.log("tu1data:"+tu1data[0].value)*!/
           var t1_s1=[]
           var t1_s2={};
           for(var i=0;i<tu1data.length;i++){
@@ -335,13 +364,13 @@
             },
             dataset: {
               source:t2_s1
-              /*
+              /!*
                   // ['product', '2012', '2013', '2014', '2015', '2016', '2017'],
                   ['足球', 56.5],
                   ['篮球', 30],
                   ['乒乓球', 40.1],
                   ['棒球',10],
-                  ['羽毛球',100]*/
+                  ['羽毛球',100]*!/
 
             },
             color:['#37FFC9','rgb(0,132,255)','rgb(25,214,255)','rgb(255,231,119)'],
@@ -450,9 +479,9 @@
                           color: new echarts.graphic.LinearGradient(
                                   //前四个参数用于配置渐变色的起止位置，这四个参数依次对应 右下左上 四个方位。也就是从右边开始顺时针方向。
                                   //通过修改前4个参数，可以实现不同的渐变方向
-                                  /*第五个参数则是一个数组，用于配置颜色的渐变过程。
+                                  /!*第五个参数则是一个数组，用于配置颜色的渐变过程。
                                     每项为一个对象，包含offset和color两个参数
-                                  */
+                                  *!/
                                   0, 1, 0, 0, [{//代表渐变色从正上方开始
                                     offset: 0, //offset范围是0~1，用于表示位置，0是指0%处的颜色
                                     color: 'rgb(1,163,248)'
@@ -498,11 +527,11 @@
                 type: 'shadow' // 'shadow' as default; can also be 'line' or 'shadow'
               }
             },
-            /*legend: {
+            /!*legend: {
               "textStyle": {
                 "fontSize": fontSize_legend,
                 color:'#ffffff'
-              },},*/
+              },},*!/
             grid: {
               left: '3%',
               right: '4%',
@@ -575,9 +604,9 @@
                   color: new echarts.graphic.LinearGradient(
                           //前四个参数用于配置渐变色的起止位置，这四个参数依次对应 右下左上 四个方位。也就是从右边开始顺时针方向。
                           //通过修改前4个参数，可以实现不同的渐变方向
-                          /*第五个参数则是一个数组，用于配置颜色的渐变过程。
+                          /!*第五个参数则是一个数组，用于配置颜色的渐变过程。
                             每项为一个对象，包含offset和color两个参数
-                          */
+                          *!/
                           0, 0, 1, 0, [{//代表渐变色从正上方开始
                             offset: 0, //offset范围是0~1，用于表示位置，0是指0%处的颜色
                             color: 'rgb(1,163,248)'
@@ -664,13 +693,13 @@
               }
             },
             series: [
-              /*{
+              /!*{
                 data: tu5data,
                 type: 'line',
                 itemStyle: {
                   color: 'rgb(4,189,195)',
                 },
-              }*/
+              }*!/
               {
                 name: 'Line 1',
                 type: 'line',
@@ -716,11 +745,11 @@
                 data: tu5data
               },
             ]
-          };
+          };*/
           // myChart5.setOption(option5);
 
           //图6绘制
-          var tu6data=res.data.evList;/*
+          var tu6data=res.data.allGymSport;/*
                 console.log("tu1data:"+tu1data[0].sport)
                 console.log("tu1data:"+tu1data[0].value)*/
           var t6_s1=[]
@@ -1075,20 +1104,19 @@
 
     $(function () {
       console.log("调用初始化方法")
-      // gymname="303050b2-2c89-4cbf-899f-cc7af8cedadb";//默认场馆id
-      gymname="杭州电子科技大学";//默认场馆id
-      InitChart(gymname);
+      deptdName="全部";//默认场馆id
+      InitChart(deptdName);
     })
-    $("#search").click(function () {
+    $("#searchByDeptName").click(function () {
       // var gymname=document.getElementById("gymSelect").val();
-      var gymname=$('#gymSelect option:selected').text();//选中的文本
-      console.log("搜索场馆")
-      if (gymname!="") {
-        console.log("场馆名称："+gymname)
-        InitChart(gymname)
+      var deptId=$('#deptSelect option:selected').text();//选中的文本
+      console.log("搜索机关单位")
+      if (deptId!="") {
+        console.log("机关单位名称："+deptId)
+        InitChart(deptId)
       } else {
         console.log("搜索名为空")
-        layer.msg("<span style=\"font-size:50px\">搜索名为空，请输入场馆名称！</span>",
+        layer.msg("<span style=\"font-size:50px\">搜索名为空，请输入机关单位名称！</span>",
                 { time: 3000,
                   shift: 5,offset:"rb",
                   area:['800px','200px'] });

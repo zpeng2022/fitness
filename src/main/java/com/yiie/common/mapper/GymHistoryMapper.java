@@ -22,6 +22,7 @@ import java.util.List;
 public interface GymHistoryMapper {
     List<GymHistory> getAllGymHistoriesByDeptID(String deptId);
     List<GymHistory> selectAllGymHistoriesByDeptID(GymHistoryPageReqVO vo);
+    List<GymHistory> selectAllGymHistoriesByDeptID2(GymHistoryPageReqVO vo);
     GymHistory selectByPrimaryKey(String tagId);
     int insertSelective(GymHistory gymHistory);
     int updateByPrimaryKeySelective(GymHistory gymHistory);
@@ -40,4 +41,22 @@ public interface GymHistoryMapper {
     List<GymPeopleMonth> getPeopleNumMonth(Date monthAgo, Date nowTime);
 
     List<OnlineNum> getIsOnlineNum(String gymId);
+
+    List<String> getTypeAndValueByIDCard(String customerIdentityCard);
+
+    List<PeopleSportTime> getUserSportTimes(String userIdentityCard);
+
+    int checkIsComing(String s, Date orderStart, Date orderEnd);
+
+    List<PeopleSportTime> getPeopleSportToday(String gymId, Date s, Date e);
+
+    List<GymPeopleMonth> getPeopleNumMonthByDeptId(Date monthAgo, Date todayTime, String deptId);
+
+    int getCustomerSportDay(String customerIdentityCard);
+
+    int getCustomerGymNum(String customerIdentityCard);
+
+    List<PeopleSportTime> getPeopleSportTimesByCustomerId(String customer_identity_card,int year);
+
+    List<PeopleSportTime> getPeopleSportTimesByCustomerId2(String customer_identity_card);
 }

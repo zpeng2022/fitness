@@ -202,4 +202,16 @@
             </foreach>
         </where>
     </select>
+    <select id="getAllDept" resultType="com.yiie.entity.Dept">
+        select * from dept
+        where deleted=1
+    </select>
+    <select id="getByName" resultType="com.yiie.entity.Dept">
+        select * from dept
+        where deleted=1 and name=#{deptName}
+    </select>
+    <select id="getById" resultType="com.yiie.entity.Dept">
+        select * from dept
+        where deleted=1 and id=#{deptId}
+    </select>
 </mapper>

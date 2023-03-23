@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <meta charset="UTF-8">
+    <title>场馆活动列表</title>
+    <link rel="stylesheet" href="/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="/css/form.css">
+    <script src="/layui/layui.all.js"></script>
+    <script src="/js/util.js"></script>
+
+<!--    <link href="/layuimini/css/public.css">-->
+<!--    <link rel="stylesheet" href="/layuimini/lib/font-awesome-4.7.0/css/font-awesome.min.css">-->
+    <link rel="stylesheet" href="/editormd/css/editormd.min.css">
+
+
+</head>
+<body>
+<div class="panel panel-default operation_article" hidden>
+    <div class="layuimini-main">
+        <h2><i class="fa fa-edit"></i>&nbsp;活动发布</h2>
+        <form class="layui-form layui-form-pane" action="" lay-filter="form-filter" id="article-form">
+            <input name="articleId" hidden/>
+            <div class="layui-form-item">
+                <label class="layui-form-label">活动标题</label>
+                <div class="layui-input-block">
+                    <input type="text" name="title" lay-verify="verTitle" placeholder="请输入活动标题(必填)..." autocomplete="off" class="layui-input"/>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">活动摘要</label>
+                <div class="layui-input-block">
+                    <input type="text" name="summary" lay-verify="verSummary" placeholder="请输入活动摘要..." autocomplete="off" class="layui-input"/>
+                </div>
+            </div>
+            <!--<div class="layui-form-item">
+                <label class="layui-form-label">封面链接</label>
+                <div class="layui-input-block">
+                    <input type="text" name="cover" placeholder="请输入封面链接..."
+                           value="https://postgraduate-design.oss-cn-beijing.aliyuncs.com/%E6%96%87%E7%AB%A0.png"
+                           disabled
+                           autocomplete="off" class="layui-input"/>
+                </div>
+            </div>-->
+            <div class="layui-form-item">
+               <!-- <div id="test-editor" required lay-verify="verContent">
+                    <textarea style="display:none;"></textarea>
+                </div>-->
+                <label class="layui-form-label">活动内容</label>
+
+            </div>
+            <div class="layui-form-item">
+                <input type="text" name="content" placeholder="请输入活动标题(必填)..."
+                       value="默认"
+                       autocomplete="off" class="layui-input" hidden/>
+                <textarea class="layui-textarea" id="editor" name="content" style="display: none;"> </textarea>
+            </div>
+            <!--<div class="layui-form-item">
+                <label class="layui-form-label">活动标签</label>
+                <div class="layui-input-block">
+                    <div id="tag-select" lay-verify="verTag"></div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">活动类型</label>
+                    <div class="layui-input-inline">
+                        <select name="type" lay-verify="">
+                            <option value="1" selected>原创</option>
+                            <option value="2">转载</option>
+                            <option value="3">翻译</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">活动分类</label>
+                    <div class="layui-input-inline">
+                        <select name="categoryId" lay-verify="verCategory" lay-search id="category-select">
+                            <option value="0">请选择一个分类</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">开启赞赏</label>
+                        <div class="layui-input-inline pane">
+                            <input type="checkbox" name="appreciable" lay-skin="switch" lay-text="是|否"
+                                   value="true">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">开启评论</label>
+                        <div class="layui-input-inline pane">
+                            <input type="checkbox" name="commentable" lay-skin="switch" lay-text="是|否" checked
+                                   value="true">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">活动排序</label>
+                        <div class="layui-input-inline rate-pane">
+                            <div id="rateSort"></div>
+                        </div>
+                    </div>
+                </div>-->
+    </div>
+    <div>
+        <button type="submit" id="subMit" class="layui-btn" lay-submit="article" lay-filter="submit">
+            发布活动
+        </button>
+        <button class="layui-btn layui-btn-primary" id="btn_cancel">返回</button>
+    </div>
+    </form>
+</div>
+</div>
+<div class="user_table_div">
+    <div id="searchParam" shiro:hasPermission="sys:article:list">
+        <div class="layui-form-item">
+            <div class="layui-input-inline">
+                <input type="text" id="articleId" class="layui-input" autocomplete="off" placeholder="请输入活动Id">
+            </div>
+            <div class="layui-input-inline">
+                <input type="text" id="title" class="layui-input" autocomplete="off" placeholder="请输入活动标题">
+            </div>
+            <div class="layui-input-inline">
+                <input type="text" id="authorId" class="layui-input" autocomplete="off" placeholder="请输入发布者id">
+            </div>
+            <div class="layui-input-inline">
+                <input type="text" id="authorName" class="layui-input" autocomplete="off" placeholder="请输入发布者名称">
+            </div>
+            <div class="layui-input-inline">
+                <input type="text" class="layui-input" id="createTime" placeholder="选择创建时间区间">
+            </div>
+
+            <div class="layui-input-inline layui-form" id="deptSelect" style="display:none;">
+                <select id="deptInfo" name="deptId">
+                </select>
+            </div>
+
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <button id="Reset" type="reset" class="layui-btn layui-btn-primary">
+                    <i class="layui-icon layui-icon-fonts-clear"></i> 清 空
+                </button>
+            </div>
+        </div>
+    </div>
+    <table class="layui-hide" id="user_table" lay-filter="user_table"></table>
+    <div id="laypage" class="$('.layui-laypage-btn').click();">
+</div>
+</div>
+<div id="deptTree" style="display: none"></div>
+<div id="roles" class="demo-transfer" style="display: none"></div>
+</body>
+<script type="text/html" id="toolbar">
+    <div class="layui-btn-group" id="search">
+        <button type="button" class="layui-btn" lay-event="search">
+            <i class="layui-icon">&#xe615;</i> 开始检索
+        </button>
+    </div>
+    <div class="layui-btn-group">
+        <button type="button" class="layui-btn layui-btn-danger" lay-event="batchDeleted"
+                shiro:hasPermission="sys:article:deleted">
+            <i class="layui-icon">&#xe608;</i> 批量删除
+        </button>
+    </div>
+    <div class="layui-btn-group">
+        <button type="button" class="layui-btn layui-btn-normal" lay-event="addArticle"
+                shiro:hasPermission="sys:article:update">
+            <i class="layui-icon">&#xe608;</i> 新增活动
+        </button>
+    </div>
+</script>
+<script type="text/html" id="tool">
+    <a class="layui-btn layui-btn-xs" lay-event="edit" shiro:hasPermission="sys:article:update">详情</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del" shiro:hasPermission="sys:article:deleted">删除</a>
+</script>
+
+<!--<script src="/layuimini/lib/layui-v2.6.3/layui.js" charset="utf-8"></script>-->
+<script src="/layuimini/js/lay-config.js?v=1.0.4" charset="utf-8"></script>
+<script src="/layuimini/js/lay-module/layuimini/miniTab.js"></script>
+<script src="/layuimini/lib/jquery-3.4.1/jquery-3.4.1.min.js"></script>
+<script src="/editormd/xm-select.js"></script>
+<script src="/editormd/editormd.min.js"></script>
+
+<script>
+    var table = layui.table;
+    var laypage = layui.laypage
+    var form = layui.form;
+    var layer = layui.layer;
+    var $ = jQuery = layui.jquery;
+    var laydate = layui.laydate;
+    var tree = layui.tree;
+    var transfer = layui.transfer;
+    var indexEditor;//编辑器索引
+
+    layui.use(['layedit','table', 'laypage', 'layer', 'laydate', 'tree', 'transfer'], function () {
+        //表单验证
+        form.render();
+
+        //渲染编辑器
+        var layedit;
+
+        // indexEditor=initEditor(); //建立编辑器
+        function initEditor(){
+            layedit = null;
+            layedit = layui.layedit;
+            var Index=layedit.build('editor',{
+                tool: ['strong','italic','face','underline','del', 'link', 'unlink', '|', 'left', 'center', 'right','b'],
+            });
+            console.log("index1:"+Index);
+            return Index;
+        }
+
+        var searchParam = {
+            articleId: null,
+            title: null,
+            authorId: null,
+            authorName: null,
+            deptId:null,
+            status: null,
+            startTime: null,
+            endTime: null,
+            pageNum: 1,
+            pageSize: 10
+        }
+        //清空条件
+        $('#Reset').on('click', function () {
+            console.log("清空")
+            $("#articleId").val("");
+            $("#title").val("");
+            $("#authorId").val("");
+            $("#deptInfo").val("所有机关单位");
+            $("#authorName").val("");
+            $("#createTime").val("");
+            searchParam.startTime = null;
+            searchParam.endTime = null;
+            form.render("select") //重新渲染单下拉框
+        });
+
+        //填充类型：要放layui里面，不然request无效
+        CoreUtil.sendAjax("/sys/getAllDept", null, function (res) {
+            console.log("获取机关单位.......")
+            if (res.data != null) {
+                document.getElementById("deptSelect").style.display="block";
+                var types = res.data;
+                console.log("type:" + JSON.stringify(types))
+                var typeK = document.getElementById("deptInfo");
+                typeK.options.length = 0;//清空
+                typeK.options.add(new Option("所有机关单位", ""));
+                for (var index = 0; index < types.length; index++) {
+                    console.log("type:"+types[index]);
+                    var name = types[index].name;
+                    var tid = types[index].id;
+                    typeK.options.add(new Option(name, tid));//Option("文本","值")
+                }
+                // typeK.innerText=typeInner;
+                form.render();//不添加不会显示
+            }
+        }, "POST", false, function (res) {
+            // layer.msg("抱歉！您暂无获取机关单位的权限");
+        });
+
+        CoreUtil.sendAjax("/sys/articles", JSON.stringify(searchParam), function (res) {
+            // console.log("data:"+JSON.stringify(res.data))
+            laypageTable(res.data.totalRows, searchParam.pageNum);
+            if (res.data.list != null) {
+                loadTable(res.data.list);
+            }
+        }, "POST", false, function (res) {
+            layer.msg("抱歉！您暂无获取场馆活动列表的权限");
+            var noAuthorityData = [];
+            loadTable(noAuthorityData);
+        });
+        var laypageTable = function (count, currentPage) {
+            laypage.render({
+                elem: 'laypage'
+                , count: count
+                , limit: searchParam.pageSize
+                , layout: ['count', 'prev', 'page', 'next', 'limit', 'refresh', 'skip']
+                , curr: location.hash.replace('#!currentPage=', '') //获取起始页
+                , hash: 'currentPage' //自定义hash值
+                , jump: function (obj, first) {
+                    if (!first) {
+                        searchParam.pageNum = obj.curr;
+                        searchParam.pageSize = obj.limit;
+                        CoreUtil.sendAjax("/sys/articles", JSON.stringify(searchParam), function (res) {
+                            if (res.data.list != null) {
+                                loadTable(res.data.list);
+                                laypageTable(res.data.totalRows, searchParam.pageNum);
+                            }
+                        }, "POST", false, function (res) {
+                            layer.msg("抱歉！您暂无获取场馆活动列表的权限");
+                            var noAuthorityData = [];
+                            loadTable(noAuthorityData);
+                        });
+                    }
+                }
+            });
+        };
+        //渲染table
+        var loadTable = function (data) {
+            table.render({
+                elem: '#user_table'
+                , cols: [
+                    [
+                        {type: 'checkbox', fixed: 'left'},
+                        {field: 'id', align: 'center', title: 'Id', width: 110},
+                        {field: 'title', align: 'center', title: '标题'},
+                        {field: 'summary', align: 'center', title: '摘要'},
+                        {field: 'content', align: 'center', title: '内容'},
+                        {
+                            field: 'deptName', align: 'center', title: '机关单位', align: 'center', templet: function (data) {
+                                return data.dept.name;
+                            }
+                        },
+                        {field: 'authorName', align: 'center', title: '发布者',templet: function (data) {
+                                var name=data.author.username;
+                                if(name==undefined||name==0)
+                                    return "未知";
+                                return name;
+                            }
+                        },
+                        {
+                            field: 'createTime', align: 'center', title: '创建时间', width: 170, templet: function (item) {
+                                return CoreUtil.formattime(item.createTime);
+                            }
+                        },
+                        {
+                            field: 'updateTime', align: 'center', title: '更新时间', width: 170, templet: function (item) {
+                                return CoreUtil.formattime(item.updateTime);
+                            }
+                        },
+                        {width: 180, align: 'center', toolbar: "#tool", title: '操作'}
+                    ]
+                ]
+                , data: data
+                , even: true
+                , limit: data.length
+                , limits: [10, 20, 30, 50, 100]
+                , toolbar: '#toolbar'
+            });
+        };
+        laydate.render({
+            elem: '#createTime'
+            , type: 'datetime'
+            , range: '~'
+            , done: function (value, date, endDate) {
+                if (value != null && value != undefined && value != "") {
+                    searchParam.startTime = value.split("~")[0];
+                    searchParam.endTime = value.split("~")[1];
+                } else {
+                    searchParam.startTime = null;
+                    searchParam.endTime = null;
+                }
+            }
+        });
+
+
+        table.on('toolbar(user_table)', function (obj) {
+
+            var checkStatus = table.checkStatus(obj.config.id);
+            switch (obj.event) {
+                case 'batchDeleted':
+                    var checkStatus = table.checkStatus(obj.config.id);
+                    var data = checkStatus.data;
+                    if (data.length == 0) {
+                        layer.msg("请选择要批量删除的场馆活动");
+                    } else {
+                        var userIds = [];
+                        $(data).each(function (index, item) {
+                            userIds.push(item.id);
+                        });
+                        deleteExercise(userIds, "选中的");
+                    }
+                    break;
+                case 'addArticle':
+                    document.getElementById("subMit").innerHTML="发布活动";
+                    document.getElementById("editor").innerHTML="";
+                    indexEditor=initEditor();
+                    form.render();
+                    $(".title").html("新增场馆活动");
+                    $(".user_table_div").hide();
+                    $(".operation_article").show();
+                    $(".operation_article input[name=articleId]").val("");
+                    $(".operation_article input[name=title]").val("");
+                    $(".operation_article input[name=summary]").val("");
+                    console.log("index:"+indexEditor);
+                    break;
+                case 'search':
+                    searchParam.articleId = $("#articleId").val();
+                    searchParam.title = $("#title").val();
+                    searchParam.authorId = $("#authorId").val();
+                    searchParam.authorName = $("#authorName").val();
+                    searchParam.deptId = $("#deptInfo").val();
+                    searchParam.pageNum = 1;
+                    console.log("文章ss:"+JSON.stringify(searchParam))
+                    CoreUtil.sendAjax("/sys/articles", JSON.stringify(searchParam), function (res) {
+                        laypageTable(res.data.totalRows, searchParam.pageNum);
+                        if (res.data.list != null) {
+                            loadTable(res.data.list);
+                        }
+                    }, "POST", false, function (res) {
+                        layer.msg("抱歉！您暂无获取用户列表的权限");
+                        var noAuthorityData = [];
+                        loadTable(noAuthorityData);
+                    });
+                    break;
+            }
+            ;
+        });
+        table.on('tool(user_table)', function (obj) {
+            var data = obj.data;
+            switch (obj.event) {
+                case 'del':
+                    // console.log("删除："+JSON.stringify(data))
+                    var userIds = [];
+                    userIds.push(data.id);
+                    deleteExercise(userIds, data.title);
+                    break;
+                case 'edit':
+                    document.getElementById("subMit").innerHTML="保存活动";
+                    $(".user_table_div").hide();
+                    $(".operation_article").show();
+                    $(".title").html("编辑场馆活动类型");
+                    $(".operation_article input[name=articleId]").val(data.id);
+                    $(".operation_article input[name=title]").val(data.title);
+                    $(".operation_article input[name=summary]").val(data.summary);
+                    //先填充再新建
+                    document.getElementById("editor").innerHTML=data.content;
+                    indexEditor=initEditor();
+                    form.render(); //更新全部
+                    break;
+            }
+        });
+        $("#btn_cancel").click(function () {
+            $(".user_table_div").show();
+            $(".operation_article").hide();
+            indexEditor=initEditor();
+            return false;
+        });
+        var deleteExercise = function (userIds, name) {
+            layer.open({
+                content: '确定要删除' + name + "么? ",
+                yes: function (index, layero) {
+                    layer.close(index); //如果设定了yes回调，需进行手工关闭
+                    CoreUtil.sendAjax("/sys/article", JSON.stringify(userIds), function (res) {
+                        layer.msg(res.msg);
+                        $(".layui-laypage-btn").click();
+                    }, "DELETE", false, function (res) {
+                        layer.msg("抱歉！您暂无删除场馆活动的权限");
+                    });
+                }
+            });
+        };
+        form.on('submit(submit)', function (data) {
+            var title=$(".operation_article input[name=title]").val();
+            if(title.length==0){
+                layer.msg("标题不能为空");
+                return false;
+            }
+            var summary=$(".operation_article input[name=summary]").val();
+            var content=layedit.getContent(indexEditor);
+            if(layedit.getText(indexEditor).length==0){
+                layer.msg("内容不能为空");
+                return false;
+            }
+            var aid=$(".operation_article input[name=articleId]").val();
+            data.field.title=title;
+            data.field.summary=summary;
+            data.field.content=content;
+            data.field.articleId=aid;
+            data.field.deptId=aid;
+            console.log("datas:"+JSON.stringify(data));
+            if (data.field.articleId === undefined || data.field.articleId === null || data.field.articleId === "") {
+                CoreUtil.sendAjax("/sys/article", JSON.stringify(data.field), function (res) {
+                    $(".user_table_div").show();
+                    $(".operation_article").hide();
+                    $(".layui-laypage-btn").click();
+                }, "POST", false, function (res) {
+                    layer.msg("抱歉！您暂无新增场馆活动的权限");
+                });
+            } else {
+                // console.log("修改："+JSON.stringify(data))
+                CoreUtil.sendAjax("/sys/article", JSON.stringify(data.field), function (res) {
+                    $(".user_table_div").show();
+                    $(".operation_article").hide();
+                    $(".layui-laypage-btn").click();
+                }, "PUT", false, function (res) {
+                    layer.msg("抱歉！您暂无编辑用户的权限");
+                });
+            }
+            return false;
+        });
+    });
+</script>
+</html>

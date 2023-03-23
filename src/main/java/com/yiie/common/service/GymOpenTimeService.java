@@ -12,4 +12,6 @@ public interface GymOpenTimeService {
     void addCloseTime(GymOpenTime gymOpenTime);
 
     GymOpenTime getByIdAndDay(String s, Date today);
+
+    List<GymCloseTime> getGymCT2(String sG, Date today, Date fiveDaysAgo, String deptId);
 }

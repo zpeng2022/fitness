@@ -1,5 +1,7 @@
 package com.yiie.entity;
 
+import io.swagger.annotations.ApiModelProperty;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -9,6 +11,17 @@ import java.util.List;
  * 场馆基本信息.
  */
 public class Gym implements Serializable {
+
+    private Integer toDayIsClose;
+
+    public Integer getToDayIsClose() {
+        return toDayIsClose;
+    }
+
+    public void setToDayIsClose(Integer toDayIsClose) {
+        this.toDayIsClose = toDayIsClose;
+    }
+
     private String gymId;
     /**
      * 所属的机关单位Id, 方便后面查询
@@ -22,7 +35,9 @@ public class Gym implements Serializable {
     private String monday;
     private String saturday;
 
+    private String gymTypes;
     private String gymPhone;
+
     private Integer gymCapacity;
     /**
      * 有专门存放图片的路径
@@ -36,7 +51,7 @@ public class Gym implements Serializable {
      * 是否在节假日开放
      */
     private Integer openOnHoliday;
-    private String gymTypes;
+
     /**
      * 文字描述场馆的地理位置
      */
@@ -52,6 +67,25 @@ public class Gym implements Serializable {
     private Date createTime;
     private Date updateTime;
     private Integer deleted;
+
+    @ApiModelProperty("机关单位")
+    private Dept dept;
+
+    public Dept getDept() {
+        return dept;
+    }
+
+    public void setDept(Dept dept) {
+        this.dept = dept;
+    }
+
+    public String getGymTypes() {
+        return gymTypes;
+    }
+
+    public void setGymTypes(String gymTypes) {
+        this.gymTypes = gymTypes;
+    }
 
     public String getGymId() {
         return gymId;
@@ -133,13 +167,6 @@ public class Gym implements Serializable {
         this.openOnHoliday = openOnHoliday;
     }
 
-    public String getGymTypes() {
-        return gymTypes;
-    }
-
-    public void setGymTypes(String gymTypes) {
-        this.gymTypes = gymTypes == null ? null : gymTypes.trim();;
-    }
 
     public String getGymPosition() {
         return gymPosition;
@@ -192,7 +219,8 @@ public class Gym implements Serializable {
     @Override
     public String toString() {
         return "Gym{" +
-                "gymId='" + gymId + '\'' +
+                "toDayIsClose=" + toDayIsClose +
+                ", gymId='" + gymId + '\'' +
                 ", deptId='" + deptId + '\'' +
                 ", gymName='" + gymName + '\'' +
                 ", deptName='" + deptName + '\'' +

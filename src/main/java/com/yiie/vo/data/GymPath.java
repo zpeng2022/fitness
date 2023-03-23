@@ -13,6 +13,9 @@ public class GymPath {
     @ApiModelProperty(value = "路径")
     private String path;
 
+    public GymPath() {
+    }
+
     public GymPath(String gymId, Integer id, String path) {
         this.gymId = gymId;
         this.id = id;
