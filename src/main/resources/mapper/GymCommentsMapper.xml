@@ -118,21 +118,29 @@
             <if test="commentCustomerName != null and commentCustomerName != ''">
                 AND commentCustomerName = #{commentCustomerName}
             </if>
-            <if test="createTime != null and createTime != ''">
-                AND createTime = #{createTime}
-            </if>
-            <if test="updateTime != null and updateTime != ''">
-                AND updateTime = #{updateTime}
+
+            <if test="createTime!=null and createTime!='' and updateTime!=null and updateTime!=''">
+                AND createTime BETWEEN #{createTime} and #{updateTime}
             </if>
         </where>
     </select>
+    <!--<if test="createTime != null and createTime != ''">
+        AND createTime = #{createTime}
+    </if>
+    <if test="updateTime != null and updateTime != ''">
+        AND updateTime = #{updateTime}
+    </if>-->
 
-    <!--去除,gym.gymPicturesPath-->
+    <!--去除,gym.gymPicturesPath
+    gym.gymId ,gym.deptId ,
+    gym.createTime ,gym.updateTime ,gym.deleted,
+    ,dept.deleted
+    -->
     <select id="selectAllGymCommentsByDeptID" resultMap="BaseResultMap" parameterType="com.yiie.vo.request.GymCommentPageReqVO">
         select
         cc.commentId,cc.gymId,cc.deptId,cc.commentCustomerId,cc.commentCustomerPhone,cc.commentCustomerIdentityCard,cc.commentStars,cc.commentTags,cc.commentTagContent,cc.commentDetail,cc.commentAnswer,cc.commentCustomerName,cc.commentStatus,cc.createTime,cc.updateTime,cc.deleted,
-        gym.gymId ,gym.deptId ,gym.gymName ,gym.monday ,gym.saturday ,gym.gymPhone ,gym.gymCapacity  ,gym.openOnHoliday ,gym.gymTypes ,gym.gymPosition ,gym.gymDetails ,gym.gymGps ,gym.createTime ,gym.updateTime ,gym.deleted,
-        dept.id,dept.dept_no,dept.name,dept.pid,dept.status,dept.relation_code,dept.dept_manager_id,dept.manager_name,dept.phone,dept.create_time,dept.update_time,dept.deleted
+        gym.gymName ,gym.monday ,gym.saturday ,gym.gymPhone ,gym.gymCapacity  ,gym.openOnHoliday ,gym.gymTypes ,gym.gymPosition ,gym.gymDetails ,gym.gymGps ,
+        dept.id,dept.dept_no,dept.name,dept.pid,dept.status,dept.relation_code,dept.dept_manager_id,dept.manager_name,dept.phone,dept.create_time,dept.update_time
         from gym_comment cc
         left join gym
         on cc.gymId=gym.gymId
@@ -179,14 +187,17 @@
             <if test="commentStatus != null and commentStatus != ''">
                 AND commentStatus = #{commentStatus}
             </if>
-            <if test="createTime != null and createTime != ''">
-                AND cc.createTime = #{createTime}
-            </if>
-            <if test="updateTime != null and updateTime != ''">
-                AND cc.updateTime = #{updateTime}
+            <if test="createTime!=null and createTime!='' and updateTime!=null and updateTime!=''">
+                AND cc.createTime BETWEEN #{createTime} and #{updateTime}
             </if>
         </where>
     </select>
+    <!--<if test="createTime != null and createTime != ''">
+        AND cc.createTime = #{createTime}
+    </if>
+    <if test="updateTime != null and updateTime != ''">
+        AND cc.updateTime = #{updateTime}
+    </if>-->
 
     <insert id="insertSelective" parameterType="com.yiie.entity.GymComments">
         insert into gym_comment

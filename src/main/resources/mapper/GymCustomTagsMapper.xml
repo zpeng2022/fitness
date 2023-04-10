@@ -46,9 +46,10 @@
         where tagId = #{tagId,jdbcType=VARCHAR}
     </select>
 
+    <!--,dept.deleted-->
     <select id="selectAllGymCustomTagsByDeptID" resultMap="BaseResultMap" parameterType="com.yiie.vo.request.GymCommentTagPageReqVO">
         select tagId,e.deptId,tagCount,tagContent,e.createTime,e.updateTime,e.deleted,
-        dept.id,dept.dept_no,dept.name,dept.pid,dept.status,dept.relation_code,dept.dept_manager_id,dept.manager_name,dept.phone,dept.create_time,dept.update_time,dept.deleted
+        dept.id,dept.dept_no,dept.name,dept.pid,dept.status,dept.relation_code,dept.dept_manager_id,dept.manager_name,dept.phone,dept.create_time,dept.update_time
         from gym_customtag e
         left join dept
         on e.deptId=dept.id

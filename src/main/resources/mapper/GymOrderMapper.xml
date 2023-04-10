@@ -98,13 +98,17 @@
         where orderId = #{orderId,jdbcType=VARCHAR}
     </select>
 
-    <!--除去 gym.gymPicturesPath-->
+    <!--除去 gym.gymPicturesPath
+        gym.gymId ,gym.deptId ,
+        ,gym.createTime ,gym.updateTime ,gym.deleted
+        ,dept.deleted
+    -->
     <select id="selectAllGymOrderByDeptID" resultMap="BaseResultMap" parameterType="com.yiie.vo.request.GymOrderPageReqVO">
         select
         go.orderId ,go.gymId ,go.deptId ,go.customerId ,go.customerName ,go.customerPhone ,go.customerIdentityCard ,go.exerciseType ,go.existBlackUser ,go.orderStatus ,go.orderFailComment ,go.otherCustomerIdentityCards ,go.otherCustomerNames ,go.otherCustomerPhones,otherIsBlack ,go.orderStartTime ,go.orderEndTime ,go.createTime ,go.updateTime ,go.deleted,go.readStatus,go.cancelReason
-        ,gym.gymId ,gym.deptId ,gym.gymName ,gym.monday ,gym.saturday ,gym.gymPhone ,gym.gymCapacity  ,gym.openOnHoliday ,gym.gymTypes ,gym.gymPosition ,gym.gymDetails ,gym.gymGps ,gym.createTime ,gym.updateTime ,gym.deleted
+        ,gym.gymName ,gym.monday ,gym.saturday ,gym.gymPhone ,gym.gymCapacity  ,gym.openOnHoliday ,gym.gymTypes ,gym.gymPosition ,gym.gymDetails ,gym.gymGps
         ,
-        dept.id,dept.dept_no,dept.name,dept.pid,dept.status,dept.relation_code,dept.dept_manager_id,dept.manager_name,dept.phone,dept.create_time,dept.update_time,dept.deleted
+        dept.id,dept.dept_no,dept.name,dept.pid,dept.status,dept.relation_code,dept.dept_manager_id,dept.manager_name,dept.phone,dept.create_time,dept.update_time
         from gym_order go
         left join gym
         on go.gymId=gym.gymId
@@ -163,14 +167,17 @@
             <if test="orderEndTime != null and orderEndTime != ''">
                 AND go.orderEndTime = #{orderEndTime}
             </if>
-            <if test="createTime != null and createTime != ''">
-                AND go.createTime = #{createTime}
-            </if>
-            <if test="updateTime != null and updateTime != ''">
-                AND go.updateTime = #{updateTime}
+            <if test="createTime!=null and createTime!='' and updateTime!=null and updateTime!=''">
+                AND go.createTime BETWEEN #{createTime} and #{updateTime}
             </if>
         </where>
     </select>
+    <!--<if test="createTime != null and createTime != ''">
+        AND go.createTime = #{createTime}
+    </if>
+    <if test="updateTime != null and updateTime != ''">
+        AND go.updateTime = #{updateTime}
+    </if>-->
 
     <!--预约人数-->
     <select id="getTypeAndValue" resultMap="SprotAndValue">

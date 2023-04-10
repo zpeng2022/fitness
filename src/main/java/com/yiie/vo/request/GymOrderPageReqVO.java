@@ -95,4 +95,5 @@ public class GymOrderPageReqVO {
 
     @ApiModelProperty(value = "随行者的数据总和")
     private List<FollowsInfo> followsInfo;
+
 }

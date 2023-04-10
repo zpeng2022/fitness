@@ -228,7 +228,7 @@
                 AND ga.id=#{articleId}
             </if>
             <if test="title!=null and title!=''">
-                AND title like CONCAT("%", #{title},"%")
+                AND title like '%'||#{title}||'%'
             </if>
             <if test="deptId!=null and deptId!=''">
                 AND ga.deptId=#{deptId}
@@ -237,7 +237,7 @@
                 AND author_id=#{authorId}
             </if>
             <if test="authorName!=null and authorName!=''">
-                AND user.username like CONCAT("%", #{authorName},"%")
+                AND user.username like '%'||#{authorName}||'%'
             </if>
             <if test="startTime!=null and startTime!='' and endTime!=null and endTime!=''">
                 AND ga.create_time between #{startTime} and #{endTime}

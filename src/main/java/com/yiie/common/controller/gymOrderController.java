@@ -155,6 +155,12 @@ public class gymOrderController {
         String deptId = userService.getDeptIdFromUserId(userId);
         if(deptId!=null&&deptId.length()!=0&&deptId!="")
             vo.setDeptId(deptId);
+        if(vo.getCreateTime()!=null&&vo.getCreateTime()!=""){
+            String[] t=vo.getCreateTime().split(" ~ ");
+            vo.setCreateTime(t[0]);
+            vo.setUpdateTime(t[1]);
+        }
+
         System.out.print("预约管理：\n"+vo+"\n");
         result.setData(gymOrderService.pageInfo(vo));
         return result;

@@ -170,15 +170,17 @@
 
     <!--下述方法去除gym的picpath属性：gym.gymPicturesPath ,
         gym.gymId ,gym.deptId ,
+        ,gym.createTime ,gym.updateTime ,gym.deleted,
+        ,dept.deleted
     -->
     <select id="selectAllGymHistoriesByDeptID2" resultMap="BaseResultMap" parameterType="com.yiie.vo.request.GymHistoryPageReqVO">
         SELECT
         gh.historyId, gh.orderId, gh.gymId, gh.deptId, gh.customerName, gh.customerPhone, gh.customerIdentityCard, gh.isBlackUser, gh.isOnlineUser, gh.orderStartTime, gh.orderEndTime, gh.exerciseType, gh.inTime, gh.outTime, gh.createTime, gh.updateTime, gh.deleted,
         otherIsBlack,otherCustomerNames,otherCustomerPhones,otherCustomerIdentityCards,
 
-        gym.gymName ,gym.monday ,gym.saturday ,gym.gymPhone ,gym.gymCapacity ,gym.openOnHoliday ,gym.gymTypes ,gym.gymPosition ,gym.gymDetails ,gym.gymGps ,gym.createTime ,gym.updateTime ,gym.deleted,
+        gym.gymName ,gym.monday ,gym.saturday ,gym.gymPhone ,gym.gymCapacity ,gym.openOnHoliday ,gym.gymTypes ,gym.gymPosition ,gym.gymDetails ,gym.gymGps ,
 
-        dept.id,dept.dept_no,dept.name,dept.pid,dept.status,dept.relation_code,dept.dept_manager_id,dept.manager_name,dept.phone,dept.create_time,dept.update_time,dept.deleted
+        dept.id,dept.dept_no,dept.name,dept.pid,dept.status,dept.relation_code,dept.dept_manager_id,dept.manager_name,dept.phone,dept.create_time,dept.update_time
         from gym_history gh
         left join gym_order go
         on gh.orderId=go.orderId

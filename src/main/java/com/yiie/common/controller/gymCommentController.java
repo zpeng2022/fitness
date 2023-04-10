@@ -88,6 +88,12 @@ public class gymCommentController {
     @LogAnnotation(title = "评论管理",action = "分页获取评论信息列表")
     public DataResult<PageVO<GymComments>> h5PageInfo(@RequestBody GymCommentPageReqVO vo, HttpServletRequest request){
         DataResult<PageVO<GymComments>> result= DataResult.success();
+//        if(vo.getCreateTime()!=null&&vo.getCreateTime()!=""){
+//            String[] t=vo.getCreateTime().split(" ~ ");
+//            vo.setCreateTime(t[0]);
+//            vo.setUpdateTime(t[1]);
+//        }
+//        System.out.print("\n\n\n"+vo+"\n\n\n\n");
         result.setData(gymCommentService.h5PageInfo(vo));
         return result;
     }
@@ -112,6 +118,11 @@ public class gymCommentController {
         String deptId= userService.getDeptIdFromUserId(userId);
         if(deptId!=null&&deptId.length()!=0&&deptId!="")
             vo.setDeptId(deptId);
+        if(vo.getCreateTime()!=null&&vo.getCreateTime()!=""){
+            String[] t=vo.getCreateTime().split(" ~ ");
+            vo.setCreateTime(t[0]);
+            vo.setUpdateTime(t[1]);
+        }
         System.out.print("\n\n\n\n评论分页查询："+vo.toString()+"\n\n\n");
         result.setData(gymCommentService.pageInfo(vo));
         return result;

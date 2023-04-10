@@ -121,10 +121,10 @@
                 AND typeId=#{typeId}
             </if>
             <if test="typeName!=null and typeName!=''">
-                AND typeName like CONCAT("%", #{typeName},"%")
+                AND typeName like '%'||#{typeName}||'%'
             </if>
             <if test="descripton!=null and descripton!=''">
-                AND descripton like CONCAT("%", #{descripton},"%")
+                AND descripton like '%'||#{descripton}||'%'
             </if>
             <if test="deptId!=null and deptId!=''">
                 AND e.deptId =#{deptId}

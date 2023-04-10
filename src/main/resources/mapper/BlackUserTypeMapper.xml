@@ -113,9 +113,10 @@
         </foreach>
     </delete>
 
+    <!--,dept.deleted-->
     <select id="selectAllTypeInfo" resultMap="BaseResultMap" parameterType="com.yiie.vo.request.BlackTypePageReqVO">
         select typeId,e.deptId,typeName,description,e.createTime,e.updateTime,e.deleted,
-        dept.id,dept.dept_no,dept.name,dept.pid,dept.status,dept.relation_code,dept.dept_manager_id,dept.manager_name,dept.phone,dept.create_time,dept.update_time,dept.deleted
+        dept.id,dept.dept_no,dept.name,dept.pid,dept.status,dept.relation_code,dept.dept_manager_id,dept.manager_name,dept.phone,dept.create_time,dept.update_time
         from blackusertype e
         left join dept
         on e.deptId=dept.id
@@ -125,7 +126,7 @@
                 AND typeId=#{typeId}
             </if>
             <if test="typeName!=null and typeName!=''">
-                AND typeName like CONCAT("%", #{typeName},"%")
+                AND typeName like '%'||#{typeName}||'%'
             </if>
             <if test="descripton!=null and descripton!=''">
                 AND descripton like CONCAT("%", #{descripton},"%")
