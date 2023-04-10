@@ -22,4 +22,7 @@ public class ExcelBlackInfoVO {
 
     @ExcelProperty(value = "sex",index = 4)
     private String sex;
+
+    @ExcelProperty(value = "deptId",index = 5)
+    private String deptId;
 }

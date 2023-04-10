@@ -5,20 +5,22 @@
     <title>场地列表</title>
     <link rel="stylesheet" href="/layui/css/layui.css" media="all">
     <link rel="stylesheet" href="/css/form.css">
+
+    <link rel="stylesheet" href="/layui-select-ext-master/layui/css/layui.css" media="all" />
+
     <script src="/layui/layui.all.js"></script>
     <script src="/js/util.js"></script>
     <style type="text/css">
         <!-- 用于显示时分 -->
-        .layui-laydate-content>.layui-laydate-list {
+        .layui-laydate-content {
             padding-bottom: 0px;
+            width:50%;
             overflow: hidden;
         }
-        .layui-laydate-content>.layui-laydate-list>li{
-            width:50%
-        }
-        .merge-box .scrollbox .merge-list {
-            padding-bottom: 5px;
-        }
+      /*  .laydate-time-list:last-child{
+            display: none;
+        }*/
+
     </style>
 </head>
 
@@ -40,13 +42,17 @@
             <div class="layui-form-item">
                 <div class="layui-form-label ">场馆电话</div>
                 <div class="layui-input-block">
-                    <input type="gymPhone" lay-verify="required|telephone" name="gymPhone" placeholder="请输入场馆电话" autocomplete="off" class="layui-input">
+                    <input type="gymPhone" lay-verify="required|telephone" name="gymPhone"
+                           value="18373667221"
+                           placeholder="请输入场馆电话" autocomplete="off" class="layui-input">
                 </div>
             </div>
             <div class="layui-form-item">
                 <div class="layui-form-label ">场馆最大可容纳人数</div>
                 <div class="layui-input-block">
-                    <input type="gymCapacity"  name="gymCapacity" placeholder="请输入最大人数" autocomplete="off" class="layui-input">
+                    <input type="gymCapacity"  name="gymCapacity"
+                           value="100"
+                           placeholder="请输入最大人数" autocomplete="off" class="layui-input">
                 </div>
             </div>
 
@@ -58,14 +64,23 @@
             <div class="layui-form-item">
                 <label class="layui-form-label">周一到周五开放时间</label>
                 <div class="layui-input-block">
-                    <input type="monday" class="layui-input" name="monday" placeholder="周一到周五开放时间: 例如 9:00-11:30 1:00-5:00" autocomplete="off" >
+                    上午
+                    <input type="text" id="workDay1" class="layui-input" name="workDay1"
+                           placeholder="周一到周五开放时间: 例如 9:00-11:30 1:00-5:00" autocomplete="off" >
+                    下午
+                    <input type="text" id="workDay2" class="layui-input" name="workDay2"
+                           placeholder="周一到周五开放时间: 例如 9:00-11:30 1:00-5:00" autocomplete="off" >
                 </div>
             </div>
 
             <div class="layui-form-item">
                 <label class="layui-form-label">周六周天开放时间</label>
                 <div class="layui-input-block">
-                    <input type="saturday" class="layui-input" name="saturday" placeholder="周一到周五开放时间: 例如 9:00-11:30 1:00-5:00,不开放则为不填" autocomplete="off" >
+                    上午:<input type="saturday" id="weekend1" class="layui-input" name="weekend1"
+                           placeholder="周一到周五开放时间: 例如 9:00-11:30 1:00-5:00,不开放则为不填" autocomplete="off" >
+
+                    下午:<input type="saturday" id="weekend2" class="layui-input" name="weekend2"
+                              placeholder="周一到周五开放时间: 例如 9:00-11:30 1:00-5:00,不开放则为不填" autocomplete="off" >
                 </div>
             </div>
 
@@ -74,7 +89,7 @@
                 <div class="layui-form-label ">节假日是否开放</div>
                 <div class="layui-input-block">
                     <div class="layui-input-inline layui-form">
-                        <select name="openOnHoliday">
+                        <select name="openOnHoliday" id="openOnHolidayUpdate">
                             <option value="">请选择</option>
                             <option value="0">不开放</option>
                             <option value="1">开放</option>
@@ -85,8 +100,11 @@
 
             <div class="layui-form-item">
                 <div class="layui-form-label ">场馆类型</div>
-                <div class="layui-input-block">
+                <!--<div class="layui-input-block">
                     <input type="gymTypes"  name="gymTypes" placeholder="请输入场馆类型" autocomplete="off" class="layui-input">
+                </div>-->
+                <div class="layui-input-block" id="tag_ids2">
+
                 </div>
             </div>
 
@@ -107,7 +125,18 @@
             </div>
 
             <!-- gps 地理位置 -->
-            <!-- todo -->
+            <div class="layui-form-item">
+                <label class="layui-form-label">经度</label>
+                <div class="layui-input-block">
+                    <input type="number" name="longitude" placeholder="请输入场馆经度" oninput="if(value>180)value=180;if(value<-180)value=-180" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">纬度</label>
+                <div class="layui-input-block">
+                    <input type="text" name="latitude" placeholder="请输入场馆纬度" oninput="if(value>85)value=85;if(value<-85)value=-85" autocomplete="off" class="layui-input">
+                </div>
+            </div>
 
             <div class="layui-form-item">
                 <label class="layui-form-label">场馆描述</label>
@@ -126,59 +155,45 @@
     </div>
 </div>
 
-<!--<div class="panel panel-default picture_gym" hidden>
-    <div class="panel-heading title" style="text-align: center"></div>
-    <div class="layui-card-body">&lt;!&ndash;/sys/loadPicture&ndash;&gt;
-        <form class="layui-form " action="/index/loadPicture2" method="post" enctype="multipart/form-data" lay-filter="" style="width: 100%;margin-top: 10px">
-
-            <input name="gymId" hidden/>
-
-            <div class="layui-form-item">
-                <div class="layui-form-label ">图片上传</div>
-                <div class="layui-input-block">
-                    <input type="file" name="picture" id="pictureC" class="layui-input" onchange="checkFileNum(this,1,3)" multiple>
-                    <tip>请上传1-3张图片，已有
-                        <p style="display: inline;font-weight: bolder;color: deeppink" id="pictureNums"></p>
-                         张图片，若上传数量不能超过3张。<br>若已存在图片，超出总数量的图片对原图片进行顺序覆盖</tip>
-                </div>
-            </div>
-
-            <div class="layui-form-item">
-                <div class="layui-input-block">
-                    <button type="submit" class="layui-btn" lay-submit="" id="loadP" lay-filter="">上传</button>
-                    <button class="layui-btn layui-btn-primary" id="btn_cancel">返回</button>
-                </div>
-            </div>
-         &lt;!&ndash;   <div class="layui-btn-container">
-                <button type="button" class="layui-btn layui-btn-normal" id="choosePicture">选择文件</button>
-                <button type="button" class="layui-btn" id="loadPicture">开始上传</button>
-            </div>&ndash;&gt;
-
-        </form>
-
-    </div>
-</div>-->
 <div class="gym_table_div">
     <div id="searchParam" shiro:hasPermission="sys:gym:list">
         <div class="layui-form-item">
             <div class="layui-input-inline">
                 <input type="text" id="gymName" class="layui-input" autocomplete="off" placeholder="请输入场地名称">
             </div>
-            <div class="layui-input-inline">
-                <input type="text" id="gymTypes" class="layui-input" autocomplete="off" placeholder="请输入场地类型">
-            </div>
+
             <div class="layui-input-inline layui-form">
-                <select class="" id="openOnHoliday">
+                <select id="openOnHoliday">
                     <option value="">节假日是否开放</option>
-                    <option value="0">不开放</option>
                     <option value="1">开放</option>
+                    <option value="2">不开放</option>
                 </select>
             </div>
             <div class="layui-input-inline">
                 <input type="text" class="layui-input" id="createTime" placeholder="选择创建时间区间" style="width: 290px">
             </div>
+            <div class="layui-input-inline" style="margin-right: 140px">
+                <!--                <input type="text" id="gymTypes" class="layui-input" autocomplete="off" placeholder="请输入场地类型">-->
+                <div class="layui-input-block" id="tag_ids1">
+
+                </div>
+            </div>
+
+            <div class="layui-input-inline layui-form" id="deptSelect" style="display: none">
+                <select id="deptInfo" name="deptId">
+                </select>
+            </div>
+
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <button id="Reset" type="reset" class="layui-btn layui-btn-primary">
+                    <i class="layui-icon layui-icon-fonts-clear"></i> 清 空
+                </button>
+            </div>
         </div>
     </div>
+
     <!--changed -->
     <table class="layui-hide" id="gym_table" lay-filter="gym_table"></table>
     <div id="laypage" class= "$(" .layui-laypage-btn").click();"></div>
@@ -214,9 +229,18 @@
     </div>
 </script>
 <script type="text/html" id="tool">
-    <a class="layui-btn layui-btn-xs" lay-event="closeGym" shiro:hasPermission="sys:gym:update">闭馆</a>
-    <a class="layui-btn layui-btn-xs" lay-event="picture" shiro:hasPermission="sys:gym:update">上传场地图片</a>
-    <a class="layui-btn layui-btn-xs" lay-event="edit" shiro:hasPermission="sys:gym:update">编辑</a>
+    {{#  if(d.toDayIsClose == 1){ }}
+    <a class="layui-btn layui-btn-xs layui-bg-orange" lay-event="" shiro:hasPermission="sys:gym:update">
+    已闭馆
+    </a>
+    {{#  } else{ }}
+    <a class="layui-btn layui-btn-xs" lay-event="closeGym" shiro:hasPermission="sys:gym:update">
+        闭馆
+    </a>
+    {{#  } }}
+
+    <a class="layui-btn layui-btn-xs" lay-event="picture" shiro:hasPermission="sys:gym:update">场地图片</a>
+    <a class="layui-btn layui-btn-xs" lay-event="edit" shiro:hasPermission="sys:gym:update">场馆信息</a>
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del" shiro:hasPermission="sys:gym:deleted">删除</a>
 </script>
 <script type="text/html" id="sexTpl">
@@ -235,6 +259,8 @@
     <span style="color: #c40b53;">不开放</span>
     {{#  } }}
 </script>
+
+<!--<script charset="UTF-8" src="/layui-select-ext-master/layui/layui.js"></script>-->
 <script>
     var table = layui.table;
     var laypage = layui.laypage
@@ -252,24 +278,12 @@
     // 文件列表dom
     var fileListDom = $('.file-list');
 
-    /*var loadPFlag=[[${loadPicture}]];
-    // var pictureList=[[${pictureList}]];
-    // var gymId=[[${gymId}]];
-    console.log(+"-图片上传信号："+loadPFlag);
-    if(loadPFlag==0){
+    var exerciseTypeNum=0;
+    //多选下拉框
+    var tagIns1;
+    var tagIns2;
 
-    }else if(loadPFlag==1){//上传成功
-        layer.msg("上传成功")
-    }else if(loadPFlag==2){//上传失败
-        layer.msg("该gym信息不存在")
-    }else if(loadPFlag==3){
-        /!*$(".gym_table_div").hide();
-        $(".picture_gym").show();
-        $(".title").html("上传场地图片");
-        $(".picture_gym input[name=gymId]").val(gymId);
-        form.render(); //更新全部*!/
-        layer.msg("上传失败")
-    }*/
+
 
     function checkFileNum(fileObj,n1,n2){
         if (window.File && window.FileList) {
@@ -282,10 +296,86 @@
         }
     }
 
-    layui.use(['table', 'laypage', 'layer', 'laydate', 'tree', 'transfer'], function () {
 
+    layui.extend({//拓展一个模块别名
+        selectN: '/layui/selectN',
+        selectM: '/layui/selectM',
+    }).use(['table', 'laypage', 'layer', 'laydate', 'tree', 'transfer','selectN','selectM'], function () {
+        //下拉多选框
+
+        var selectN = layui.selectN
+            ,selectM = layui.selectM;
+        //多选标签-基本配置
+        // var tagData = [{"id":12,"name":"长者","status":0},{"id":13,"name":"工厂"},{"id":14,"name":"小学生"},{"id":15,"name":"大学生"},{"id":16,"name":"研究生"},{"id":17,"name":"教师"},{"id":18,"name":"记者"}];
+        var tagData = [];
+
+
+        //填充类型
+        CoreUtil.sendAjax("/sys/getExerciseType", null, function (res) {
+          console.log("获取运动类型.......")
+          if (res.data != null) {
+              var types=res.data;
+              exerciseTypeNum=types.length;
+              //处理tagData
+              for(var index=0;index<types.length;index++){
+                  var name=types[index].typeName;
+                  var tid=types[index].typeId;
+                  var type={"id":tid,"name":name,"status":1};
+                  tagData.push(type);
+                  // table.render();
+              }
+              // console.log("tagData:"+JSON.stringify(tagData))
+              //重新赋值一遍
+              tagIns1 = selectM({
+                  //元素容器【必填】
+                  elem: '#tag_ids1'
+                  //候选数据【必填】
+                  ,data: tagData
+                  ,max:exerciseTypeNum
+                  ,width:200
+                  ,//空值项提示
+                  tips:"请选择运动类型"
+                  //添加验证
+                  ,verify:'required'
+              });
+              //这个是新增与修改的
+              tagIns2 = selectM({
+                  //元素容器【必填】
+                  elem: '#tag_ids2'
+                  //候选数据【必填】
+                  ,data: tagData
+                  ,max:exerciseTypeNum
+                  ,width:400
+                  ,//空值项提示
+                  tips:"请选择运动类型"
+                  //添加验证
+                  ,verify:'required'
+              });
+          }
+        }, "GET", false, function (res) {
+          layer.msg("抱歉！您暂无获取类型的权限");
+        });
+       /* form.on('submit(demo)',function(data){
+            console.log('tagIns1 当前选中的值名：',tagIns1.selected);
+            console.log('tagIns1 当前选中的值：',tagIns1.values);
+            console.log('tagIns1 当前选中的名：',tagIns1.names);
+            console.log('');
+            var formData = data.field;
+            console.log('表单对象：',formData);
+        })
+        //通过js动态选择
+        $('.set2').click(function(){
+            tagIns1.set([12,13,14,15]);
+        });*/
+        //监听重置按钮
+        $('form').find(':reset').click(function(){
+            $('form')[0].reset();
+            tagIns1.set();//默认值
+            return false;
+        });
+
+        //下拉多选框
         form.render();
-
         form.verify({
             telephone: function(value){
                 var flag = mobile.test(value) || phone.test(value);
@@ -299,10 +389,51 @@
             gymName:null,
             gymTypes:null,
             openOnHoliday:null,
+            deptId:null,
+            exerciseType:null,
             createTime: null,
             pageNum: 1,
             pageSize: 10
         }
+
+        //清空条件
+        $('#Reset').on('click', function(){
+            console.log("清空")
+            $("#createTime").val("");
+            searchParam.startTime =null;
+            searchParam.endTime=null;
+            searchParam.createTime=null;
+            $("#openOnHoliday").val("节假日是否开放");
+            $("#deptInfo").val("所有机关单位");
+            $("#gymTypes").val("");
+            $("#gymName").val("");
+            //多选下拉框
+            tagIns1.set();//默认值
+            form.render("select") //重新渲染单下拉框
+        });
+
+        //填充类型：要放layui里面，不然request无效
+        CoreUtil.sendAjax("/sys/getAllDept", null, function (res) {
+            console.log("获取机关单位.......")
+            if (res.data != null) {
+                document.getElementById("deptSelect").style.display="block";
+                var types = res.data;
+                console.log("type:" + JSON.stringify(types))
+                var typeK = document.getElementById("deptInfo");
+                typeK.options.length = 0;//清空
+                typeK.options.add(new Option("所有机关单位", ""));
+                for (var index = 0; index < types.length; index++) {
+                    console.log("type:"+types[index]);
+                    var name = types[index].name;
+                    var tid = types[index].id;
+                    typeK.options.add(new Option(name, tid));//Option("文本","值")
+                }
+                // typeK.innerText=typeInner;
+                form.render();//不添加不会显示
+            }
+        }, "POST", false, function (res) {
+            // layer.msg("抱歉！您暂无获取机关单位的权限");
+        });
 
         CoreUtil.sendAjax("/sys/gyms", JSON.stringify(searchParam), function (res) {
             laypageTable(res.data.totalRows, searchParam.pageNum);
@@ -346,31 +477,55 @@
         var loadTable = function (data) {
             table.render({
                 elem: '#gym_table'
+                ,cellMinWidth: 80 //使得宽度自适应
                 , cols: [
                     [
                         {type: 'checkbox', fixed: 'left'},
-                        {field: 'gymName', align: 'center', title: '场地名称', width: 110},
-                        {field: 'deptName', align: 'center', title: '所属部门', width: 90},
-                        {field: 'gymPhone', align: 'center', title: '场地电话号码', width: 90},
-                        {field: 'gymCapacity', align: 'center', title: '最大可容纳人数', width: 120},
-                        {field: 'gymTypes', align: 'center', title: '场地类型', width: 120},
-                        {field: 'openOnHoliday', align: 'center', title: '节假日是否开放', width: 80, templet: '#sourceTpl'},
-                        {field: 'gymPosition', align: 'center', title: '场地地址'},
-                        {field: 'gymDetails', align: 'center', title: '场地描述'},
-                        {field: 'monday', align: 'center', title: '周一至周五开放时间'},
-                        {field: 'saturday', align: 'center', title: '周六周天开放时间'},
+                        {field: 'gymName', align: 'center', title: '场地名称'},
+                        // {field: 'deptName', align: 'center', title: '所属部门', width: 90},
                         {
-                            field: 'createTime', align: 'center', title: '创建时间', width: 170, templet: function (item) {
+                            field: 'deptName', align: 'center', title: '机关单位', align: 'center', templet: function (data) {
+                                return data.dept.name;
+                            }
+                        },
+                        {field: 'gymPhone', align: 'center', title: '场地电话号码', width: 150},
+                        {field: 'gymCapacity', align: 'center', title: '最大可容纳人数', width: 120,hide:true},
+                        {field: 'gymTypes', align: 'center', title: '场地类型',templet: function (data) {
+                                let tagListStr = "";
+                                let types=data.gymTypes.split("-");
+                                // console.log("types:"+JSON.stringify(types));
+                                for(let t=0;t<types.length;t++){
+                                    // console.log("tagData:"+JSON.stringify(tagData))
+                                    //types取值记得-1，不然要超出界限，或者undefined
+                                    for(let td=0;td<tagData.length;td++){//可能出现类型被删除找不到，所以要做遍历查找
+                                        if(tagData[td].id==types[t]){
+                                            let str = '<span class="layui-badge" style="background-color: pink;' +
+                                                'color: #666666;margin-right: 3px">' + tagData[td].name + '</span>';
+                                            tagListStr += str;
+                                        }
+                                    }
+                                }
+                                return tagListStr.length==0?"空":tagListStr;
+                            }
+                        },
+                        {field: 'openOnHoliday', align: 'center', title: '节假日是否开放', width: 80, templet: '#sourceTpl'},
+                        {field: 'gymPosition', align: 'center', title: '场地地址',hide:true},
+                        {field: 'gymDetails', align: 'center', title: '场地描述',hide:true},
+                        {field: 'monday', align: 'center', title: '周一至周五开放时间',width:200},
+                        {field: 'saturday', align: 'center', title: '周六周天开放时间',width:200},
+                        {field: 'gymGps', align: 'center', title: '经纬度'},
+                        {
+                            field: 'createTime', align: 'center', title: '创建时间',hide:true, width: 170, templet: function (item) {
                                 return CoreUtil.formattime(item.createTime);
                             }
                         },
-                        {width: 180, align: 'center', toolbar: "#tool", title: '操作'}
+                        {align: 'center', toolbar: "#tool", title: '操作',width:350}
                     ]
                 ]
                 , data: data
                 , even: true
                 , limit: data.length
-                , limits: [10, 20, 30, 50, 100]
+                , limits: [5, 10, 20, 30, 50, 100]
                 , toolbar: '#toolbar'
             });
         };
@@ -379,16 +534,95 @@
             elem: '#createTime'
             , type: 'datetime'
             , range: '~'
+            ,theme: 'molv'
             , done: function (value, date, endDate) {
                 if (value != null && value != undefined && value != "") {
-                    searchParam.startTime = value.split("~")[0];
-                    searchParam.endTime = value.split("~")[1];
+                    console.log("非空")
+                    searchParam.startTime = value.split(" ~ ")[0];
+                    searchParam.endTime = value.split(" ~ ")[1];
                 } else {
+                    console.log("空")
                     searchParam.startTime = null;
                     searchParam.endTime = null;
                 }
             }
         });
+        //场馆开放时间
+        laydate.render({
+            elem: '#workDay1',
+            range: '-',
+            theme: 'molv',
+            type:"time",
+            trigger:"click",
+            format:"HH:mm",
+            min: '08:00:00',
+            max: "12:00:00",
+            done: function (value, date,endDate) {
+                // 结束时间大于开始时间
+                validTime(value,"workDay1");
+            }
+        });
+        laydate.render({
+            elem: '#workDay2',
+            range: '-',
+            theme: 'molv',
+            type:"time",
+            trigger:"click",
+            format:"HH:mm",
+            min: '13:00:00',
+            max: "20:00:00",
+            done: function (value, date,endDate) {
+                // 结束时间大于开始时间
+                validTime(value,"workDay2");
+            }
+        });
+        laydate.render({
+            elem: '#weekend1',
+            range: '-',
+            theme: 'molv',
+            type:"time",
+            trigger:"click",
+            format:"HH:mm",
+            min: '08:00:00',
+            max: "12:00:00",
+            done: function (value, date,endDate) {
+                validTime(value,"weekend1");
+            }
+        });
+        laydate.render({
+            elem: '#weekend2',
+            range: '-',
+            theme: 'molv',
+            type:"time",
+            trigger:"click",
+            format:"HH:mm",
+            min: '13:00:00',
+            max: "20:00:00",
+            done: function (value, date,endDate) {
+                validTime(value,"weekend2");
+            }
+        });
+        function validTime(dateTime,divId){
+            // 结束时间大于开始时间
+            var value=dateTime;
+            console.log("时间")
+            if (value != null && value != undefined && value != "") {
+                console.log(value)
+                var start=value.split(" - ")[0];
+                var end=value.split(" - ")[1];
+                console.log(start+"*"+end)
+                if(start>=end){
+                    console.log("大于")
+                    layer.msg("<span style=\"font-size:30px\">结束时间不得小于等开始时间!!!</span>",
+                        { time: 2000,
+                            shift: 5,offset:"t",
+                            area:['500px','60px'] });
+                    document.getElementById(divId).val("");//不能用$,清除失效
+                }else {
+
+                }
+            }
+        }
 
         // 执行实例
         // TODO: 上传图片, 接口需要修改.
@@ -506,7 +740,7 @@
 
         /*// 场所开放时间设置, 显示时分.
         laydate.render({
-            elem: '#Monday'
+            elem: '#monday'
             ,type: 'time'
             ,format: 'HH:mm'
             ,btns: ['clear', 'confirm']
@@ -597,8 +831,15 @@
                     $(".operation_gym input[name=gymPosition]").val("");
                     $(".operation_gym input[name=gymDetails]").val("");
                     $(".operation_gym input[name=deptName]").val("");
-                    $(".operation_gym input[name=Monday]").val("");
-                    $(".operation_gym input[name=Saturday]").val("");
+                  /*  $(".operation_gym input[name=monday]").val("");
+                    $(".operation_gym input[name=saturday]").val("");*/
+                    $(".operation_gym input[name=workDay1]").val("");
+                    $(".operation_gym input[name=workDay2]").val("");
+                    $(".operation_gym input[name=weekend1]").val("");
+                    $(".operation_gym input[name=weekend2]").val("");
+                    $(".operation_gym input[name=longitude]").val("");
+                    $(".operation_gym input[name=latitude]").val("");
+                    tagIns2.set();//重置
                     //var x = document.getElementsByClassName("layui-unselect layui-form-switch");
                     //x[0].setAttribute("class", "layui-unselect layui-form-switch layui-form-onswitch");
                     //var d = document.getElementsByTagName('em')[0];
@@ -610,9 +851,26 @@
                     searchParam.gymName = $("#gymName").val();
                     searchParam.gymTypes = $("#gymTypes").val();
                     searchParam.openOnHoliday = $("#openOnHoliday").val();
+                    searchParam.deptId = $("#deptInfo").val();
+                    /*console.log('tagIns1 当前选中的值名：',tagIns1.selected);
+                    console.log('tagIns1 当前选中的值：',tagIns1.values);
+                    console.log('tagIns1 当前选中的名：',tagIns1.names);*/
+                    var exerciseT="";
+                    var exerciseList=tagIns1.values;
+                    if(exerciseList!=null&&exerciseList!==""&&exerciseList!=undefined){
+                        for(var t=0;t<exerciseList.length-1;t++) {
+                            exerciseT += exerciseList[t] + "-";
+                        }
+                        // console.log("exerciseList:"+exerciseList)
+                        if(exerciseList.length>0)
+                            exerciseT+=exerciseList[exerciseList.length-1];
+                        searchParam.exerciseType=exerciseT;
+                    }
+                    console.log("searchParam.exerciseType:"+exerciseT)
                     searchParam.createTime = $("#createTime").val();
                     searchParam.pageNum = 1;
                     CoreUtil.sendAjax("/sys/gyms", JSON.stringify(searchParam), function (res) {
+                        // console.log("gymList:"+JSON.stringify(searchParam))
                         laypageTable(res.data.totalRows, searchParam.pageNum);
                         if (res.data.list != null) {
                             loadTable(res.data.list);
@@ -642,21 +900,54 @@
                     tipDialog(userIds, data.gymName);
                     break;
                 case 'edit':
+                    // console.log("数据回显："+JSON.stringify(data))
                     $(".gym_table_div").hide();
                     $(".operation_gym").show();
-                    $(".title").html("编辑用户");
+                    $(".title").html("场馆信息");
                     $(".operation_gym input[name=gymId]").val(data.gymId);
                     $(".operation_gym input[name=deptId]").val(data.deptId);
                     $(".operation_gym input[name=gymName]").val(data.gymName);
                     $(".operation_gym input[name=gymPhone]").val(data.gymPhone);
                     $(".operation_gym input[name=gymCapacity]").val(data.gymCapacity);
-                    $(".operation_gym input[name=openOnHoliday]").val(data.openOnHoliday);
+                    // $(".operation_gym input[name=openOnHoliday]").value=data.openOnHoliday;
+                    document.getElementById("openOnHolidayUpdate").value=data.openOnHoliday;
                     $(".operation_gym input[name=gymTypes]").val(data.gymTypes);
                     $(".operation_gym input[name=gymPosition]").val(data.gymPosition);
                     $(".operation_gym input[name=gymDetails]").val(data.gymDetails);
                     $(".operation_gym input[name=deptName]").val(data.deptName);
-                    $(".operation_gym input[name=Monday]").val(data.monday);
-                    $(".operation_gym input[name=Saturday]").val(data.saturday);
+                    var longitude=data.gymGps.split(",")[0];
+                    var latitude=data.gymGps.split(",")[1];
+                    $(".operation_gym input[name=longitude]").val(longitude);
+                    $(".operation_gym input[name=latitude]").val(latitude);
+                    /*$(".operation_gym input[name=monday]").val(data.monday);
+                    $(".operation_gym input[name=saturday]").val(data.saturday);*/
+                    var mondayT=data.monday;
+                    var saturdayT=data.saturday;
+                    var wd1="",wd2="",we1="",we2="";
+                    if(!(mondayT==null||mondayT=="")){
+                        wd1=mondayT.split(" ")[0];
+                        wd1=wd1.split("-")[0]+" "+"-"+" "+wd1.split("-")[1];
+                        wd2=mondayT.split(" ")[1];
+                        wd2=wd2.split("-")[0]+" "+"-"+" "+wd2.split("-")[1];
+                    }
+                    if(!(saturdayT==null||saturdayT=="")){
+                        we1=saturdayT.split(" ")[0];
+                        we1=we1.split("-")[0]+" "+"-"+" "+we1.split("-")[1];
+                        we2=saturdayT.split(" ")[1];
+                        we2=we2.split("-")[0]+" "+"-"+" "+we2.split("-")[1];
+                    }
+                    console.log("time:"+wd1+wd2+we1+we2);
+                    //注意格式,必须是T - T 有空格和横线
+                    $(".operation_gym input[name=workDay1]").val(wd1);
+                    $(".operation_gym input[name=workDay2]").val(wd2);
+                    $(".operation_gym input[name=weekend1]").val(we1);
+                    $(".operation_gym input[name=weekend2]").val(we2);
+                    var typeNumber=data.gymTypes.split("-");
+                    console.log("回显:"+data.gymTypes)
+                    console.log("回显:"+typeNumber)
+                    //下拉框回显
+                    if(typeNumber.length>0)
+                        tagIns2.set(typeNumber);
                     form.render(); //更新全部
                     initTree("");
                     break;
@@ -700,10 +991,10 @@
                 content: '确定要删除' + username + "用户么?",
                 yes: function (index, layero) {
                     layer.close(index); //如果设定了yes回调，需进行手工关闭
-                    CoreUtil.sendAjax("/sys/gym", JSON.stringify(userIds), function (res) {
+                    CoreUtil.sendAjax("/sys/deleteGym", JSON.stringify(userIds), function (res) {
                         layer.msg(res.msg);
                         $(".layui-laypage-btn").click();
-                    }, "POST", false, function (res) {
+                    }, "DELETE", false, function (res) {//这个地方原来是POST，导致调用删除一直出错！！！！！！！
                         layer.msg("抱歉！您暂无删除用户的权限");
                     });
                 }
@@ -761,43 +1052,37 @@
 
         });
 
-        form.on('submit(submit)', function (data) {
-            if(data.field.gymId!=undefined){
-                console.log("图片上传:"+data)
-                console.log("图片上传:")
-                console.log("图片上传:"+$("#pictureC")[0].files)
+        function getNewExerciseType(){
+            var exerciseT="";
+            var exerciseList=tagIns2.values;
+            if(exerciseList!=null&&exerciseList!==""&&exerciseList!=undefined){
+                for(var t=0;t<exerciseList.length-1;t++) {
+                    exerciseT += exerciseList[t] + "-";
+                }
+                // console.log("exerciseList:"+exerciseList)
+                if(exerciseList.length>0)
+                    exerciseT+=exerciseList[exerciseList.length-1];
+            }
+            return exerciseT;
+        }
 
-                /*
-                /!*let formData=new FormData();
-                formData.append('picture',data.field.picture);*!/
-                // var str={"gymId":data.field.gymId,"picture":data.field.picture}
-                // var gymId=data.field.gymId;
-                var files = document.getElementById("pictureC").files;
-                console.log(files);
-                var formdata = new FormData();
-                formdata.append("picture",files[0])
-                console.log(formdata)*/
-                // var str={"picture":data.field.picture}
-                /*CoreUtil.sendAjax("/sys/test/"+data.field.gymId,"", function (res) {
-                    $(".gym_table_div").show();
-                    $(".picture_gym").hide();
-                    $(".layui-laypage-btn").click();
-                }, "POST", false, function (res) {
-                    layer.msg("抱歉！您暂无新增用户的权限");
-                });*///,"multipart/form-data",false
-                /*upload.render({
-                    elem: '#choosePicture'
-                    ,url: '/sys/test/'+data.field.gymId //此处配置你自己的上传接口即可
-                    ,auto: false
-                    //,multiple: true
-                    ,bindAction: '#loadPicture'
-                    ,done: function(res){
-                        layer.msg('上传成功');
-                        console.log(res)
-                    }
-                });*/
-                // return false;
-            }else if (data.field.id === undefined || data.field.id === null || data.field.id === "") {
+        form.on('submit(submit)', function (data) {
+            // console.log("gym操作："+JSON.stringify(data))
+            // console.log("开放时间:"+$("#workDay1").val());
+            if($("#workDay1").val()==""||$("#workDay2").val()==""||$("#weekend1").val()==""||$("#weekend2").val()==""){
+                layer.msg("开放时间不能为空!!!");
+                return false;
+            }
+            var longitude=$(".operation_gym input[name=longitude]").val();
+            var latitude=$(".operation_gym input[name=latitude]").val();
+            data.field.gymGps=longitude+","+latitude;
+            console.log("gps:"+data.field.gymGps);
+            if (data.field.gymId === undefined || data.field.gymId === null || data.field.gymId === "") {
+                console.log("id为空，新增gym")
+                var nT=getNewExerciseType();
+                if(nT!=null&&nT.length>0)
+                    data.field.gymTypes=nT;
+                console.log("数据:"+JSON.stringify(data.field))
                 CoreUtil.sendAjax("/sys/gym", JSON.stringify(data.field), function (res) {
                     $(".gym_table_div").show();
                     $(".operation_gym").hide();
@@ -806,6 +1091,11 @@
                     layer.msg("抱歉！您暂无新增用户的权限");
                 });
             } else {
+                console.log("id不为空，修改gym")
+                var nT=getNewExerciseType();
+                if(nT!=null&&nT.length>0)
+                    data.field.gymTypes=nT;
+                console.log("数据:"+JSON.stringify(data.field))
                 CoreUtil.sendAjax("/sys/gym", JSON.stringify(data.field), function (res) {
                     $(".gym_table_div").show();
                     $(".operation_gym").hide();
@@ -856,7 +1146,7 @@
             CoreUtil.sendAjax("/sys/dept/tree", param, function (res) {
                 loadDeptTree(res.data);
             }, "GET", false, function (res) {
-                layer.msg("抱歉！您暂无获取部门树的权限");
+                // layer.msg("抱歉！您暂无获取部门树的权限");
                 var noAuthorityData = [];
                 loadDeptTree(noAuthorityData);
             });

@@ -150,7 +150,23 @@
             </div>
 
             <div class="layui-input-inline">
-                <input type="text" class="layui-input" id="createTime" placeholder="选择创建时间区间" style="width: 290px">
+                <input type="text" class="layui-input" id="createTime" placeholder="选择创建时间区间">
+            </div>
+
+            <div class="layui-input-inline layui-form" id="deptSelect" style="display:none;">
+                <select id="deptInfo" name="deptId">
+                </select>
+            </div>
+            <div class="layui-input-inline layui-form" id="gymSelect" style="display:none;">
+                <select id="gymInfo" name="gymId">
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <button id="Reset" type="reset" class="layui-btn layui-btn-primary" style="margin-top: 0px">
+                    <i class="layui-icon layui-icon-fonts-clear"></i> 清 空
+                </button>
             </div>
         </div>
     </div>
@@ -180,9 +196,18 @@
     </div>
 </script>
 <script type="text/html" id="tool">
-    <a class="layui-btn layui-btn-xs" lay-event="read" shiro:hasPermission="sys:gymComment:update">已读</a>
+    {{#  if(d.commentStatus == 1){ }}
+    <a class="layui-btn layui-btn-xs" lay-event="closeGym" shiro:hasPermission="sys:gym:update">
+        已读
+    </a>
+    {{#  } else{ }}
+    <a class="layui-btn layui-btn-xs layui-bg-orange" lay-event="read" shiro:hasPermission="sys:gymComment:update">
+        未读
+    </a>
+    {{#  } }}
+
     <a class="layui-btn layui-btn-xs" lay-event="response" shiro:hasPermission="sys:gymComment:update">回复</a>
-    <a class="layui-btn layui-btn-xs" lay-event="edit" shiro:hasPermission="sys:gymComment:update">编辑</a>
+<!--    <a class="layui-btn layui-btn-xs" lay-event="edit" shiro:hasPermission="sys:gymComment:update">编辑</a>-->
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del" shiro:hasPermission="sys:gymComment:deleted">删除</a>
 </script>
 <script type="text/html" id="sexTpl">
@@ -201,6 +226,20 @@
     var laydate = layui.laydate;
     var tree = layui.tree;
     var transfer = layui.transfer;
+
+    //清空条件
+    $('#Reset').on('click', function(){
+        console.log("清空")
+        $("#commentCustomerName").val("");
+        $("#commentStars").val("");
+        $("#commentCustomerPhone").val("");
+        $("#commentStatus").val("请选择状态");
+        $("#deptInfo").val("所有机关单位");
+        $("#gymInfo").val("所有场馆");
+        $("#createTime").val("");
+        form.render("select") //重新渲染单下拉框
+    });
+
     layui.use(['table', 'laypage', 'layer', 'laydate', 'tree', 'transfer'], function () {
         form.render();
         var searchParam = {
@@ -208,12 +247,59 @@
             commentStars: null,
             commentCustomerPhone:null,
             commentStatus:null,
+            deptId:null,
+            gymId:null,
             createTime: null,
             startTime: null,
             endTime: null,
             pageNum: 1,
             pageSize: 10
         }
+
+        //填充类型：要放layui里面，不然request无效
+        CoreUtil.sendAjax("/sys/getAllDept", null, function (res) {
+            console.log("获取机关单位.......")
+            if (res.data != null) {
+                document.getElementById("deptSelect").style.display="block";
+                var types = res.data;
+                console.log("type:" + JSON.stringify(types))
+                var typeK = document.getElementById("deptInfo");
+                typeK.options.length = 0;//清空
+                typeK.options.add(new Option("所有机关单位", ""));
+                for (var index = 0; index < types.length; index++) {
+                    console.log("type:"+types[index]);
+                    var name = types[index].name;
+                    var tid = types[index].id;
+                    typeK.options.add(new Option(name, tid));//Option("文本","值")
+                }
+                // typeK.innerText=typeInner;
+                form.render();//不添加不会显示
+            }
+        }, "POST", false, function (res) {
+            // layer.msg("抱歉！您暂无获取机关单位的权限");
+        });
+        CoreUtil.sendAjax("/sys/getGymListByDept", null, function (res) {
+            console.log("获取场馆.......")
+            if (res.data != null) {
+                document.getElementById("gymSelect").style.display="block";
+                var types = res.data;
+                // console.log("type:" + JSON.stringify(types))
+                var typeK = document.getElementById("gymInfo");
+                typeK.options.length = 0;//清空
+                typeK.options.add(new Option("所有场馆", ""));
+                for (var index = 0; index < types.length; index++) {
+                    console.log("type:"+types[index]);
+                    var name = types[index].gymName;
+                    var tid = types[index].gymId;
+                    typeK.options.add(new Option(name, tid));//Option("文本","值")
+                }
+                // typeK.innerText=typeInner;
+                form.render();//不添加不会显示
+            }
+        }, "GET", false, function (res) {
+            // layer.msg("抱歉！您暂无获取机关单位的权限");
+        });
+
         CoreUtil.sendAjax("/sys/gymComments", JSON.stringify(searchParam), function (res) {
             laypageTable(res.data.totalRows, searchParam.pageNum);
             if (res.data.list != null) {
@@ -264,13 +350,23 @@
                         {field: 'commentStatus', title: '状态', align: 'center', width: 60, templet: '#sexTpl'},
                         {field: 'commentTagContent', align: 'center', title: '评论标签内容'},
                         {field: 'commentDetail', align: 'center', title: '评论内容'},
+                        {
+                            field: 'gymName', align: 'center', title: '场馆名称', align: 'center', templet: function (data) {
+                                return data.gym.gymName;
+                            }
+                        },
+                        {
+                            field: 'deptName', align: 'center', title: '机关单位', align: 'center', templet: function (data) {
+                                return data.dept.name;
+                            }
+                        },
                         {field: 'commentAnswer', align: 'center', title: '机关单位回复内容'},
                         {
                             field: 'createTime', align: 'center', title: '创建时间', width: 170, templet: function (item) {
                                 return CoreUtil.formattime(item.createTime);
                             }
                         },
-                        {width: 180, align: 'center', toolbar: "#tool", title: '操作'}
+                        {width: 250, align: 'center', toolbar: "#tool", title: '操作'}
                     ]
                 ]
                 , data: data
@@ -338,6 +434,8 @@
                     searchParam.commentCustomerPhone = $("#commentCustomerPhone").val();
                     searchParam.commentStatus = $("#commentStatus").val();
                     searchParam.createTime = $("#createTime").val();
+                    searchParam.deptId = $("#deptInfo").val();
+                    searchParam.gymId = $("#gymInfo").val();
                     searchParam.pageNum = 1;
                     CoreUtil.sendAjax("/sys/gymComments", JSON.stringify(searchParam), function (res) {
                         laypageTable(res.data.totalRows, searchParam.pageNum);

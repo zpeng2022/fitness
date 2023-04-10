@@ -11,4 +11,6 @@ public interface BlackUserService {
     void addBlackUser(BlackUserAddReqVo vo);
     void updateBlackUserInfo(BlackUserUpdateReqVO vo, String operationId);
     void deletedBlackUsers(List<String> userIds, String operationId);
+
+    BlackUser getByIdentityCard(String identityCard);
 }

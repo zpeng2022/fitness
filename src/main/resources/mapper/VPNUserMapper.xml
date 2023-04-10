@@ -14,7 +14,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id, username, email,`status`,level, deleted,create_time, last_login,expiration_time
+        id, username, email,status,level, deleted,create_time, last_login,expiration_time
     </sql>
 
     <select id="selectAll" resultMap="BaseResultMap" parameterType="com.yiie.vo.request.VPNUserPageReqVO">
@@ -39,7 +39,7 @@
                 AND id=#{userId}
             </if>
             <if test="status!=null and status!='' or status==0 ">
-                AND `status`=#{status}
+                AND status=#{status}
             </if>
         </where>
         order by create_time DESC
@@ -72,7 +72,7 @@
                 level,
             </if>
             <if test="status != null">
-                `status`,
+                status,
             </if>
             <if test="deleted != null">
                 deleted,
@@ -138,7 +138,7 @@
                 level = #{level,jdbcType=VARCHAR},
             </if>
             <if test="status != null">
-                `status` = #{status,jdbcType=TINYINT},
+                status = #{status,jdbcType=TINYINT},
             </if>
             <if test="deleted != null">
                 deleted = #{deleted,jdbcType=TINYINT},

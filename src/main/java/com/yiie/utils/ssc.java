@@ -2,6 +2,7 @@ package com.yiie.utils;
 
 import com.csvreader.CsvReader;
 import com.yiie.vo.data.ExcelBlackInfoVO;
+import com.yiie.vo.data.PhysicalInfoVo;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,6 +11,9 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.UUID;
 
 public class ssc {
@@ -22,7 +26,7 @@ public class ssc {
         }
 
         try (
-                Connection c = DriverManager.getConnection("jdbc:mysql://localhost:3306/a_graduated_1?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false&serverTimezone=GMT%2B8",
+                Connection c = DriverManager.getConnection("jdbc:mysql://localhost:3306/bigman_yt?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false&serverTimezone=GMT%2B8",
                         "root", "root");
                 Statement s = c.createStatement();
         )
@@ -189,36 +193,62 @@ public class ssc {
         }
 
     }
-    public void insertDataByEntity(ExcelBlackInfoVO excelBlackInfoVO) throws IOException, SQLException {
-
+    public void insertDataByEntity(ExcelBlackInfoVO excelBlackInfoVO,String deptId) throws IOException, SQLException {
         try{
-            Class.forName("com.mysql.jdbc.Driver");
+//            Class.forName("com.mysql.jdbc.Driver");
+            Class.forName("dm.jdbc.driver.DmDriver");
         }catch (ClassNotFoundException e){
             e.printStackTrace();
         }
 
         try (
-                Connection c = DriverManager.getConnection("jdbc:mysql://localhost:3306/bigman?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false&serverTimezone=GMT%2B8",
-                        "root", "root");
+                /*Connection c = DriverManager.getConnection("jdbc:mysql://localhost:3306/bigman_yt?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false&serverTimezone=GMT%2B8",
+                        "root", "root");*/
+                //部署到远程用的连接
+                /*Connection c = DriverManager.getConnection("jdbc:mysql://localhost/bigman_yt?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&useSSL=false&serverTimezone=GMT%2b8",
+                        "root", "root");*/
+                Connection c = DriverManager.getConnection("jdbc:dm://localhost:5238",
+                        "SYSDBA", "SYSDBA");
                 Statement s = c.createStatement();
         )
         {
+            System.out.print("\n\n\nexcelBlackInfoVO:"+excelBlackInfoVO+"\n\n");
 
-            String name="id,identityCard,username,phone,typeInfo,sex,deleted";
+
+            String name="id,identityCard,username,deptID,phone,typeInfo,importTime,sex,deleted";
             String id=UUID.randomUUID().toString();
             String identityCard=excelBlackInfoVO.getIdentityCard();
             String username=excelBlackInfoVO.getUsername();
             String phone=excelBlackInfoVO.getPhone();
             String typeInfo=excelBlackInfoVO.getTypeInfo();
-            int sex=excelBlackInfoVO.getSex()=="男"?1:0;
-            int deleted=0;
-            String tmp="insert into blacklists("+name+")values("+"'"+id+"'"+","+"'"+identityCard+"'"+","+"'"+username+"'"+","+"'"+phone+"'"+","+"'"+typeInfo+"'"+","+"'"+sex+"'"+","+"'"+deleted+"'"+")";
-            System.out.println("执行sql:"+tmp+"\n");
-            s.execute(tmp); //执行插入
+            if(typeInfo!=null){
+                typeInfo=typeInfo.replaceAll(".0","");
+            }
+           /* if(typeInfo.length()>0){
+                typeInfo=typeInfo.substring(0,1);//数据库中就一位，强制裁剪
+            }*/
+//            String deptId2=excelBlackInfoVO.getDeptId();//从excel中获取的
+            Date d=new Date();
+            SimpleDateFormat df2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String date=df2.format(d);
+            int sex;
+            int deleted=1;
+            if(name==null||identityCard==null||typeInfo==null||phone==null||excelBlackInfoVO.getSex()==null||deptId==null){
+//                throw new IllegalArgumentException("deptId为空，不能添加");
+            }
+            else {
+                String sex1=excelBlackInfoVO.getSex();
+                if(sex1.equals("男"))
+                    sex=1;
+                else if(sex1.equals("女"))
+                    sex=2;
+                else
+                    sex=0;
+                String tmp="insert into blacklists("+name+")values("+"'"+id+"'"+","+"'"+identityCard+"'"+","+"'"+username+"'"+","+"'"+deptId+"'"+","+"'"+phone+"'"+","+"'"+typeInfo+"'"+","+"'"+date+"'"+","+"'"+sex+"'"+","+"'"+deleted+"'"+")";
+                System.out.println("执行sql:"+tmp+"\n");
+                s.execute(tmp); //执行插入
+            }
             s.close();
-
-        }catch (SQLException e){
-            e.printStackTrace();
         }
 
     }
@@ -238,5 +268,51 @@ public class ssc {
 //        readCSV(path2);
 //        readXSL(path4);
         File file=new File("C:\\Users\\Lenovo\\Desktop\\blackList.xls");
+    }
+
+    public void insertDataByEntity_Physical(PhysicalInfoVo physicalInfoVo) throws SQLException {
+        try{
+            Class.forName("com.mysql.jdbc.Driver");
+        }catch (ClassNotFoundException e){
+            e.printStackTrace();
+        }
+        try (
+                /*Connection c = DriverManager.getConnection("jdbc:mysql://localhost:3306/bigman_yt?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false&serverTimezone=GMT%2B8",
+                        "root", "root");*/
+                //部署到远程用的连接
+                Connection c = DriverManager.getConnection("jdbc:mysql://123.60.165.20:13306/bigman_yt?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&useSSL=false&serverTimezone=GMT%2b8",
+                        "root", "fitnessBooking_2022_hdu");
+                Statement s = c.createStatement();
+        )
+        {
+//            System.out.print("\n\n\nphysicalInfoVo:"+physicalInfoVo+"\n\n");
+            String name="studentStatus,exempt,height,weight,vitalCapacity,runFifty,settingForward,skippingRope,leftVision,rightVision," +
+                    "leftError,rightError,leftMirror,rightMirror,abdominalCurl,runBack,createTime,deleted";
+
+            String studentStatus=physicalInfoVo.getStudentStatus();
+            int exempt=physicalInfoVo.getExempt();
+            String height=physicalInfoVo.getHeight();
+            String weight=physicalInfoVo.getWeight();
+            String vitalCapacity=physicalInfoVo.getVitalCapacity();
+            String runFifty=physicalInfoVo.getRunFifty();
+            String settingForward=physicalInfoVo.getSettingForward();
+            String skippingRope=physicalInfoVo.getSkippingRope();
+            String leftVision=physicalInfoVo.getLeftVision();
+            String rightVision=physicalInfoVo.getRightVision();
+            String leftError=physicalInfoVo.getLeftError();
+            String rightError=physicalInfoVo.getRightError();
+            String leftMirror=physicalInfoVo.getLeftMirror();
+            String rightMirror=physicalInfoVo.getRightMirror();
+            String abdominalCurl=physicalInfoVo.getAbdominalCurl();
+            String runBack=physicalInfoVo.getRunBack();
+            Date createTime=new Date();
+            Integer deleted=1;
+            SimpleDateFormat df2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String date=df2.format(createTime);
+            String tmp="REPLACE into physicaltest("+name+") values("+"'"+studentStatus+"'"+","+"'"+exempt+"'"+","+"'"+height+"'"+","+"'"+weight+"'"+","+"'"+vitalCapacity+"'"+","+"'"+runFifty+"'"+","+"'"+settingForward+"'"+","+"'"+skippingRope+"'"+","+"'"+leftVision+"'"+","+"'"+rightVision+"'"+","+"'"+leftError+"'"+","+"'"+rightError+"'"+","+"'"+leftMirror+"'"+","+"'"+rightMirror+"'"+","+"'"+abdominalCurl+"'"+","+"'"+runBack+"'"+","+"'"+date+"'"+","+"'"+deleted+"'"+")";
+            System.out.println("执行sql:"+tmp+"\n");
+            s.execute(tmp); //执行插入
+            s.close();
+        }
     }
 }

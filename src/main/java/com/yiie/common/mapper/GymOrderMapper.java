@@ -4,6 +4,7 @@ import com.yiie.entity.GymCustomTags;
 import com.yiie.entity.GymOrder;
 import com.yiie.vo.data.SportAndValue;
 import com.yiie.vo.request.GymOrderPageReqVO;
+import com.yiie.vo.request.OrderCancelVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -37,4 +38,20 @@ public interface GymOrderMapper {
     List<SportAndValue> getAllTypeAndValue();
 
     List<SportAndValue> getGymPeopleNum();
+
+    void passOrder(String orderId);
+
+    void refuseOrder(String orderId);
+
+    void refuseOrder2(OrderCancelVO cancelVO);
+
+    void cancelOrder(OrderCancelVO cancelVO);
+
+    List<GymOrder> getCanceledOrderByCustomerId(String userId);
+
+    void readCanceledOrder(String userId);
+
+    void delCanceledOrder(String userId);
+
+    List<GymOrder> getUnreadCanceledOrderByCustomerId(String userId);
 }

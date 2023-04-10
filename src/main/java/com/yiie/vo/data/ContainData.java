@@ -13,6 +13,7 @@ public class ContainData {
     private List<SportAndValue> evList;//场馆各运动类型人数分布
     private List<Integer> orderTimeList;//场地预约时间分布
     private List<SportAndValue> sportRank;//运动排行榜
+    private List<SportAndValue> allGymSport;//所有场馆运动项目占比
     private List<Integer> todayPeoples;//今日各时段人数分布
     private List<GymPeopleMonth> lastMonthPeople;//近一个月场地人数
     private List<String> openTime;//计算开放时长的日期

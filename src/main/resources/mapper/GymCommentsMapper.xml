@@ -1,6 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.yiie.common.mapper.GymCommentsMapper">
+    <resultMap id="Gym" type="com.yiie.entity.Gym">
+        <id column="gymId" jdbcType="VARCHAR" property="gymId" />
+        <result column="deptId" jdbcType="VARCHAR" property="deptId" />
+        <result column="gymName" jdbcType="VARCHAR" property="gymName" />
+        <result column="monday" jdbcType="VARCHAR" property="monday" />
+        <result column="saturday" jdbcType="VARCHAR" property="saturday" />
+        <result column="gymPhone" jdbcType="VARCHAR" property="gymPhone" />
+        <result column="gymCapacity" jdbcType="INTEGER" property="gymCapacity" />
+        <result column="gymPicturesPath" jdbcType="VARCHAR" property="gymPicturesPath" />
+        <result column="openOnHoliday" jdbcType="TINYINT" property="openOnHoliday" />
+        <result column="gymTypes" jdbcType="VARCHAR" property="gymTypes" />
+        <result column="gymPosition" jdbcType="VARCHAR" property="gymPosition" />
+        <result column="gymDetails" jdbcType="VARCHAR" property="gymDetails" />
+        <result column="gymGps" jdbcType="VARCHAR" property="gymGps" />
+        <result column="createTime" jdbcType="VARCHAR" property="createTime" />
+        <result column="updateTime" jdbcType="VARCHAR" property="updateTime" />
+        <result column="deleted" jdbcType="TINYINT" property="deleted" />
+    </resultMap>
     <resultMap id="BaseResultMap" type="com.yiie.entity.GymComments">
         <id column="commentId" jdbcType="VARCHAR" property="commentId" />
         <result column="gymId" jdbcType="VARCHAR" property="gymId" />
@@ -17,6 +35,26 @@
         <result column="createTime" jdbcType="VARCHAR" property="createTime" />
         <result column="updateTime" jdbcType="VARCHAR" property="updateTime" />
         <result column="deleted" jdbcType="TINYINT" property="deleted" />
+        <collection property="gym" resultMap="Gym">
+
+        </collection>
+        <collection property="dept" resultMap="Dept">
+
+        </collection>
+    </resultMap>
+    <resultMap id="Dept" type="com.yiie.entity.Dept">
+        <id column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="deptNo" jdbcType="VARCHAR" property="deptNo"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="pid" jdbcType="VARCHAR" property="pid"/>
+        <result column="pidName" jdbcType="VARCHAR" property="pidName"/>
+        <result column="status" jdbcType="VARCHAR" property="status"/>
+        <result column="relationCode" jdbcType="VARCHAR" property="relationCode"/>
+        <result column="deptManagerId" jdbcType="VARCHAR" property="deptManagerId"/>
+        <result column="managerName" jdbcType="VARCHAR" property="managerName"/>
+        <result column="phone" jdbcType="TINYINT" property="phone"/>
+        <result column="createTime" jdbcType="TINYINT" property="createTime"/>
+        <result column="updateTime" jdbcType="VARCHAR" property="updateTime"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -89,20 +127,27 @@
         </where>
     </select>
 
+    <!--去除,gym.gymPicturesPath-->
     <select id="selectAllGymCommentsByDeptID" resultMap="BaseResultMap" parameterType="com.yiie.vo.request.GymCommentPageReqVO">
-        select <include refid="Base_Column_List"></include>
-        from gym_comment
+        select
+        cc.commentId,cc.gymId,cc.deptId,cc.commentCustomerId,cc.commentCustomerPhone,cc.commentCustomerIdentityCard,cc.commentStars,cc.commentTags,cc.commentTagContent,cc.commentDetail,cc.commentAnswer,cc.commentCustomerName,cc.commentStatus,cc.createTime,cc.updateTime,cc.deleted,
+        gym.gymId ,gym.deptId ,gym.gymName ,gym.monday ,gym.saturday ,gym.gymPhone ,gym.gymCapacity  ,gym.openOnHoliday ,gym.gymTypes ,gym.gymPosition ,gym.gymDetails ,gym.gymGps ,gym.createTime ,gym.updateTime ,gym.deleted,
+        dept.id,dept.dept_no,dept.name,dept.pid,dept.status,dept.relation_code,dept.dept_manager_id,dept.manager_name,dept.phone,dept.create_time,dept.update_time,dept.deleted
+        from gym_comment cc
+        left join gym
+        on cc.gymId=gym.gymId
+        left join dept
+        on cc.deptId=dept.id
         <where>
-            deleted=1
-            AND deptId = #{deptId}
-            <if test="commentId != null and commentId != ''">
-                AND commentId = #{commentId}
+            cc.deleted=1
+            <if test="deptId != null and deptId != ''">
+                AND cc.deptId = #{deptId}
             </if>
             <if test="gymId != null and gymId != ''">
-                AND gymId = #{gymId}
+                AND cc.gymId = #{gymId}
             </if>
-            <if test="deptId != null and deptId != ''">
-                AND deptId = #{deptId}
+            <if test="commentId != null and commentId != ''">
+                AND commentId = #{commentId}
             </if>
             <if test="commentCustomerId != null and commentCustomerId != ''">
                 AND commentCustomerId = #{commentCustomerId}
@@ -135,10 +180,10 @@
                 AND commentStatus = #{commentStatus}
             </if>
             <if test="createTime != null and createTime != ''">
-                AND createTime = #{createTime}
+                AND cc.createTime = #{createTime}
             </if>
             <if test="updateTime != null and updateTime != ''">
-                AND updateTime = #{updateTime}
+                AND cc.updateTime = #{updateTime}
             </if>
         </where>
     </select>

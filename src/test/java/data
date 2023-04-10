@@ -1,0 +1,27 @@
+token:
+    "{
+    "id":1,
+
+    "username":"xulei",
+
+    "password":"$2a$10$ImCR1GmVujUYyw2LEx0S.4k7X9i0ZZuZzUtO3EFhUcMTjLa1pQhG",
+
+    "nickname":"xddupdate3dad",
+
+    "avatar":"https:xl-glxy.oss-cn-beijing.aliyuncs.com11.JPG",
+
+    "qq":"17180971818@qq.com",
+
+    "phone":"18383553345",
+
+    "state":1,
+
+    "createTime":"2022-01-27 00:24:24",
+
+    "updateTime":"2022-05-05 22:34:15",
+
+    "permissions":[
+    {"id":87,"authority":"blog:article:audit"},],
+    "accountNonLocked":true,
+    "credentialsNonExpired":true,
+    "accountNonExpired":true}"

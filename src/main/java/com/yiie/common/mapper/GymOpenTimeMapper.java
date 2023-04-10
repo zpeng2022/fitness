@@ -25,4 +25,6 @@ public interface GymOpenTimeMapper {
 
     List<GymCloseTime> getGymCT(String gymId, Date today, Date fiveDaysAgo);
     GymOpenTime getByIdAndDay(String s, Date today);
+
+    List<GymCloseTime> getGymCT2(String sG, Date today, Date fiveDaysAgo, String deptId);
 }

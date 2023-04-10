@@ -15,9 +15,32 @@
         <result column="inTime" property="start" />
         <result column="outTime" property="end" />
     </resultMap>
+    <resultMap id="GymHistoryFollow" type="com.yiie.vo.response.GymHistoryFollow">
+        <result column="otherCustomerIdentityCards" property="followIdentityCards" />
+        <result column="otherCustomerNames" property="followNames" />
+        <result column="otherCustomerPhones" property="followPhones" />
+    </resultMap>
+    <resultMap id="Gym" type="com.yiie.entity.Gym">
+        <id column="gymId" jdbcType="VARCHAR" property="gymId" />
+        <result column="deptId" jdbcType="VARCHAR" property="deptId" />
+        <result column="gymName" jdbcType="VARCHAR" property="gymName" />
+        <result column="monday" jdbcType="VARCHAR" property="monday" />
+        <result column="saturday" jdbcType="VARCHAR" property="saturday" />
+        <result column="gymPhone" jdbcType="VARCHAR" property="gymPhone" />
+        <result column="gymCapacity" jdbcType="INTEGER" property="gymCapacity" />
+        <result column="gymPicturesPath" jdbcType="VARCHAR" property="gymPicturesPath" />
+        <result column="openOnHoliday" jdbcType="TINYINT" property="openOnHoliday" />
+        <result column="gymTypes" jdbcType="VARCHAR" property="gymTypes" />
+        <result column="gymPosition" jdbcType="VARCHAR" property="gymPosition" />
+        <result column="gymDetails" jdbcType="VARCHAR" property="gymDetails" />
+        <result column="gymGps" jdbcType="VARCHAR" property="gymGps" />
+        <result column="createTime" jdbcType="VARCHAR" property="createTime" />
+        <result column="updateTime" jdbcType="VARCHAR" property="updateTime" />
+        <result column="deleted" jdbcType="TINYINT" property="deleted" />
+    </resultMap>
     <resultMap id="BaseResultMap" type="com.yiie.entity.GymHistory">
         <id column="historyId" jdbcType="VARCHAR" property="historyId" />
-        <result column="orderId" jdbcType="VARCHAR" property="orderId" />
+        <id column="orderId" jdbcType="VARCHAR" property="orderId" />
         <result column="gymId" jdbcType="VARCHAR" property="gymId" />
         <result column="deptId" jdbcType="VARCHAR" property="deptId" />
         <result column="customerName" jdbcType="VARCHAR" property="customerName" />
@@ -33,6 +56,30 @@
         <result column="createTime" jdbcType="VARCHAR" property="createTime" />
         <result column="updateTime" jdbcType="VARCHAR" property="updateTime" />
         <result column="deleted" jdbcType="TINYINT" property="deleted" />
+        <collection property="follows" resultMap="GymHistoryFollow">
+
+        </collection>
+        <collection property="gym" resultMap="Gym">
+
+        </collection>
+
+        <collection property="dept" resultMap="Dept">
+
+        </collection>
+    </resultMap>
+    <resultMap id="Dept" type="com.yiie.entity.Dept">
+        <id column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="deptNo" jdbcType="VARCHAR" property="deptNo"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="pid" jdbcType="VARCHAR" property="pid"/>
+        <result column="pidName" jdbcType="VARCHAR" property="pidName"/>
+        <result column="status" jdbcType="VARCHAR" property="status"/>
+        <result column="relationCode" jdbcType="VARCHAR" property="relationCode"/>
+        <result column="deptManagerId" jdbcType="VARCHAR" property="deptManagerId"/>
+        <result column="managerName" jdbcType="VARCHAR" property="managerName"/>
+        <result column="phone" jdbcType="TINYINT" property="phone"/>
+        <result column="createTime" jdbcType="TINYINT" property="createTime"/>
+        <result column="updateTime" jdbcType="VARCHAR" property="updateTime"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -53,11 +100,16 @@
         GROUP BY exerciseType;
     </select>-->
     <!--上面的是原来的-->
-    <select id="getTypeAndValue" resultMap="SportAndValue">
+   <!-- <select id="getTypeAndValue" resultMap="SportAndValue">
         SELECT exerciseType, COUNT(customerIdentityCard) as num
         FROM gym_history
         where gymId=#{name} and deleted=1
         GROUP BY exerciseType ORDER BY num DESC
+    </select>-->
+    <select id="getTypeAndValue" resultMap="SportAndValue">
+        SELECT exerciseType
+        FROM gym_history
+        where gymId=#{name} and deleted=1
     </select>
 
     <select id="getIdentity" resultType="java.lang.String">
@@ -69,11 +121,18 @@
         FROM gym_history
         where gymId=#{gymId} and deleted=1
     </select>
+    <select id="getPeopleSportToday" resultMap="PeopleSportTime">
+        SELECT customerName,customerIdentityCard,inTime,outTime
+        FROM gym_history
+        where gymId=#{gymId} and deleted=1
+        and inTime between #{s} and #{e}
+    </select>
     <select id="getPeopleSportTimes" resultMap="PeopleSportTime">
         SELECT customerName,customerIdentityCard,inTime,outTime
         FROM gym_history
         where gymId=#{gymId} and deleted=1
     </select>
+
     <select id="getPeopleNumMonth" resultType="com.yiie.vo.data.GymPeopleMonth">
         SELECT gh.gymId,g.gymName,COUNT(customerIdentityCard)as num
         FROM gym_history gh
@@ -82,15 +141,15 @@
         where
             gh.deleted=1 and
             inTime>=#{monthAgo} and #{nowTime}>=outTime
-        GROUP BY gymId
+        GROUP BY gh.gymId,g.gymName
     </select>
 
-    <select id="getAllGymCommentsByGymID" resultMap="BaseResultMap">
+    <!--<select id="getAllGymCommentsByGymID" resultMap="BaseResultMap">
         SELECT <include refid="Base_Column_List"></include>
         FROM gym_history
         AND gymId=#{gymId}
         AND deleted=1
-    </select>
+    </select>-->
 
     <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
         select
@@ -107,6 +166,81 @@
         AND isOnlineUser = #{isOnlineUser,jdbcType=TINYINT}
         AND createTime > #{createTime}
         order by createTime
+    </select>
+
+    <!--下述方法去除gym的picpath属性：gym.gymPicturesPath ,
+        gym.gymId ,gym.deptId ,
+    -->
+    <select id="selectAllGymHistoriesByDeptID2" resultMap="BaseResultMap" parameterType="com.yiie.vo.request.GymHistoryPageReqVO">
+        SELECT
+        gh.historyId, gh.orderId, gh.gymId, gh.deptId, gh.customerName, gh.customerPhone, gh.customerIdentityCard, gh.isBlackUser, gh.isOnlineUser, gh.orderStartTime, gh.orderEndTime, gh.exerciseType, gh.inTime, gh.outTime, gh.createTime, gh.updateTime, gh.deleted,
+        otherIsBlack,otherCustomerNames,otherCustomerPhones,otherCustomerIdentityCards,
+
+        gym.gymName ,gym.monday ,gym.saturday ,gym.gymPhone ,gym.gymCapacity ,gym.openOnHoliday ,gym.gymTypes ,gym.gymPosition ,gym.gymDetails ,gym.gymGps ,gym.createTime ,gym.updateTime ,gym.deleted,
+
+        dept.id,dept.dept_no,dept.name,dept.pid,dept.status,dept.relation_code,dept.dept_manager_id,dept.manager_name,dept.phone,dept.create_time,dept.update_time,dept.deleted
+        from gym_history gh
+        left join gym_order go
+        on gh.orderId=go.orderId
+        left join gym
+        on gh.gymId=gym.gymId
+        left join dept
+        on gh.deptId=dept.id
+        <where>
+            gh.deleted=1
+            <if test="deptId != null and deptId != ''">
+                AND gh.deptId = #{deptId}
+            </if>
+            <if test="historyId != null and historyId != ''">
+                AND gh.historyId = #{historyId}
+            </if>
+            <if test="orderId != null and orderId != ''">
+                AND gh.orderId = #{orderId}
+            </if>
+            <if test="gymId != null and gymId != ''">
+                AND gh.gymId = #{gymId}
+            </if>
+            <if test="deptId != null and deptId != ''">
+                AND gh.deptId = #{deptId}
+            </if>
+            <if test="customerName != null and customerName != ''">
+                AND gh.customerName like concat('%',#{customerName},'%')
+            </if>
+            <if test="customerPhone != null and customerPhone != ''">
+                AND gh.customerPhone = #{customerPhone}
+            </if>
+            <if test="customerIdentityCard != null and customerIdentityCard != ''">
+                AND gh.customerIdentityCard = #{customerIdentityCard}
+            </if>
+            <if test="isBlackUser != null and isBlackUser != ''">
+                AND gh.isBlackUser = #{isBlackUser}
+            </if>
+            <if test="isOnlineUser != null">
+                AND gh.isOnlineUser = #{isOnlineUser}
+            </if>
+
+            <if test="orderStartTime != null and orderStartTime != ''">
+                AND gh.orderStartTime = #{orderStartTime}
+            </if>
+            <if test="orderEndTime != null and orderEndTime != ''">
+                AND gh.orderEndTime = #{orderEndTime}
+            </if>
+            <if test="exerciseType != null and exerciseType != ''">
+                AND gh.exerciseType = #{exerciseType}
+            </if>
+            <if test="inTime != null and inTime != ''">
+                AND gh.inTime = #{inTime}
+            </if>
+            <if test="outTime != null and outTime != ''">
+                AND gh.outTime = #{outTime}
+            </if>
+            <if test="startTime!=null and startTime!='' and endTime!=null and endTime!=''">
+                AND gh.createTime BETWEEN #{startTime} and #{endTime}
+            </if>
+            <if test="updateTime != null and updateTime != ''">
+                AND gh.updateTime = #{updateTime}
+            </if>
+        </where>
     </select>
 
     <select id="selectAllGymHistoriesByDeptID" resultMap="BaseResultMap" parameterType="com.yiie.vo.request.GymHistoryPageReqVO">
@@ -128,7 +262,7 @@
                 AND deptId = #{deptId}
             </if>
             <if test="customerName != null and customerName != ''">
-                AND customerName = #{customerName}
+                AND customerName like concat('%',#{customerName},'%')
             </if>
             <if test="customerPhone != null and customerPhone != ''">
                 AND customerPhone = #{customerPhone}
@@ -139,9 +273,10 @@
             <if test="isBlackUser != null and isBlackUser != ''">
                 AND isBlackUser = #{isBlackUser}
             </if>
-            <if test="isOnlineUser != null and isOnlineUser != ''">
+            <if test="isOnlineUser != null">
                 AND isOnlineUser = #{isOnlineUser}
             </if>
+
             <if test="orderStartTime != null and orderStartTime != ''">
                 AND orderStartTime = #{orderStartTime}
             </if>
@@ -157,20 +292,67 @@
             <if test="outTime != null and outTime != ''">
                 AND outTime = #{outTime}
             </if>
-            <if test="createTime != null and createTime != ''">
-                AND createTime = #{createTime}
+            <if test="startTime!=null and startTime!='' and endTime!=null and endTime!=''">
+                AND createTime BETWEEN #{startTime} and #{endTime}
             </if>
             <if test="updateTime != null and updateTime != ''">
                 AND updateTime = #{updateTime}
             </if>
         </where>
     </select>
+    <!--and isOnlineUser != ''-->
 
     <select id="getIsOnlineNum" resultType="com.yiie.vo.data.OnlineNum">
         SELECT isOnlineUser,COUNT(historyId) as num
         FROM gym_history
         where gymId=#{gymId}
         GROUP BY isOnlineUser
+    </select>
+    <select id="getTypeAndValueByIDCard" resultType="java.lang.String">
+        select exerciseType
+        from gym_history
+        where deleted=1 and customerIdentityCard =#{customerIdentityCard}
+    </select>
+    <select id="getUserSportTimes" resultType="com.yiie.vo.data.PeopleSportTime">
+        SELECT customerName,customerIdentityCard,inTime,outTime
+        FROM gym_history
+        where customerIdentityCard=#{userIdentityCard} and deleted=1
+    </select>
+    <select id="checkIsComing" resultType="java.lang.Integer">
+        SELECT COUNT(historyId) as iscoming
+        FROM gym_history
+        where customerIdentityCard=#{s}
+        and inTime BETWEEN #{orderStart} and #{orderEnd}
+        and deleted=1
+    </select>
+    <select id="getPeopleNumMonthByDeptId" resultType="com.yiie.vo.data.GymPeopleMonth">
+        SELECT gh.gymId,g.gymName,COUNT(customerIdentityCard)as num
+        FROM gym_history gh
+                 LEFT JOIN gym g
+                           on gh.gymId=g.gymId
+        where
+            gh.deleted=1 and
+            inTime>=#{monthAgo} and #{todayTime}>=outTime
+            and gh.deptId=#{deptId}
+        GROUP BY gh.gymId,g.gymName
+    </select>
+    <select id="getCustomerSportDay" resultType="java.lang.Integer">
+        SELECT count(historyId) FROM gym_history
+        where customerIdentityCard=#{customerIdentityCard} and deleted=1
+    </select>
+    <select id="getCustomerGymNum" resultType="java.lang.Integer">
+        SELECT count(DISTINCT(gymId)) FROM gym_history
+        where customerIdentityCard=#{customerIdentityCard} and deleted=1
+    </select>
+    <select id="getPeopleSportTimesByCustomerId" resultMap="PeopleSportTime">
+        SELECT customerName,customerIdentityCard,inTime,outTime
+        FROM gym_history
+        where customerIdentityCard=#{customer_identity_card} and deleted=1 and Date_Format(intime,"%Y")=#{year}
+    </select>
+    <select id="getPeopleSportTimesByCustomerId2" resultType="com.yiie.vo.data.PeopleSportTime">
+      SELECT customerName,customerIdentityCard,exerciseType
+        FROM gym_history
+        where customerIdentityCard=#{customer_identity_card} and deleted=1
     </select>
 
     <insert id="insertSelective" parameterType="com.yiie.entity.GymHistory">
@@ -286,9 +468,7 @@
     <update id="updateByPrimaryKeySelective" parameterType="com.yiie.entity.GymHistory">
         update gym_history
         <set>
-            <if test="historyId != null">
-                historyId = #{historyId,jdbcType=VARCHAR},
-            </if>
+
             <if test="orderId != null">
                 orderId = #{orderId,jdbcType=VARCHAR},
             </if>
@@ -314,7 +494,7 @@
                 isOnlineUser = #{isOnlineUser,jdbcType=TINYINT},
             </if>
             <if test="orderStartTime != null">
-                #{orderStartTime,jdbcType=VARCHAR},
+                orderStartTime=#{orderStartTime,jdbcType=VARCHAR},
             </if>
             <if test="orderEndTime != null">
                 orderEndTime = #{orderEndTime,jdbcType=VARCHAR},
@@ -340,6 +520,9 @@
         </set>
         where historyId = #{historyId,jdbcType=VARCHAR}
     </update>
+   <!-- <if test="historyId != null">
+        historyId = #{historyId,jdbcType=VARCHAR},
+    </if>-->
 
     <update id="deletedGymHistories" parameterType="com.yiie.entity.GymHistory">
         update gym_history

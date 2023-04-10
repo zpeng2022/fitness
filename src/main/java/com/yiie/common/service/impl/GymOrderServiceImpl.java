@@ -309,4 +309,43 @@ public class GymOrderServiceImpl implements GymOrderService {
     public List<SportAndValue> getGymPeopleNum() {
         return gymOrderMapper.getGymPeopleNum();
     }
+
+    @Override
+    public void passOrder(String orderId) {
+        gymOrderMapper.passOrder(orderId);
+    }
+    @Override
+    public void refuseOrder(String orderId) {
+        gymOrderMapper.refuseOrder(orderId);
+    }
+
+    @Override
+    public void refuseOrder2(OrderCancelVO cancelVO) {
+        gymOrderMapper.refuseOrder2(cancelVO);
+    }
+
+    @Override
+    public void cancelOrder(OrderCancelVO cancelVO) {
+        gymOrderMapper.cancelOrder(cancelVO);
+    }
+
+    @Override
+    public List<GymOrder> getCanceledOrderByCustomerId(String userId) {
+        return gymOrderMapper.getCanceledOrderByCustomerId(userId);
+    }
+
+    @Override
+    public void readCanceledOrder(String userId) {
+        gymOrderMapper.readCanceledOrder(userId);
+    }
+
+    @Override
+    public void delCanceledOrder(String userId) {
+        gymOrderMapper.delCanceledOrder(userId);
+    }
+
+    @Override
+    public List<GymOrder> getUnreadCanceledOrderByCustomerId(String userId) {
+        return gymOrderMapper.getUnreadCanceledOrderByCustomerId(userId);
+    }
 }

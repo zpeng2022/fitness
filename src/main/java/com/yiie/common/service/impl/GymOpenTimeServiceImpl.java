@@ -29,4 +29,9 @@ public class GymOpenTimeServiceImpl implements GymOpenTimeService {
     public GymOpenTime getByIdAndDay(String s, Date today) {
         return gymOpenTimeMapper.getByIdAndDay(s,today);
     }
+
+    @Override
+    public List<GymCloseTime> getGymCT2(String sG, Date today, Date fiveDaysAgo, String deptId) {
+        return gymOpenTimeMapper.getGymCT2(sG,today,fiveDaysAgo,deptId);
+    }
 }

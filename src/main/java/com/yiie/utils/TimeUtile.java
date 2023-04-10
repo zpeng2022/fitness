@@ -17,6 +17,48 @@ public class TimeUtile {
         String IDcard = sc.next();
         IDcard(IDcard);
     }
+
+    //计算日期差
+    //天数
+    public static int getTimeDiffer_day(Date form) throws ParseException {//现在减过去
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        String date1 = format.format(form);
+        form=format.parse(date1);
+        String date2 = format.format(new Date());
+        Date now = format.parse(date2);
+        int a = (int) ((form.getTime() - now.getTime()) / (1000*3600*24));
+        return a;
+    }
+
+    public static String IDcardGetBirth(String IDcard) {
+        switch(IDcard.length()) {
+            case 18:
+            case 16:
+                String year = IDcard.substring(6, 10);
+                if(Integer.decode(year) <1900 && Integer.decode(year)>c.get(Calendar.YEAR))
+                    System.out.println("年龄不合法");
+                String month = IDcard.substring(10,12);
+
+                if(Integer.decode(month)<1 && Integer.decode(month)>12)
+                    System.out.println("身份证不合法");
+                String day = IDcard.substring(12,14);
+
+                c.set(Integer.decode(year) ,Integer.decode(month), 0);
+                if(Integer.decode(day)>c.get(Calendar.DAY_OF_MONTH))
+                    System.out.println("身份证不合法");
+                System.out.println("尊贵的用户，您的生日为："+year+"年"+month+"月"+day+"日");
+                StringBuffer s=new StringBuffer();
+                s.append(year);
+                s.append("-");
+                s.append(month);
+                s.append("-");
+                s.append(day);
+                return s.toString();
+            default:
+                System.out.println("身份证不合法");
+                return null;
+        }
+    }
     public static int IDcard(String IDcard) {
         switch(IDcard.length()) {
             case 18:
@@ -68,6 +110,20 @@ public class TimeUtile {
     }
     public static Date toIntegral(Date sourceDate) throws ParseException {//转整点
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd 00:00:00");
+//        SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat df2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date day=df2.parse(df.format(sourceDate));
+        return day;
+    }
+    public static Date getDayStart(Date sourceDate) throws ParseException {//转整点
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd 00:00:00");
+//        SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat df2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date day=df2.parse(df.format(sourceDate));
+        return day;
+    }
+    public static Date getDayEnd(Date sourceDate) throws ParseException {//转整点
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd 23:59:59");
 //        SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         SimpleDateFormat df2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date day=df2.parse(df.format(sourceDate));

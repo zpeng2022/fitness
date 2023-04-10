@@ -46,10 +46,12 @@ public class UserController {
     @PostMapping("/user/login")
     @ApiOperation(value = "用户登录接口")
     public DataResult<LoginRespVO> login(@RequestBody(required=false) String data){
+        System.out.print("\n\n"+data+"\n\n");
         String[] splited = data.split("&");
         String type = splited[0].split("=")[1];
         String username = splited[1].split("=")[1];
         String password = splited[2].split("=")[1];
+        System.out.print("\n\n"+username+":"+password+"\n\n");
         LoginReqVO vo = new LoginReqVO();
         vo.setType(type);
         vo.setUsername(username);

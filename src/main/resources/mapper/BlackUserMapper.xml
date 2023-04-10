@@ -12,6 +12,52 @@
         <result column="updateTime" jdbcType="VARCHAR" property="updateTime" />
         <result column="sex" jdbcType="TINYINT" property="sex" />
         <result column="deleted" jdbcType="TINYINT" property="deleted" />
+        <collection property="dept" resultMap="Dept">
+
+        </collection>
+    </resultMap>
+    <resultMap id="Dept" type="com.yiie.entity.Dept">
+        <id column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="deptNo" jdbcType="VARCHAR" property="deptNo"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="pid" jdbcType="VARCHAR" property="pid"/>
+        <result column="pidName" jdbcType="VARCHAR" property="pidName"/>
+        <result column="status" jdbcType="VARCHAR" property="status"/>
+        <result column="relationCode" jdbcType="VARCHAR" property="relationCode"/>
+        <result column="deptManagerId" jdbcType="VARCHAR" property="deptManagerId"/>
+        <result column="managerName" jdbcType="VARCHAR" property="managerName"/>
+        <result column="phone" jdbcType="TINYINT" property="phone"/>
+        <result column="createTime" jdbcType="TINYINT" property="createTime"/>
+        <result column="updateTime" jdbcType="VARCHAR" property="updateTime"/>
+    </resultMap>
+    <resultMap id="BaseResultMap2" type="com.yiie.entity.BlackUser">
+        <id column="id" jdbcType="VARCHAR" property="id" />
+        <result column="identityCard" jdbcType="VARCHAR" property="identityCard" />
+        <result column="username" jdbcType="VARCHAR" property="username" />
+        <result column="deptID" jdbcType="VARCHAR" property="deptID" />
+        <result column="phone" jdbcType="VARCHAR" property="phone" />
+        <result column="typeInfo" jdbcType="VARCHAR" property="typeInfo" />
+        <result column="importTime" jdbcType="VARCHAR" property="importTime" />
+        <result column="updateTime" jdbcType="VARCHAR" property="updateTime" />
+        <result column="sex" jdbcType="TINYINT" property="sex" />
+        <result column="deleted" jdbcType="TINYINT" property="deleted" />
+        <collection property="dept" resultMap="Dept2">
+
+        </collection>
+    </resultMap>
+    <resultMap id="Dept2" type="com.yiie.entity.Dept">
+        <id column="Did" jdbcType="VARCHAR" property="id"/>
+        <result column="deptNo" jdbcType="VARCHAR" property="deptNo"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="pid" jdbcType="VARCHAR" property="pid"/>
+        <result column="pidName" jdbcType="VARCHAR" property="pidName"/>
+        <result column="status" jdbcType="VARCHAR" property="status"/>
+        <result column="relationCode" jdbcType="VARCHAR" property="relationCode"/>
+        <result column="deptManagerId" jdbcType="VARCHAR" property="deptManagerId"/>
+        <result column="managerName" jdbcType="VARCHAR" property="managerName"/>
+        <result column="Dphone" jdbcType="TINYINT" property="phone"/>
+        <result column="createTime" jdbcType="TINYINT" property="createTime"/>
+        <result column="updateTime" jdbcType="VARCHAR" property="updateTime"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -40,30 +86,36 @@
         AND deptID=#{deptID}
         AND deleted=1
     </select>
-
+    <!--dept.id as Did,dept.phone as Dphone,dept.deleted-->
     <select id="selectAllBlackUserWithDeptID" resultMap="BaseResultMap" parameterType="com.yiie.vo.request.BlackUserPageReqVO">
-        select <include refid="Base_Column_List"></include>
-        from blacklists
+        select
+        b.id, b.identityCard, b.username, b.deptID, b.phone, b.typeInfo, b.importTime, b.updateTime, b.sex, b.deleted,
+        dept.dept_no,dept.name,dept.pid,dept.status,dept.relation_code,dept.dept_manager_id,dept.manager_name,dept.create_time,dept.update_time
+        from blacklists b
+        left join dept
+        on b.deptID=dept.id
         <where>
-            deleted=1
-            AND deptID=#{deptID}
+            b.deleted=1
+            <if test="deptId!=null and deptId!=''">
+                AND b.deptID=#{deptId}
+            </if>
             <if test="identityCard!=null and identityCard!=''">
                 AND identityCard=#{identityCard}
             </if>
             <if test="username!=null and username!=''">
-                AND username=#{username}
+                AND username like CONCAT('%',#{username},'%')
             </if>
             <if test="phone!=null and phone!='' ">
-                AND phone=#{phone}
+                AND b.phone=#{phone}
             </if>
             <if test="typeInfo!=null and typeInfo!=''">
                 AND typeInfo=#{typeInfo}
             </if>
-            <if test="importTime!=null and importTime!=''">
-                AND importTime=#{importTime}
+            <if test="importTime1!=null and importTime1!='' and importTime2!=null and importTime2!=''">
+                AND importTime between #{importTime1} and #{importTime2}
             </if>
             <if test="updateTime!=null and updateTime!=''">
-                AND updateTime=#{updateTime}
+                AND b.updateTime=#{updateTime}
             </if>
             <if test="sex!=null and sex!='' or sex==0 ">
                 AND sex=#{sex}
@@ -88,6 +140,10 @@
         from blacklists
         where deptID=#{deptID}
         and deleted=1
+    </select>
+    <select id="getByIdentityCard" resultType="com.yiie.entity.BlackUser">
+        select * from blacklists
+        where identityCard=#{identityCard}
     </select>
 
 

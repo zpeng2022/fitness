@@ -9,6 +9,43 @@
     <script src="/js/util.js"></script>
 </head>
 <body>
+<div class="panel panel-default operation_Cancel" hidden>
+    <div class="panel-heading title" style="text-align: center"></div>
+    <div class="layui-card-body">
+        <form class="layui-form " action="" lay-filter="deptInfo" style="width: 700px;margin-top: 10px">
+            <input name="orderId" hidden/>
+
+            <div class="layui-form-item" id="gymWapper">
+                <label class="layui-form-label">场馆</label>
+                <div class="layui-input-block">
+                    <select id="gymList">
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item" id="timespanWapper">
+                <label class="layui-form-label">时间跨度</label>
+                <div class="layui-input-block">
+                    <input type="text" id="timespan" class="layui-input" name="timespan"
+                           placeholder="" autocomplete="off" >
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">原因</label>
+                <div class="layui-input-block">
+                    <input type="text" id="reason" class="layui-input" name="reason"
+                           placeholder="" autocomplete="off" >
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button type="submit" class="layui-btn" lay-submit="" lay-filter="cancel">提交</button>
+                    <button class="layui-btn layui-btn-primary" id="btn_cancel2">返回</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
 <div class="panel panel-default operation_gymOrder" hidden>
     <div class="panel-heading title" style="text-align: center"></div>
     <div class="layui-card-body">
@@ -16,97 +53,42 @@
             <input name="orderId" hidden/>
 
             <div class="layui-form-item">
-                <label class="layui-form-label">用户Id</label>
-                <div class="layui-input-block">
-                    <input type="customerId" name="customerId" placeholder="请输入用户Id" autocomplete="off" class="layui-input">
-                </div>
-            </div>
-
-            <div class="layui-form-item">
-                <label class="layui-form-label">场地Id</label>
-                <div class="layui-input-block">
-                    <input type="gymId" name="gymId" placeholder="请输入场地Id" autocomplete="off" class="layui-input">
-                </div>
-            </div>
-
-            <div class="layui-form-item">
-                <label class="layui-form-label">机关单位Id</label>
-                <div class="layui-input-block">
-                    <input type="deptId" name="deptId" placeholder="请输入机关单位Id" autocomplete="off" class="layui-input">
-                </div>
-            </div>
-
-            <div class="layui-form-item">
                 <label class="layui-form-label">用户名称</label>
                 <div class="layui-input-block">
-                    <input type="customerName" name="customerName" placeholder="请输入用户名称" autocomplete="off" class="layui-input">
+                    <input type="customerName" name="customerName" placeholder="请输入用户名称" autocomplete="off"
+                           class="layui-input">
                 </div>
             </div>
 
             <div class="layui-form-item">
                 <div class="layui-form-label ">用户电话</div>
                 <div class="layui-input-block">
-                    <input type="customerPhone" name="customerPhone" placeholder="请输入用户电话" autocomplete="off" class="layui-input">
+                    <input type="customerPhone" name="customerPhone" placeholder="请输入用户电话" autocomplete="off"
+                           class="layui-input">
                 </div>
             </div>
 
             <div class="layui-form-item">
                 <div class="layui-form-label ">用户身份证号码</div>
                 <div class="layui-input-block">
-                    <input type="customerIdentityCard" name="customerIdentityCard" placeholder="用户身份证号码" autocomplete="off" class="layui-input">
+                    <input type="customerIdentityCard" name="customerIdentityCard" placeholder="用户身份证号码"
+                           autocomplete="off" class="layui-input">
                 </div>
             </div>
 
             <div class="layui-form-item">
                 <div class="layui-form-label ">运动类型</div>
                 <div class="layui-input-block">
-                    <input type="exerciseType" name="exerciseType" placeholder="请输入运动类型" autocomplete="off" class="layui-input">
-                </div>
-            </div>
-
-            <div class="layui-form-item">
-                <div class="layui-form-label ">预约状态</div>
-                <div class="layui-input-block">
-                    <input type="orderStatus" name="orderStatus" placeholder="1表示通过,0表示不通过" autocomplete="off" class="layui-input">
-                </div>
-            </div>
-
-            <div class="layui-form-item">
-                <div class="layui-form-label ">机关单位回复</div>
-                <div class="layui-input-block">
-                    <input type="orderFailComment" name="orderFailComment" placeholder="机关单位回复" autocomplete="off" class="layui-input"
-                    >
-                </div>
-            </div>
-
-            <div class="layui-form-item">
-                <div class="layui-form-label ">其他用户身份证号</div>
-                <div class="layui-input-block">
-                    <input type="otherCustomerIdentityCards" name="otherCustomerIdentityCards" placeholder="随行人员用户身份证号" autocomplete="off" class="layui-input"
-                    >
-                </div>
-            </div>
-
-            <div class="layui-form-item">
-                <div class="layui-form-label ">其他用户姓名</div>
-                <div class="layui-input-block">
-                    <input type="otherCustomerNames" name="otherCustomerNames" placeholder="随行人员用户姓名" autocomplete="off" class="layui-input"
-                    >
-                </div>
-            </div>
-
-            <div class="layui-form-item">
-                <div class="layui-form-label ">其他用户手机号</div>
-                <div class="layui-input-block">
-                    <input type="otherCustomerPhones" name="otherCustomerPhones" placeholder="随行人员用户手机号" autocomplete="off" class="layui-input"
-                    >
+                    <input type="exerciseType" name="exerciseType" placeholder="请输入运动类型" autocomplete="off"
+                           class="layui-input">
                 </div>
             </div>
 
             <div class="layui-form-item">
                 <div class="layui-form-label ">预约开始时间</div>
                 <div class="layui-input-block">
-                    <input type="orderStartTime" name="orderStartTime" placeholder="输入预约开始时间" autocomplete="off" class="layui-input"
+                    <input type="orderStartTime" name="orderStartTime" placeholder="输入预约开始时间" autocomplete="off"
+                           class="layui-input"
                     >
                 </div>
             </div>
@@ -114,7 +96,8 @@
             <div class="layui-form-item">
                 <div class="layui-form-label ">预约结束时间</div>
                 <div class="layui-input-block">
-                    <input type="orderEndTime" name="orderEndTime" placeholder="输入预约结束时间" autocomplete="off" class="layui-input"
+                    <input type="orderEndTime" name="orderEndTime" placeholder="输入预约结束时间" autocomplete="off"
+                           class="layui-input"
                     >
                 </div>
             </div>
@@ -137,7 +120,8 @@
             </div>
 
             <div class="layui-input-inline">
-                <input type="text" id="customerIdentityCard" class="layui-input" autocomplete="off" placeholder="请输入预约者身份证号码">
+                <input type="text" id="customerIdentityCard" class="layui-input" autocomplete="off"
+                       placeholder="请输入预约者身份证号码">
             </div>
 
             <div class="layui-input-inline">
@@ -148,24 +132,43 @@
                 <select id="orderStatus">
                     <option value="">请选择状态</option>
                     <option value="1">通过</option>
-                    <option value="0">未通过</option>
+                    <option value="2">未通过</option>
+                    <option value="3">拒绝</option>
                 </select>
             </div>
 
             <div class="layui-input-inline">
-                <input type="text" class="layui-input" id="createTime" placeholder="选择创建时间区间" style="width: 290px">
+                <input type="text" class="layui-input" id="createTime" placeholder="选择创建时间区间">
+            </div>
+
+            <div class="layui-input-inline layui-form" id="deptSelect" style="display:none;">
+                <select id="deptInfo" name="deptId">
+                </select>
+            </div>
+            <div class="layui-input-inline layui-form" id="gymSelect" style="display:none;">
+                <select id="gymInfo" name="gymId">
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <button id="Reset" type="reset" class="layui-btn layui-btn-primary">
+                    <i class="layui-icon layui-icon-fonts-clear"></i> 清 空
+                </button>
             </div>
         </div>
     </div>
+
     <table class="layui-hide" id="gymOrder_table" lay-filter="gymOrder_table"></table>
-    <div id="laypage" class= "$(" .layui-laypage-btn").click();"></div>
+    <div id="laypage" class="$('.layui-laypage-btn').click();">
+</div>
 </div>
 <div id="deptTree" style="display: none"></div>
 <div id="roles" class="demo-transfer" style="display: none"></div>
 </body>
 <script type="text/html" id="toolbar">
     <div class="layui-btn-group" id="search">
-        <button type="button" class="layui-btn" lay-event="search" >
+        <button type="button" class="layui-btn" lay-event="search">
             <i class="layui-icon">&#xe615;</i> 开始检索
         </button>
     </div>
@@ -176,21 +179,49 @@
         </button>
     </div>
     <div class="layui-btn-group">
+        <button type="button" class="layui-btn layui-btn-danger" lay-event="batchCancel"
+                shiro:hasPermission="sys:gymOrder:update">
+            <i class="layui-icon">&#x1007;</i> 取消预约
+        </button>
+    </div>
+    <!--<div class="layui-btn-group">
         <button type="button" class="layui-btn layui-btn-normal" lay-event="addNewUser"
                 shiro:hasPermission="sys:gymOrder:add">
             <i class="layui-icon">&#xe608;</i> 新增预约
         </button>
-    </div>
+    </div>-->
 </script>
 <script type="text/html" id="tool">
-    <a class="layui-btn layui-btn-xs" lay-event="edit" shiro:hasPermission="sys:gymOrder:update">编辑</a>
+    {{#  if(d.orderStatus == 1){ }}
+    <a class="layui-btn layui-btn-xs layui-bg-orange" lay-event="">
+        已通过
+    </a>
+    {{#  } else if(d.orderStatus == 2){ }}
+    <a class="layui-btn layui-btn-xs" lay-event="passOrder" shiro:hasPermission="sys:gymOrder:update">
+        通过预约
+    </a>
+    <a class="layui-btn layui-btn-xs" lay-event="refuseOrder" shiro:hasPermission="sys:gymOrder:update">
+        拒绝预约
+    </a>
+    {{#  } else if(d.orderStatus == 5){ }}
+    <a class="layui-btn layui-btn-xs layui-bg-gray" lay-event="">
+        已取消
+    </a>
+    {{#  } else{ }}
+    <a class="layui-btn layui-btn-xs layui-bg-red" lay-event="">
+        已拒绝
+    </a>
+    {{#  } }}
+<!--    <a class="layui-btn layui-btn-xs" lay-event="edit" shiro:hasPermission="sys:gymOrder:update">编辑</a>-->
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del" shiro:hasPermission="sys:gymOrder:deleted">删除</a>
 </script>
 <script type="text/html" id="sexTpl">
     {{#  if(d.orderStatus == 1){ }}
-    <span style="color: #fe5395;">通过</span>
-    {{#  } else{ }}
+    <span style="color: green;">通过</span>
+    {{#  } else if(d.orderStatus == 2){ }}
     <span style="color: #17a2b8;">未通过</span>
+    {{#  } else{ }}
+    <span style="color: red;">拒绝</span>
     {{#  } }}
 </script>
 <script type="text/html" id="blackTpl">
@@ -210,25 +241,130 @@
     var tree = layui.tree;
     var transfer = layui.transfer;
     layui.use(['table', 'laypage', 'layer', 'laydate', 'tree', 'transfer'], function () {
+
+        //清空条件
+        $('#Reset').on('click', function(){
+            console.log("清空")
+            $("#customerName").val("");
+            $("#customerIdentityCard").val("");
+            $("#customerPhone").val("");
+            $("#orderStatus").val("请选择状态");
+            $("#createTime").val("");
+            $("#deptInfo").val("所有机关单位");
+            $("#gymInfo").val("所有场馆");
+            form.render("select") //重新渲染单下拉框
+        });
+
+        var tagData = [];//这里的tag不管是不是deleted，因为历史不能受现在的运动类型影响
+        //时间跨度
+        laydate.render({
+            elem: '#timespan',
+            range: '-',
+            type: 'datetime',
+            min: 0,
+            max: 7,
+        });
+
+        //填充类型：要放layui里面，不然request无效
+        CoreUtil.sendAjax("/sys/getAllDept", null, function (res) {
+            console.log("获取机关单位.......")
+            if (res.data != null) {
+                document.getElementById("deptSelect").style.display="block";
+                var types = res.data;
+                console.log("type:" + JSON.stringify(types))
+                var typeK = document.getElementById("deptInfo");
+                typeK.options.length = 0;//清空
+                typeK.options.add(new Option("所有机关单位", ""));
+                for (var index = 0; index < types.length; index++) {
+                    console.log("type:"+types[index]);
+                    var name = types[index].name;
+                    var tid = types[index].id;
+                    typeK.options.add(new Option(name, tid));//Option("文本","值")
+                }
+                // typeK.innerText=typeInner;
+                form.render();//不添加不会显示
+            }
+        }, "POST", false, function (res) {
+            // layer.msg("抱歉！您暂无获取机关单位的权限");
+        });
+
+        //填充场馆选择
+        CoreUtil.sendAjax("/sys/getGymListByDept", null, function (res) {
+            console.log("获取场馆列表.......")
+            if (res.data != null) {
+                var types = res.data;
+                console.log("type:" + types)
+                var typeK = document.getElementById("gymList");
+                typeK.options.length = 0;//清空
+
+                document.getElementById("gymSelect").style.display="block";
+                var typeK2 = document.getElementById("gymInfo");
+                typeK2.options.length = 0;//清空
+                typeK2.options.add(new Option("所有场馆", ""));
+
+                // typeK.options.add(new Option("所有类型", ""));
+                for (var index = 0; index < types.length; index++) {
+                    // console.log("type:"+types[index]);
+                    var name = types[index].gymName;
+                    var tid = types[index].gymId;
+                    // typeInner+="<option value='"+tid+"'>name</option>";
+                    typeK.options.add(new Option(name, tid));//Option("文本","值")
+                    typeK2.options.add(new Option(name, tid));//Option("文本","值")
+                }
+                // typeK.innerText=typeInner;
+                form.render();//不添加不会显示
+            }
+        }, "GET", false, function (res) {
+            // layer.msg("抱歉！您暂无获取场馆的权限");
+        });
+
+        //填充类型
+        CoreUtil.sendAjax("/sys/getExerciseTypeWithOutDeleted", null, function (res) {
+            console.log("获取所有运动类型.......")
+            if (res.data != null) {
+                var types = res.data;
+                exerciseTypeNum = types.length;
+                //处理tagData
+                for (var index = 0; index < types.length; index++) {
+                    var name = types[index].typeName;
+                    var tid = types[index].typeId;
+                    var type = {"id": tid, "name": name, "status": 1};
+                    tagData.push(type);
+                    // table.render();
+                }
+            }
+        }, "GET", false, function (res) {
+            layer.msg("抱歉！您暂无获取类型的权限");
+        });
+
         form.render();
+        var cancelParam = {
+            orderId:null,
+            gymId: null,
+            timespan: null,
+            reason: null,
+        }
         var searchParam = {
             customerName: null,
             customerIdentityCard: null,
-            customerPhone:null,
-            orderStatus:null,
+            customerPhone: null,
+            orderStatus: null,
+            deptId:null,
             createTime: null,
             startTime: null,
             endTime: null,
             pageNum: 1,
             pageSize: 10
         }
+
         CoreUtil.sendAjax("/sys/gymOrders", JSON.stringify(searchParam), function (res) {
+            // console.log("数据：" + JSON.stringify(res))
             laypageTable(res.data.totalRows, searchParam.pageNum);
             if (res.data.list != null) {
                 loadTable(res.data.list);
             }
         }, "POST", false, function (res) {
-            layer.msg("抱歉！您暂无获取评论列表的权限");
+            layer.msg("抱歉！您暂无获取预约.列表的权限");
             var noAuthorityData = [];
             loadTable(noAuthorityData);
         });
@@ -250,7 +386,7 @@
                                 laypageTable(res.data.totalRows, searchParam.pageNum);
                             }
                         }, "POST", false, function (res) {
-                            layer.msg("抱歉！您暂无获取评论列表的权限");
+                            layer.msg("抱歉！您暂无获取预约.列表的权限");
                             var noAuthorityData = [];
                             loadTable(noAuthorityData);
                         });
@@ -267,30 +403,113 @@
                         {type: 'checkbox', fixed: 'left'},
                         {field: 'customerName', align: 'center', title: '预约者名称', width: 110},
                         {field: 'customerPhone', align: 'center', title: '预约者手机号', width: 120},
-                        {field: 'customerIdentityCard', align: 'center', title: '预约者身份证号', width: 120},
-                        {field: 'exerciseType', align: 'center', title: '运动类型'},
-                        {field: 'existBlackUser', title: '状态', align: 'center', width: 60, templet: '#blackTpl'},
-                        {field: 'orderStatus', title: '状态', align: 'center', width: 60, templet: '#sexTpl'},
-                        {field: 'otherCustomerIdentityCards', align: 'center', title: '随行人员身份证号'},
-                        {field: 'otherCustomerNames', align: 'center', title: '随行人员名称'},
-                        {field: 'otherCustomerPhones', align: 'center', title: '随行人员手机号'},
-                        {field: 'orderFailComment', align: 'center', title: '机关单位回复内容'},
+                        {field: 'customerIdentityCard', align: 'center', title: '预约者身份证号', hide: true},
                         {
-                            field: 'orderStartTime', align: 'center', title: '预约开始时间', width: 170, templet: function (item) {
+                            field: 'gymName', align: 'center', title: '场馆名称', align: 'center', templet: function (data) {
+                                return data.gym.gymName;
+                            }
+                        },
+                        {
+                            field: 'deptName', align: 'center', title: '机关单位', align: 'center', templet: function (data) {
+                                return data.dept.name;
+                            }
+                        },
+                        {
+                            field: 'exerciseType', align: 'center', title: '运动类型', templet: function (data) {
+                                let tagListStr = "";
+                                let types = data.exerciseType.split("-");
+                                // console.log("types:"+JSON.stringify(types));
+                                for (let t = 0; t < types.length; t++) {
+                                    // console.log("tagData:"+JSON.stringify(tagData))
+                                    //types取值记得-1，不然要超出界限，或者undefined
+                                    for (let td = 0; td < tagData.length; td++) {//可能出现类型被删除找不到，所以要做遍历查找
+                                        if (tagData[td].id == types[t]) {
+                                            let str = '<span class="layui-badge" style="background-color: pink;' +
+                                                'color: #666666;margin-right: 3px">' + tagData[td].name + '</span>';
+                                            tagListStr += str;
+                                        }
+                                    }
+                                }
+                                return tagListStr.length == 0 ? "无" : tagListStr;
+                            }
+                        },
+                        {field: 'existBlackUser', title: '状态', align: 'center', width: 120, templet: '#blackTpl'},
+                        {field: 'orderStatus', title: '状态', align: 'center', width: 140, templet: '#sexTpl'},
+                        /*{field: 'otherCustomerIdentityCards', align: 'center', title: '随行人员身份证号',hide:true},
+                        {field: 'otherCustomerNames', align: 'center', title: '随行人员名称',hide:true},
+                        {field: 'otherCustomerPhones', align: 'center', title: '随行人员手机号',hide:true},*/
+                        {
+                            field: "othersInfo", align: 'center', title: '随行者', templet: function (data) {
+                                let fNames = data.otherCustomerNames;
+                                let fIDs = data.otherCustomerIdentityCards;
+                                let fPhones = data.otherCustomerPhones;
+                                let fBlacks = data.otherIsBlack;
+                                let otherListStr = "";
+                                // console.log("随行者：" + fNames+ "--" + fIDs + "--" +fPhones + "--" +fBlacks)
+                                let fName = [];
+                                let fID = [];
+                                let fPhone =[];
+                                let fBlack = [];
+                                if(!(fNames==null||fNames==undefined||fNames.length==0)){
+                                    fName = fNames.split("#");
+                                }
+                                if(!(fIDs==null||fIDs==undefined||fIDs.length==0)){
+                                    fID = fIDs.split("#")
+                                }
+                                if(!(fPhones==null||fPhones==undefined||fPhones.length==0)){
+                                    fPhone = fPhones.split("#")
+                                }
+                                if(!(fBlacks==null||fBlacks==undefined||fBlacks.length==0)){
+                                    fBlack = fBlacks.split("#")
+                                }
+                                for (let index = 0; index < fID.length; index++) {
+                                    let n = "名字", i = "身份证", p = "电话", b = "正常", color = "skyblue";
+                                    if (index < fName.length)
+                                        n = fName[index];
+                                    if (index < fPhone.length)
+                                        p = fPhone[index];
+                                    if (index < fBlack.length) {
+                                        if (fBlack[index] == 1){
+                                            color="orange"
+                                            b = "禁入";
+                                        }
+                                    }
+                                    let str = '<span class="layui-badge" style="background-color: ' + color +
+                                        ';color: #666666;margin-right: 3px">'
+                                        + n + '   ' + b+
+                                        '</span>';
+                                    // console.log("str:"+str)
+                                    otherListStr += str;
+                                }
+                                /*'   ' + fID[index] + '   ' + p +*/
+                                return otherListStr.length == 0 ? "无" : otherListStr;
+                            }
+                        },
+                        {field: 'orderFailComment', align: 'center', title: '机关单位回复内容',hide:true},
+                        {
+                            field: 'orderStartTime',
+                            align: 'center',
+                            title: '预约开始时间',
+                            hide: true,
+                            templet: function (item) {
                                 return CoreUtil.formattime(item.orderStartTime);
                             }
                         },
                         {
-                            field: 'orderEndTime', align: 'center', title: '预约结束时间', width: 170, templet: function (item) {
+                            field: 'orderEndTime',
+                            align: 'center',
+                            title: '预约结束时间',
+                            hide: true,
+                            templet: function (item) {
                                 return CoreUtil.formattime(item.orderEndTime);
                             }
                         },
                         {
-                            field: 'createTime', align: 'center', title: '创建时间', width: 170, templet: function (item) {
+                            field: 'createTime', align: 'center', title: '创建时间', hide: true, templet: function (item) {
                                 return CoreUtil.formattime(item.createTime);
                             }
                         },
-                        {width: 180, align: 'center', toolbar: "#tool", title: '操作'}
+                        {width: 200, align: 'center', toolbar: "#tool", title: '操作'}
                     ]
                 ]
                 , data: data
@@ -324,7 +543,7 @@
                     var checkStatus = table.checkStatus(obj.config.id);
                     var data = checkStatus.data;
                     if (data.length == 0) {
-                        layer.msg("请选择要批量删除的用户");
+                        layer.msg("请选择要批量删除的预约");
                     } else {
                         var userIds = [];
                         $(data).each(function (index, item) {
@@ -333,9 +552,16 @@
                         tipDialog(userIds, "选中的");
                     }
                     break;
+                case 'batchCancel':
+                    $(".title").html("取消预约");
+                    $(".gymOrder_table_div").hide();
+                    $(".operation_Cancel").show();
+                    document.getElementById("gymWapper").style.display="block";
+                    document.getElementById("timespanWapper").style.display="block";
+                    break;
                 case 'addNewUser':
                     form.render();
-                    $(".title").html("新增用户");
+                    $(".title").html("新增预约");
                     $(".gymOrder_table_div").hide();
                     $(".operation_gymOrder").show();
                     $(".operation_gymOrder input[name=orderId]").val("");
@@ -360,6 +586,8 @@
                     searchParam.customerIdentityCard = $("#customerIdentityCard").val();
                     searchParam.orderStatus = $("#orderStatus").val();
                     searchParam.createTime = $("#createTime").val();
+                    searchParam.deptId = $("#deptInfo").val();
+                    searchParam.gymId = $("#gymInfo").val();
                     searchParam.pageNum = 1;
                     CoreUtil.sendAjax("/sys/gymOrders", JSON.stringify(searchParam), function (res) {
                         laypageTable(res.data.totalRows, searchParam.pageNum);
@@ -403,6 +631,20 @@
                     $(".operation_gymOrder input[name=orderEndTime]").val(data.orderEndTime);
                     form.render(); //更新全部
                     break;
+                case 'passOrder':
+                    passOrder(data.orderId);
+                    form.render();
+                    break;
+                case 'refuseOrder':
+                    $(".gymOrder_table_div").hide();
+                    $(".operation_Cancel").show();
+                    $(".title").html("拒绝预约");
+                    $(".operation_Cancel input[name=orderId]").val(data.orderId);
+                    document.getElementById("gymWapper").style.display="none";
+                    document.getElementById("timespanWapper").style.display="none";
+                    // refuseOrder(data.orderId,);
+                    form.render();
+                    break;
             }
         });
         $("#btn_cancel").click(function () {
@@ -410,9 +652,43 @@
             $(".operation_gymOrder").hide();
             return false;
         });
+        $("#btn_cancel2").click(function () {
+            $(".gymOrder_table_div").show();
+            $(".operation_Cancel").hide();
+            $(".operation_Cancel input[name=reason]").val("");
+            return false;
+        });
+        var passOrder = function (orderId) {
+            layer.open({
+                content: '确定通过预约么?',
+                yes: function (index, layero) {
+                    layer.close(index); //如果设定了yes回调，需进行手工关闭
+                    CoreUtil.sendAjax("/sys/passOrder", JSON.stringify(orderId), function (res) {
+                        layer.msg(res.msg);
+                        $(".layui-laypage-btn").click();
+                    }, "POST", false, function (res) {
+                        layer.msg("抱歉！您暂无权限");
+                    });
+                }
+            });
+        };
+        var refuseOrder = function (orderId) {
+            layer.open({
+                content: '确定拒绝预约么?',
+                yes: function (index, layero) {
+                    layer.close(index); //如果设定了yes回调，需进行手工关闭
+                    CoreUtil.sendAjax("/sys/refuseOrder", JSON.stringify(orderId), function (res) {
+                        layer.msg(res.msg);
+                        $(".layui-laypage-btn").click();
+                    }, "POST", false, function (res) {
+                        layer.msg("抱歉！您暂无权限");
+                    });
+                }
+            });
+        };
         var tipDialog = function (userIds, username) {
             layer.open({
-                content: '确定要删除' + username + "评论么?",
+                content: '确定要删除' + username + "预约.么?",
                 yes: function (index, layero) {
                     layer.close(index); //如果设定了yes回调，需进行手工关闭
                     CoreUtil.sendAjax("/sys/gymOrder", JSON.stringify(userIds), function (res) {
@@ -446,6 +722,47 @@
                     layer.msg("抱歉！您暂无编辑用户的权限");
                 });
             }
+            return false;
+        });
+        form.on('submit(cancel)', function (data) {
+            console.log("时间:"+data.field.timespan)
+            if ((data.field.orderId === undefined || data.field.orderId === null || data.field.orderId === "")&&(data.field.timespan === undefined || data.field.timespan === null || data.field.timespan === "")) {
+                layer.msg("时间跨度不能为空");
+                return false;
+            }
+            if (data.field.orderId === undefined || data.field.orderId === null || data.field.orderId === "") {
+                cancelParam.gymId=document.getElementById("gymList").value;
+                cancelParam.timespan=data.field.timespan;
+                cancelParam.reason=data.field.reason;
+                console.log("取消预约:"+JSON.stringify(cancelParam))
+                CoreUtil.sendAjax("/sys/cancelOrder", JSON.stringify(cancelParam), function (res) {
+                    // layer.msg(res.msg);
+                    $(".gymOrder_table_div").show();
+                    $(".operation_Cancel").hide();
+                    $(".layui-laypage-btn").click();
+                }, "POST", false, function (res) {
+                    layer.msg("抱歉！您暂无权限");
+                });
+            } else {
+                cancelParam.orderId=data.field.orderId;
+                cancelParam.reason=data.field.reason;
+                console.log("拒绝预约:"+JSON.stringify(cancelParam))
+                 CoreUtil.sendAjax("/sys/refuseOrder", JSON.stringify(data.field), function (res) {
+                     $(".gymOrder_table_div").show();
+                     $(".operation_Cancel").hide();
+                     $(".layui-laypage-btn").click();
+                 }, "POST", false, function (res) {
+                     layer.msg("抱歉！您暂无权限");
+                 });
+            }
+            cancelParam.orderId=null;
+            cancelParam.gymId=null;
+            cancelParam.timespan=null;
+            cancelParam.reason=null;
+            console.log("消除数据:"+JSON.stringify(cancelParam))
+            $(".operation_Cancel input[name=orderId]").val("");
+            $(".operation_Cancel input[name=timespan]").val("");
+            $(".operation_Cancel input[name=reason]").val("");
             return false;
         });
         var loadDeptTree = function (data) {

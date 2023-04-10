@@ -8,6 +8,7 @@ import java.util.Date;
 public class PeopleSportTime {
     private String idcard;
     private String name;
+    private String exerciseType;
     private Date start;
     private Date end;
 

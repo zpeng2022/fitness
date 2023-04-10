@@ -2,11 +2,21 @@
 <html lang="en" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <title>禁入人员名单</title>
     <link rel="stylesheet" href="/layui/css/layui.css" media="all">
     <link rel="stylesheet" href="/css/form.css">
+
+    <link rel="stylesheet" href="/css/febs.css">
+
     <script src="/layui/layui.all.js"></script>
     <script src="/js/util.js"></script>
+
+    <script src=" https://cdn.staticfile.org/echarts/4.3.0/echarts.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/4.3.0/echarts.min.js"></script>
+
 </head>
 <body>
 <div class="panel panel-default operation_blackuser" hidden>
@@ -18,7 +28,8 @@
             <div class="layui-form-item">
                 <label class="layui-form-label">身份证号</label>
                 <div class="layui-input-block">
-                    <input type="identityCard" name="identityCard" placeholder="请输入身份证号" autocomplete="off" class="layui-input">
+                    <input type="identityCard" name="identityCard" placeholder="请输入身份证号" autocomplete="off"
+                           class="layui-input">
                 </div>
             </div>
             <div class="layui-form-item">
@@ -30,20 +41,31 @@
             <div class="layui-form-item">
                 <div class="layui-form-label ">手机号</div>
                 <div class="layui-input-block">
-                    <input type="phone" lay-verify="phone" name="phone" placeholder="请输入手机号" autocomplete="off" class="layui-input">
+                    <input type="phone" lay-verify="phone" name="phone" placeholder="请输入手机号" autocomplete="off"
+                           class="layui-input">
                 </div>
             </div>
-            <div class="layui-form-item">
-                <div class="layui-form-label ">进入人员类型</div>
+            <!--<div class="layui-form-item">
+                <div class="layui-form-label ">机关单位ID</div>
                 <div class="layui-input-block">
-                    <input type="typeInfo" lay-verify="typeInfo" name="typeInfo" placeholder="请输入类型" autocomplete="off" class="layui-input">
+                    <input type="deptId" lay-verify="phone" name="phone" placeholder="请输入隶属的机关单位ID" autocomplete="off"
+                           class="layui-input">
+                </div>
+            </div>-->
+            <div class="layui-form-item">
+                <div class="layui-form-label ">禁入类型</div>
+                <div class="layui-input-block">
+                   <!-- <input type="typeInfo" lay-verify="typeInfo" name="typeInfo" placeholder="请输入类型" autocomplete="off"
+                           class="layui-input">-->
+                    <select id="typeInfo2" name="typeInfo">
+                    </select>
                 </div>
             </div>
             <div class="layui-form-item">
                 <div class="layui-form-label ">性别</div>
                 <div class="layui-input-block">
                     <div class="layui-input-inline layui-form">
-                        <select name="sex">
+                        <select name="sex" id="sex2">
                             <option value="">请选择性别</option>
                             <option value="1">男</option>
                             <option value="2">女</option>
@@ -61,7 +83,7 @@
         </form>
     </div>
 </div>
-<div class="blackuser_table_div">
+<div class="blackuser_table_div" style="margin-top: 0px">
     <div id="searchParam" shiro:hasPermission="sys:blackusers:list">
         <!-- 此内所有id 与 searchParam结构体保持一致. -->
         <div class="layui-form-item">
@@ -71,6 +93,7 @@
             <div class="layui-input-inline">
                 <input type="text" id="identityCard" class="layui-input" autocomplete="off" placeholder="请输入身份证号码">
             </div>
+
             <div class="layui-input-inline layui-form">
                 <select id="sex">
                     <option value="">请选择性别</option>
@@ -79,27 +102,42 @@
                     <option value="3">保密</option>
                 </select>
             </div>
-            <!--<div class="layui-input-inline layui-form">
-                <select class="" id="type">
-                    <option value="">请选择来源</option>
-                    <option value="1">失信人员</option>
-                    <option value="2">犯罪人员</option>
-                    <option value="3">其它</option>
+
+            <div class="layui-input-inline layui-form">
+                <select id="typeInfo">
                 </select>
-            </div>-->
+            </div>
+            <!--
             <div class="layui-input-inline">
                 <input type="text" id="typeInfo" class="layui-input" autocomplete="off" placeholder="请输入人员类型">
-            </div>
-            <div class="layui-input-inline">
-                <input type="text" class="layui-input" id="importTime" placeholder="选择导入的时间区间" style="width: 290px">
-            </div>
+            </div>-->
             <div class="layui-input-inline">
                 <input type="text" id="phone" class="layui-input" autocomplete="off" placeholder="请输入电话号码">
+            </div>
+            <div class="layui-input-inline" style="margin-top: 0px">
+                <!--                <input type="text" class="layui-input" id="importTime" placeholder="选择导入的时间区间" style="width: 250px">-->
+                <input type="text" class="layui-input" id="date-range" placeholder="不输入则忽略日期范围筛选"
+                       name="dateRange">
+            </div>
+
+            <div class="layui-input-inline layui-form" id="deptSelect" style="display:none;">
+                <select id="deptInfo" name="deptId">
+                </select>
+            </div>
+
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <button id="Reset" type="reset" class="layui-btn layui-btn-primary" style="margin-top: 0px">
+                    <i class="layui-icon layui-icon-fonts-clear"></i> 清 空
+                </button>
             </div>
         </div>
     </div>
     <table class="layui-hide" id="blackuser_table" lay-filter="blackuser_table"></table>
-    <div id="laypage" class= "$(" .layui-laypage-btn").click();"></div>
+    <div id="laypage" class="$(" .layui-laypage-btn
+    ").click();">
+</div>
 </div>
 <div id="deptTree" style="display: none"></div>
 <div id="roles" class="demo-transfer" style="display: none"></div>
@@ -115,6 +153,9 @@
                                 onclick="clearAll()">
                             <i class="layui-icon">&#xe640;</i>清空数据
                         </button>-->
+                        <button class="layui-btn layui-btn-primary" id="downloadFile"><i
+                                class="layui-icon">&#xe67c;</i>下载黑名单模板
+                        </button>
                         <button class="layui-btn layui-btn-upload"><i
                                 class="layui-icon"></i>选择黑名单文件
                         </button>
@@ -144,7 +185,7 @@
 </body>
 <script type="text/html" id="toolbar">
     <div class="layui-btn-group" id="search">
-        <button type="button" class="layui-btn" lay-event="search" >
+        <button type="button" class="layui-btn" lay-event="search">
             <i class="layui-icon">&#xe615;</i> 开始检索
         </button>
     </div>
@@ -169,7 +210,8 @@
 </script>
 <script type="text/html" id="tool">
     <a class="layui-btn layui-btn-xs" lay-event="edit" shiro:hasPermission="sys:blackusers:update">编辑</a>
-    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del" shiro:hasPermission="sys:blackusers:deleted">删除</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"
+       shiro:hasPermission="sys:blackusers:deleted">删除</a>
 </script>
 <script type="text/html" id="sexTpl">
     {{#  if(d.sex == 2){ }}
@@ -189,6 +231,9 @@
     <span style="color: #c40b53;">其他</span>
     {{#  } }}
 </script>-->
+<script src="/static/layuimini/lib/layui-v2.6.3/layui.js" charset="utf-8"></script>
+<script src="/static/layuimini/js/lay-config.js?v=1.0.4" charset="utf-8"></script>
+<script src="/static/layuimini/lib/jquery-3.4.1/jquery-3.4.1.min.js"></script>
 <script>
     var table = layui.table;
     var laypage = layui.laypage
@@ -198,20 +243,100 @@
     var laydate = layui.laydate;
     var tree = layui.tree;
     var transfer = layui.transfer;
+
+    function download() {
+        console.log("下载...")
+        var link = document.createElement('a');
+        link.href = "/sys/download";
+        link.click();
+    }
+    //日期范围
+    laydate.render({
+        elem: '#date-range',
+        range: '~',
+        theme: 'molv'
+    });
+    //清空条件
+    $('#Reset').on('click', function () {
+        console.log("清空")
+        $("#username").val("");
+        $("#identityCard").val("");
+        // console.log("sex选项:"+JSON.stringify($("#sex")))
+        $("#sex").val("请选择性别");
+        $("#deptInfo").val("所有机关单位");
+        $("#typeInfo").val("所有类型");
+        $("#phone").val("");
+        $("#date-range").val("");
+        form.render("select") //重新渲染下拉框
+    });
+
     layui.use(['table', 'laypage', 'layer', 'laydate', 'tree', 'transfer'], function () {
         form.render();
         var searchParam = {
             id: null,
             identityCard: null,
             username: null,
-            phone:null,
+            phone: null,
             typeInfo: null,
+            deptId:null,
             startTime: null,
-            endTime:null,
-            sex:null,
+            endTime: null,
+            sex: null,
+            importTime1: null,
+            importTime2: null,
             pageNum: 1,
             pageSize: 10
         }
+
+        //填充类型：要放layui里面，不然request无效
+        CoreUtil.sendAjax("/sys/getAllDept", null, function (res) {
+            console.log("获取机关单位.......")
+            if (res.data != null) {
+                document.getElementById("deptSelect").style.display="block";
+                var types = res.data;
+                console.log("type:" + JSON.stringify(types))
+                var typeK = document.getElementById("deptInfo");
+                typeK.options.length = 0;//清空
+                typeK.options.add(new Option("所有机关单位", ""));
+                for (var index = 0; index < types.length; index++) {
+                    console.log("type:"+types[index]);
+                    var name = types[index].name;
+                    var tid = types[index].id;
+                    typeK.options.add(new Option(name, tid));//Option("文本","值")
+                }
+                // typeK.innerText=typeInner;
+                form.render();//不添加不会显示
+            }
+        }, "POST", false, function (res) {
+            // layer.msg("抱歉！您暂无获取机关单位的权限");
+        });
+
+        //填充类型：要放layui里面，不然request无效
+        CoreUtil.sendAjax("/sys/getBUType", null, function (res) {
+            console.log("获取类型.......")
+            if (res.data != null) {
+                var types = res.data;
+                console.log("type:" + types)
+                var typeK = document.getElementById("typeInfo");
+                var typeK2 = document.getElementById("typeInfo2");
+                typeK.options.length = 0;//清空
+                typeK2.options.length = 0;//清空
+                typeK.options.add(new Option("所有类型", ""));
+                typeK2.options.add(new Option("所有类型", ""));
+                for (var index = 0; index < types.length; index++) {
+                    // console.log("type:"+types[index]);
+                    var name = types[index].typeName;
+                    var tid = types[index].typeId;
+                    // typeInner+="<option value='"+tid+"'>name</option>";
+                    typeK.options.add(new Option(name, tid));//Option("文本","值")
+                    typeK2.options.add(new Option(name, tid));//Option("文本","值")
+                }
+                // typeK.innerText=typeInner;
+                form.render();//不添加不会显示
+            }
+        }, "POST", false, function (res) {
+            layer.msg("抱歉！您暂无获取类型的权限");
+        });
 
         CoreUtil.sendAjax("/sys/blackusers", JSON.stringify(searchParam), function (res) {
             laypageTable(res.data.totalRows, searchParam.pageNum);
@@ -241,7 +366,6 @@
                         CoreUtil.sendAjax("/sys/blackusers", JSON.stringify(searchParam), function (res) {
                             if (res.data.list != null) {
                                 loadTable(res.data.list);
-
                                 laypageTable(res.data.totalRows, searchParam.pageNum);
                             }
                         }, "POST", false, function (res) {
@@ -260,24 +384,30 @@
                 , cols: [
                     [
                         {type: 'checkbox', fixed: 'left'},
-                        {field: 'username', align: 'center', title: '姓名', width: 110},
-                        {field: 'identityCard', align: 'center', title: '身份证号码', width: 360},
-                        {field: 'typeInfo', align: 'center', title: '类型', width: 170, templet: '#sourceTpl'},
-                        {field: 'phone', align: 'center', title: '手机号', width: 250},
+                        // {filed: 'id', align: 'center', title: 'id', width: 100},
+                        {field: 'username', align: 'center', title: '姓名', width: 100},
+                        {field: 'identityCard', align: 'center', title: '身份证号码', width: 200},
+                        {field: 'typeInfo', align: 'center', title: '类型id', width: 100, templet: '#sourceTpl'},
+                        {field: 'phone', align: 'center', title: '手机号', width: 120},
 
                         {field: 'sex', title: '性别', align: 'center', width: 60, templet: '#sexTpl'},
+                        {
+                            field: 'deptName', align: 'center', title: '机关单位', align: 'center', templet: function (data) {
+                                return data.dept.name;
+                            }
+                        },
                         {
                             field: 'importTime', align: 'center', title: '创建时间', width: 170, templet: function (item) {
                                 return CoreUtil.formattime(item.importTime);
                             }
                         },
-                        {width: 300, align: 'center', toolbar: "#tool", title: '操作'}
+                        {width: 240, align: 'center', toolbar: "#tool", title: '操作'}
                     ]
                 ]
                 , data: data
                 , even: true
                 , limit: data.length
-                , limits: [10, 20, 30, 50, 100]
+                , limits: [5, 10, 20, 30, 5000]
                 , toolbar: '#toolbar'
             });
         };
@@ -315,7 +445,7 @@
                     break;
                 case 'addNewBlackUser':
                     form.render();
-                    $(".title").html("新增用户");
+                    $(".title").html("添加禁入人员");
                     $(".blackuser_table_div").hide();
                     $(".operation_blackuser").show();
                     $(".operation_blackuser input[name=id]").val("");
@@ -338,8 +468,18 @@
                     searchParam.identityCard = $("#identityCard").val();
                     searchParam.sex = $("#sex").val();
                     searchParam.phone = $("#phone").val();
-                    searchParam.type = $("#typeInfo").val();
+                    // searchParam.type = $("#typeInfo").val();
+                    searchParam.deptId = $("#deptInfo").val();
                     searchParam.username = $("#username").val();
+                    searchParam.typeInfo = $("#typeInfo").val();
+                    var timeR = $("#date-range").val();
+                    if (timeR != null) {
+                        var timeL = timeR.split(' ~ ');
+                        console.log("timeRange:" + timeR)
+                        console.log("timeRange:" + timeL)
+                        searchParam.importTime1 = timeL[0];
+                        searchParam.importTime2 = timeL[1];
+                    }
                     // searchParam.date = $("#importTime").val();
                     searchParam.pageNum = 1;
                     CoreUtil.sendAjax("/sys/blackusers", JSON.stringify(searchParam), function (res) {
@@ -361,12 +501,13 @@
             }
             ;
         });
-        table.on('tool(blackuser_table)', function (obj) {
+          table.on('tool(blackuser_table)', function (obj) {
             var data = obj.data;
             switch (obj.event) {
                 case 'del':
                     var userIds = [];
                     userIds.push(data.id);
+                    // console.log("blackUser删除:"+JSON.stringify(userIds))
                     tipDialog(userIds, data.username);
                     break;
                 case 'edit':
@@ -376,9 +517,9 @@
                     $(".operation_blackuser input[name=id]").val(data.id);
                     $(".operation_blackuser input[name=identityCard]").val(data.identityCard);
                     $(".operation_blackuser input[name=username]").val(data.username);
-                    $(".operation_blackuser input[name=sex]").val(data.sex);
                     $(".operation_blackuser input[name=phone]").val(data.phone);
-                    $(".operation_blackuser input[name=typeInfo]").val(data.typeInfo);
+                    $("#sex2").val(data.sex);
+                    $("#typeInfo2").val(data.typeInfo);
                     /*if (data.status == 1) {
                         $(".operation_blackuser input[name=status]").attr('checked', 'checked');
                         $(".operation_blackuser input[name=status]").attr('type', 'hidden').val(1);
@@ -438,11 +579,32 @@
         $("#btn_cancel").click(function () {
             $(".blackuser_table_div").show();
             $(".layui-fluid").hide();
+            $(".operation_blackuser").hide();
+            $("#sex2").val("请选择性别");
+            $("#typeInfo2").val("所有类型");
             return false;
         });
+        $("#downloadFile").click(function () {
+            console.log("1")
+            downLoadModel();
+            // return false;
+        });
+        var downLoadModel = function () {
+            console.log("2")
+            CoreUtil.sendAjax("/sys/downloadModel", JSON.stringify(), function (res) {
+                console.log("3")
+                console.log("res:"+JSON.stringify(res))
+                layer.msg(res.msg);
+                //执行下载
+                download();
+                return;
+            }, "GET", false, function (res) {
+                layer.msg(res.msg+" 抱歉！您暂无下载的权限");
+            });
+        };
         var tipDialog = function (userIds, username) {
-            if(username=="admin"){
-                layer.msg('不可删除管理员',{icon: 5,time:1000});
+            if (username == "admin") {
+                layer.msg('不可删除管理员', {icon: 5, time: 1000});
                 return;
             }
             layer.open({
@@ -524,10 +686,10 @@
             });
         };*/
         /* 添加元素后重新加载  */
-        var initTree=function () {
-            CoreUtil.sendAjax("/sys/blackusers/tree",null,function (res) {
+        var initTree = function () {
+            CoreUtil.sendAjax("/sys/blackusers/tree", null, function (res) {
                 loadDeptTree(res.data);
-            },"GET",false);
+            }, "GET", false);
         };
         var initTransfer = function (data) {
             transfer.render({
@@ -602,83 +764,97 @@
             , laypage = layui.laypage //分页
             , table = layui.table; //表格
 
+
+        // console.log("token:"+JSON.stringify(localStorage))
+        var deptId=null;
+        CoreUtil.sendAjax("/sys/getDeptId", JSON.stringify(), function (res) {
+            console.log("查询deptId")
+            if (res.data != null) {
+                deptId=res.data;
+                console.log("deptId:"+deptId)
+            }
+        }, "POST", false, function (res) {
+            layer.msg("抱歉！您暂无获取权限");
+        });
+
         //允许批量上传噪声文件数据
         var files;
         var file_index = [];
         var filesData = blackOptions.data;//存储数据
-        var demoListView = $('#fileList')
+        var demoListView = $('#fileList'),
+            uploadListIns = upload.render({
+                elem: '.layui-btn-upload', //绑定元素
+                headers: window.sessionStorage.getItem('token'),
+                url: '/sys/uploadBlackFile', //上传接口
+                multiple: true,
+                accept: 'file',
+                auto: false,
+                bindAction: '#uploadFile'
+                , before: function (obj) {
+                    this.data = {
+                        deptId: deptId,
+                    }
+                }, choose: function (obj) {//选择文件之后的回调函数
 
-            , uploadListIns = upload.render({
-            elem: '.layui-btn-upload' //绑定元素
-            , url: '/sys/uploadBlackFile' //上传接口
-            , multiple: true
-            , accept: 'file'
-            , auto: false
-            , bindAction: '#uploadFile'
-            , before: function (obj) {
-
-            }, choose: function (obj) {//选择文件之后的回调函数
-
-                files = this.files = obj.pushFile(); //将每次选择的文件追加到文件队列
-                obj.preview(function (index, file, result) {
-                    //列表显示文件信息
-                    var fileInfo = {
-                        id: filesData.length + 1,
-                        fileName: file.name,
-                        fileStatus: "等待上传"
-                    };
-                    filesData.push(fileInfo);
-                    $.extend(blackOptions, {data: filesData});
-                    table.render(blackOptions);
-                    //监听工具栏按钮
-                    file_index.push(index);
-                    table.on('tool(blackFileTable)', function (obj_tr) {
-                        var data = obj_tr.data;
-                        console.log("删除的数据；" + JSON.stringify(data));
-                        if (obj_tr.event === 'del') {
-                            layer.confirm('真的删除行么', function (index_tr) {
-                                var index_file = file_index[data.id - 1];
-                                file_index.splice(data.id - 1, 1);
-                                delete files[index_file];//更新文件列表
-                                obj_tr.del();
-                                deleArrayById(filesData, data.id);//更新表格列表
-                                $.extend(blackOptions, {data: filesData});
-                                table.render(blackOptions);
-                                layer.close(index_tr);
-                            });
-                        }
+                    files = this.files = obj.pushFile(); //将每次选择的文件追加到文件队列
+                    obj.preview(function (index, file, result) {
+                        //列表显示文件信息
+                        var fileInfo = {
+                            id: filesData.length + 1,
+                            fileName: file.name,
+                            fileStatus: "等待上传"
+                        };
+                        filesData.push(fileInfo);
+                        $.extend(blackOptions, {data: filesData});
+                        table.render(blackOptions);
+                        //监听工具栏按钮
+                        file_index.push(index);
+                        table.on('tool(blackFileTable)', function (obj_tr) {
+                            var data = obj_tr.data;
+                            console.log("删除的数据；" + JSON.stringify(data));
+                            if (obj_tr.event === 'del') {
+                                layer.confirm('真的删除行么', function (index_tr) {
+                                    var index_file = file_index[data.id - 1];
+                                    file_index.splice(data.id - 1, 1);
+                                    delete files[index_file];//更新文件列表
+                                    obj_tr.del();
+                                    deleArrayById(filesData, data.id);//更新表格列表
+                                    $.extend(blackOptions, {data: filesData});
+                                    table.render(blackOptions);
+                                    layer.close(index_tr);
+                                });
+                            }
+                        });
                     });
-                });
-            }
-            , done: function (res, index, upload) {
-                var data = blackOptions.data;
-                if ((res.operationResult == "SUCCESS")) { //上传成功
+                }, done: function (res, index, upload) {
+                    var data = blackOptions.data;
+                    if ((res.operationResult == "SUCCESS")) { //上传成功
+                        var index_i = getindexByContent(file_index, index);
+                        data[parseInt(index_i)].fileStatus = "上传成功";
+                        $.extend(blackOptions, {data: data});
+                        table.render(blackOptions);
+                        //tds.eq(3).html(''); //清空操作
+                        console.log(index);
+                        delete files[index]; //删除文件队列已经上传成功的文件
+                        return;
+                    }
+                    this.error(res, index, upload);
+                    //上传完毕回调
+                }
+                , allDone: function (obj) { //当文件全部被提交后，才触发
+                    file_index.splice(0, file_index.length);
+                    filesData.splice(0, filesData.length);
+                    console.log(files);
+                }
+                , error: function (res, index, upload) {
+                    var data = blackOptions.data;
+                    //获取下标
                     var index_i = getindexByContent(file_index, index);
-                    data[parseInt(index_i)].fileStatus = "上传成功";
+                    data[parseInt(index_i)].fileStatus = "上传失败";
                     $.extend(blackOptions, {data: data});
                     table.render(blackOptions);
-                    //tds.eq(3).html(''); //清空操作
-                    console.log(index);
-                    delete files[index]; //删除文件队列已经上传成功的文件
-                    return;
                 }
-                this.error(res, index, upload);
-                //上传完毕回调
-            }
-            , allDone: function (obj) { //当文件全部被提交后，才触发
-                file_index.splice(0, file_index.length);
-                filesData.splice(0, filesData.length);
-                console.log(files);
-            }
-            , error: function (res, index, upload) {
-                var data = blackOptions.data;
-                //获取下标
-                var index_i = getindexByContent(file_index, index);
-                data[parseInt(index_i)].fileStatus = "上传失败";
-                $.extend(blackOptions, {data: data});
-                table.render(blackOptions);
-            }
-        });
+            });
 
     });
 

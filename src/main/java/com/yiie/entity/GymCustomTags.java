@@ -21,6 +21,15 @@ public class GymCustomTags implements Serializable {
     private Date createTime;
     private Date updateTime;
     private Integer deleted;
+    private Dept dept;
+
+    public Dept getDept() {
+        return dept;
+    }
+
+    public void setDept(Dept dept) {
+        this.dept = dept;
+    }
 
     public String getTagId() {
         return tagId;

@@ -17,7 +17,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-    id, dept_no, `name`, pid, `status`, relation_code, dept_manager_id, manager_name,
+    id, dept_no, name, pid, status, relation_code, dept_manager_id, manager_name,
     phone, create_time, update_time, deleted
   </sql>
 
@@ -26,8 +26,8 @@
     where id = #{id,jdbcType=VARCHAR}
   </delete>
     <insert id="insert" parameterType="com.yiie.entity.Dept">
-    insert into dept (id, dept_no, `name`, 
-      pid, `status`, relation_code, 
+    insert into dept (id, dept_no, name,
+      pid, status, relation_code,
       dept_manager_id, manager_name, phone, 
       create_time, update_time, deleted
       )
@@ -47,13 +47,13 @@
                 dept_no,
             </if>
             <if test="name != null">
-                `name`,
+                name,
             </if>
             <if test="pid != null">
                 pid,
             </if>
             <if test="status != null">
-                `status`,
+                status,
             </if>
             <if test="relationCode != null">
                 relation_code,
@@ -123,13 +123,13 @@
                 dept_no = #{deptNo,jdbcType=VARCHAR},
             </if>
             <if test="name != null">
-                `name` = #{name,jdbcType=VARCHAR},
+                name = #{name,jdbcType=VARCHAR},
             </if>
             <if test="pid != null">
                 pid = #{pid,jdbcType=VARCHAR},
             </if>
             <if test="status != null">
-                `status` = #{status,jdbcType=TINYINT},
+                status = #{status,jdbcType=TINYINT},
             </if>
             <if test="relationCode != null">
                 relation_code = #{relationCode,jdbcType=VARCHAR},
@@ -158,9 +158,9 @@
     <update id="updateByPrimaryKey" parameterType="com.yiie.entity.Dept">
     update dept
     set dept_no = #{deptNo,jdbcType=VARCHAR},
-      `name` = #{name,jdbcType=VARCHAR},
+      name = #{name,jdbcType=VARCHAR},
       pid = #{pid,jdbcType=VARCHAR},
-      `status` = #{status,jdbcType=TINYINT},
+      status = #{status,jdbcType=TINYINT},
       relation_code = #{relationCode,jdbcType=VARCHAR},
       dept_manager_id = #{deptManagerId,jdbcType=VARCHAR},
       manager_name = #{managerName,jdbcType=VARCHAR},
@@ -201,5 +201,17 @@
                 #{item}
             </foreach>
         </where>
+    </select>
+    <select id="getAllDept" resultType="com.yiie.entity.Dept">
+        select * from dept
+        where deleted=1
+    </select>
+    <select id="getByName" resultType="com.yiie.entity.Dept">
+        select * from dept
+        where deleted=1 and name=#{deptName}
+    </select>
+    <select id="getById" resultType="com.yiie.entity.Dept">
+        select * from dept
+        where deleted=1 and id=#{deptId}
     </select>
 </mapper>

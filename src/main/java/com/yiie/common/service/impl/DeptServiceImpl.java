@@ -174,7 +174,22 @@ public class DeptServiceImpl implements DeptService {
         }
         return list;
     }
-    
+
+    @Override
+    public List<Dept> getAllDept() {
+        return deptMapper.getAllDept();
+    }
+
+    @Override
+    public Dept getByName(String deptName) {
+        return deptMapper.getByName(deptName);
+    }
+
+    @Override
+    public Dept getById(String deptId) {
+        return deptMapper.getById(deptId);
+    }
+
     @Override
     public Dept detailInfo(String id) {
         return deptMapper.selectByPrimaryKey(id);

@@ -147,14 +147,14 @@
                             张图片，若上传数量不能超过3张。-->
                                 <br>
                                 若已存在图片，超出总数量的图片将向后对图片进行顺序覆盖
-                                <br>不选择文件直接上传等同于删除该图片
+                                <br><span style="color: red">不选择文件直接上传等同于删除该图片</span>
                             </tip>
                         </div>
                     </div>
 
                     <div class="layui-form-item">
                         <div class="layui-input-block">
-                            <button type="submit" class="layui-btn" lay-submit="" :id="'loadP'+picture.id" lay-filter="">{{picture.path=="/pic/default2.png"?'上传':'删除'}}</button>
+                            <button type="submit" class="layui-btn" lay-submit="" :id="'loadP'+picture.id" lay-filter="">上传</button><!--{{picture.path=="/pic/default2.png"?'上传':'删除'}}-->
                         </div>
                     </div>
                 </form>
@@ -200,7 +200,7 @@
                         method: 'GET',
                     }).then((result) => {
                         let data = result.data;
-                        console.log("获取图片路径:"+data);
+                        console.log("获取图片路径:"+JSON.stringify(data));
                         console.log("pictures:"+data)
                         this.pictures=data;
                         this.gymId=gymId;

@@ -135,4 +135,9 @@ public class BlackUserServiceImpl implements BlackUserService{
             throw new BusinessException(BaseResponseCode.OPERATION_ERRO);
         }
     }
+
+    @Override
+    public BlackUser getByIdentityCard(String identityCard) {
+        return blackuserMapper.getByIdentityCard(identityCard);
+    }
 }

@@ -50,10 +50,14 @@ public class gymHistoryController {
     @LogAnnotation(title = "历史记录管理",action = "分页获取历史记录列表")
     @RequiresPermissions("sys:gymHistory:list")
     public DataResult<PageVO<GymHistory>> pageInfo(@RequestBody GymHistoryPageReqVO vo, HttpServletRequest request){
+        System.out.print("分页获取历史记录列表\n");
         DataResult<PageVO<GymHistory>> result= DataResult.success();
         String userId = JwtTokenUtil.getUserId(request.getHeader(Constant.ACCESS_TOKEN));
-        String deptID = userService.getDeptIdFromUserId(userId);
-        vo.setDeptId(deptID);
+        String deptId= userService.getDeptIdFromUserId(userId);
+        if(deptId!=null&&deptId.length()!=0&&deptId!=""){
+            vo.setDeptId(deptId);
+        }
+        System.out.print("历史记录管理："+vo+"\n\n\n");
         result.setData(gymHistoryService.pageInfo(vo));
         return result;
     }
@@ -84,6 +88,7 @@ public class gymHistoryController {
     @LogAnnotation(title = "历史记录管理",action = "更新历史记录信息")
     @RequiresPermissions("sys:gymHistory:update")
     public DataResult updateGymHistoriesInfo(@RequestBody @Valid GymHistoryUpdateReqVO vo, HttpServletRequest request){
+
         gymHistoryService.updateGymHistoriesInfo(vo);
         return DataResult.success();
     }

@@ -29,34 +29,35 @@
 	<script src="/login/js/main.js"></script>
 	<script src="/login/js/core.util.js"></script>
 	<script src="/layui/layui.all.js"></script>
+
 </head>
 <body>
 
 <div class="limiter">
-	<div class="container-login100">
-		<div class="wrap-login100 p-t-85 p-b-20 m-b-30">
+	<div class="container-login100" style="background-image: url('/images/loginBackground.png');">
+		<div class="wrap-login100 p-t-85 p-b-20 m-b-30" style="padding-bottom: 0px;margin-bottom: 0px;margin-left: 40%">
 			<form class="login100-form validate-form" id = "myform">
 
 				<span class="login100-form-avatar">
 					<img src="/login/images/14.png" alt="AVATAR">
 				</span>
 				<input name="type"  type="hidden" value="1">
-				<div class="wrap-input100 validate-input m-t-75 m-b-25" data-validate = "请输入用户名">
+				<div class="wrap-input100 validate-input m-t-75 m-b-25" data-validate = "请输入用户名" style="margin-top: 10px">
 					<input class="input100" type="text" name="username" id = "username" autocomplete="off">
 					<span class="focus-input100" data-placeholder="请输入用户名"></span>
 				</div>
-				<div class="wrap-input100 validate-input m-b-55" data-validate="请输入密码">
+				<div class="wrap-input100 validate-input m-b-55" data-validate="请输入密码" style="margin-bottom: 20px">
 					<input class="input100" type="password" name="password" autocomplete="off">
 					<span class="focus-input100" data-placeholder="请输入密码"></span>
 				</div>
-				<div class="verify-wrap" id="verify-wrap">
+				<div class="verify-wrap" id="verify-wrap" style="margin-bottom: 20px !important;">
 					<div class="drag-progress dragProgress"></div>
 					<span class="drag-btn dragBtn"></span>
 					<span class="fix-tips fixTips slidetounlock">请按住滑块，拖动到最右边</span>
 					<span class="verify-msg sucMsg">验证通过</span>
 				</div>
 				<div class="container-login100-form-btn">
-					<button class="login100-form-btn" type="submit" id="submit">
+					<button class="login100-form-btn" type="submit" id="submit" style="margin-bottom: 20px">
 						登  录
 					</button>
 				</div>

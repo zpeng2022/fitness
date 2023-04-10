@@ -31,6 +31,14 @@ public class Customer implements Serializable {
     private Date customer_update_time;
     private Integer customer_deleted;
 
+    public String getCustomer_contacts_id() {
+        return customer_contacts_id;
+    }
+
+    public void setCustomer_contacts_id(String customer_contacts_id) {
+        this.customer_contacts_id = customer_contacts_id;
+    }
+
     public String getCustomer_id() {
         return customer_id;
     }

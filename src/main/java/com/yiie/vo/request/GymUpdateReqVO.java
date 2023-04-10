@@ -26,10 +26,16 @@ public class GymUpdateReqVO {
     private String deptName;
 
     @ApiModelProperty(value = "周一至周五开放时间")
-    private String monday;
+    private String workDay1;
+
+    @ApiModelProperty(value = "周一至周五开放时间")
+    private String workDay2;
 
     @ApiModelProperty(value = "周六周日开放时间, 不开放默认为空")
-    private String saturday;
+    private String weekend1;
+
+    @ApiModelProperty(value = "周六周日开放时间, 不开放默认为空")
+    private String weekend2;
 
     @ApiModelProperty(value = "场地电话")
     private String gymPhone;
@@ -63,4 +69,28 @@ public class GymUpdateReqVO {
 
     @ApiModelProperty(value = "场地是否删除")
     private Integer deleted;
+
+    @Override
+    public String toString() {
+        return "GymUpdateReqVO{" +
+                "gymId='" + gymId + '\'' +
+                ", deptId='" + deptId + '\'' +
+                ", gymName='" + gymName + '\'' +
+                ", deptName='" + deptName + '\'' +
+                ", workDay1='" + workDay1 + '\'' +
+                ", workDay2='" + workDay2 + '\'' +
+                ", weekend1='" + weekend1 + '\'' +
+                ", weekend2='" + weekend2 + '\'' +
+                ", gymPhone='" + gymPhone + '\'' +
+                ", gymCapacity=" + gymCapacity +
+                ", openOnHoliday=" + openOnHoliday +
+                ", gymTypes='" + gymTypes + '\'' +
+                ", gymPosition='" + gymPosition + '\'' +
+                ", gymDetails='" + gymDetails + '\'' +
+                ", gymGps='" + gymGps + '\'' +
+                ", createTime='" + createTime + '\'' +
+                ", updateTime='" + updateTime + '\'' +
+                ", deleted=" + deleted +
+                '}';
+    }
 }

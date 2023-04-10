@@ -9,6 +9,27 @@
         <result column="saturday" jdbcType="VARCHAR" property="saturday" />
         <result column="gymPhone" jdbcType="VARCHAR" property="gymPhone" />
         <result column="gymCapacity" jdbcType="INTEGER" property="gymCapacity" />
+<!--        <result column="gymPicturesPath" jdbcType="VARCHAR" property="gymPicturesPath" />-->
+        <result column="openOnHoliday" jdbcType="TINYINT" property="openOnHoliday" />
+        <result column="gymTypes" jdbcType="VARCHAR" property="gymTypes" />
+        <result column="gymPosition" jdbcType="VARCHAR" property="gymPosition" />
+        <result column="gymDetails" jdbcType="VARCHAR" property="gymDetails" />
+        <result column="gymGps" jdbcType="VARCHAR" property="gymGps" />
+        <result column="createTime" jdbcType="VARCHAR" property="createTime" />
+        <result column="updateTime" jdbcType="VARCHAR" property="updateTime" />
+        <result column="deleted" jdbcType="TINYINT" property="deleted" />
+        <collection property="dept" resultMap="Dept">
+
+        </collection>
+    </resultMap>
+    <resultMap id="BaseResultMapForPicture" type="com.yiie.entity.Gym">
+        <id column="gymId" jdbcType="VARCHAR" property="gymId" />
+        <result column="deptId" jdbcType="VARCHAR" property="deptId" />
+        <result column="gymName" jdbcType="VARCHAR" property="gymName" />
+        <result column="monday" jdbcType="VARCHAR" property="monday" />
+        <result column="saturday" jdbcType="VARCHAR" property="saturday" />
+        <result column="gymPhone" jdbcType="VARCHAR" property="gymPhone" />
+        <result column="gymCapacity" jdbcType="INTEGER" property="gymCapacity" />
         <result column="gymPicturesPath" jdbcType="VARCHAR" property="gymPicturesPath" />
         <result column="openOnHoliday" jdbcType="TINYINT" property="openOnHoliday" />
         <result column="gymTypes" jdbcType="VARCHAR" property="gymTypes" />
@@ -18,18 +39,35 @@
         <result column="createTime" jdbcType="VARCHAR" property="createTime" />
         <result column="updateTime" jdbcType="VARCHAR" property="updateTime" />
         <result column="deleted" jdbcType="TINYINT" property="deleted" />
+        <collection property="dept" resultMap="Dept">
+
+        </collection>
+    </resultMap>
+    <resultMap id="Dept" type="com.yiie.entity.Dept">
+        <id column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="deptNo" jdbcType="VARCHAR" property="deptNo"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="pid" jdbcType="VARCHAR" property="pid"/>
+        <result column="pidName" jdbcType="VARCHAR" property="pidName"/>
+        <result column="status" jdbcType="VARCHAR" property="status"/>
+        <result column="relationCode" jdbcType="VARCHAR" property="relationCode"/>
+        <result column="deptManagerId" jdbcType="VARCHAR" property="deptManagerId"/>
+        <result column="managerName" jdbcType="VARCHAR" property="managerName"/>
+        <result column="phone" jdbcType="TINYINT" property="phone"/>
+        <result column="createTime" jdbcType="TINYINT" property="createTime"/>
+        <result column="updateTime" jdbcType="VARCHAR" property="updateTime"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         gymId, deptId, gymName, monday, saturday, gymPhone, gymCapacity, gymPicturesPath, openOnHoliday, gymTypes, gymPosition, gymDetails, gymGps, createTime, updateTime, deleted
     </sql>
 
-    <select id="getAllGymsByNameByDeptID" resultMap="BaseResultMap">
-        SELECT <include refid="Base_Column_List"></include>
-        FROM gym
-        AND deptId=#{deptId}
-        AND deleted=1
-    </select>
+<!--    <select id="getAllGymsByNameByDeptID" resultMap="BaseResultMap">-->
+<!--        SELECT <include refid="Base_Column_List"></include>-->
+<!--        FROM gym-->
+<!--        AND deptId=#{deptId}-->
+<!--        AND deleted=1-->
+<!--    </select>-->
 
     <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
         select
@@ -37,64 +75,89 @@
         from gym
         where gymId = #{gymId, jdbcType=VARCHAR}
     </select>
+    <select id="getPicPath" parameterType="java.lang.String" resultMap="BaseResultMapForPicture">
+        select
+        <include refid="Base_Column_List" />
+        from gym
+        where gymId = #{gymId, jdbcType=VARCHAR}
+    </select>
 
     <select id="selectAllGymsByDeptID" resultMap="BaseResultMap" parameterType="com.yiie.vo.request.GymPageReqVO">
-        select <include refid="Base_Column_List"></include>
+        select
+        gym.gymId,gym.deptId,gym.gymName,gym.monday,gym.saturday,gym.gymPhone,gym.gymCapacity,gym.gymPicturesPath,
+        gym.openOnHoliday,gym.gymTypes,gym.gymPosition,gym.gymDetails,gym.gymGps,gym.createTime,gym.updateTime,gym.deleted,
+        dept.id,dept.dept_no,dept.name,dept.pid,dept.status,dept.relation_code,dept.dept_manager_id,dept.manager_name,dept.phone,dept.create_time,dept.update_time
         from gym
+        left join dept
+        on deptId=dept.id
         <where>
-            deleted=1
-            AND deptId = #{deptId}
+            gym.deleted=1
+            <if test="deptId != null and deptId != ''">
+                AND gym.deptId = #{deptId}
+            </if>
             <if test="gymId != null and gymId != ''">
-                AND gymId = #{gymId}
+                AND gym.gymId = #{gymId}
             </if>
             <if test="deptId != null and deptId != ''">
-                AND deptId = #{deptId}
+                AND gym.deptId = #{deptId}
             </if>
             <if test="gymName != null and gymName != ''">
-                AND gymName = #{gymName}
+                AND gym.gymName like CONCAT('%',#{gymName},'%')
             </if>
             <if test="monday != null and monday != ''">
-                AND monday = #{monday}
+                AND gym.monday = #{monday}
             </if>
             <if test="saturday != null and saturday != ''">
-                AND saturday = #{saturday}
+                AND gym.saturday = #{saturday}
             </if>
             <if test="gymPhone != null and gymPhone != ''">
-                AND gymPhone = #{gymPhone}
+                AND gym.gymPhone = #{gymPhone}
             </if>
             <if test="gymCapacity != null and gymCapacity != ''">
-                AND gymCapacity = #{gymCapacity}
+                AND gym.gymCapacity = #{gymCapacity}
             </if>
             <if test="gymPicturesPath != null and gymPicturesPath != ''">
-                AND gymPicturesPath = #{gymPicturesPath}
+                AND gym.gymPicturesPath = #{gymPicturesPath}
             </if>
             <if test="openOnHoliday != null and openOnHoliday != ''">
-                AND openOnHoliday = #{openOnHoliday}
+                AND gym.openOnHoliday = #{openOnHoliday}
             </if>
             <if test="gymTypes != null and gymTypes != ''">
-                AND gymTypes = #{gymTypes}
+                AND gym.gymTypes = #{gymTypes}
+            </if>
+            <if test="exerciseType != null and exerciseType != ''">
+                AND gym.gymTypes like CONCAT('%',replace(#{exerciseType},'-','%'),'%')
             </if>
             <if test="gymPosition != null and gymPosition != ''">
-                AND gymPosition = #{gymPosition}
+                AND gym.gymPosition = #{gymPosition}
             </if>
             <if test="gymDetails != null and gymDetails != ''">
-                AND gymDetails = #{gymDetails}
+                AND gym.gymDetails = #{gymDetails}
             </if>
             <if test="gymGps != null and gymGps != ''">
-                AND gymGps = #{gymGps}
+                AND gym.gymGps = #{gymGps}
             </if>
-            <if test="createTime != null and createTime != ''">
-                AND createTime = #{createTime}
+
+            <if test="startTime!=null and startTime!='' and endTime!=null and endTime!=''">
+                AND gym.createTime BETWEEN #{startTime} and #{endTime}
             </if>
             <if test="updateTime != null and updateTime != ''">
-                AND updateTime = #{updateTime}
+                AND gym.updateTime = #{updateTime}
             </if>
         </where>
     </select>
 
+    <!--AND gymName like concat('%',#{name},'%')-->
     <select id="getByName" resultType="com.yiie.entity.Gym">
         select * from gym
-        where gymName like concat('%',#{name},'%')
+        where
+        deleted=1
+        <if test="name != null and name != ''">
+            AND gymName = #{name}
+        </if>
+        <if test="deptId != null and deptId != ''">
+            AND deptId = #{deptId}
+        </if>
     </select>
 
     <select id="getGymOT" resultType="com.yiie.vo.data.GymOpenTimeVO">
@@ -173,7 +236,51 @@
     </select>
 
     <select id="selectAllName" resultType="java.lang.String">
-        SELECT DISTINCT gymName FROM `gym` where deleted=1
+        SELECT DISTINCT gymName FROM gym where deleted=1
+    </select>
+    <select id="getIsClose" resultType="com.yiie.vo.data.GymIsClose">
+        select gym.gymId,gym.gymName,whichDay,
+        1 as todayIsClose
+        from gym
+        LEFT JOIN gym_opentime go
+        on gym.gymId=go.gymId
+        where DAYS_BETWEEN(now(), go.whichDay)=0 and gym.deleted=1 and go.deleted=1
+    </select>
+    <select id="getAllTypes" resultType="java.lang.String">
+        select gymTypes
+        from gym
+        where deleted=1
+    </select>
+    <select id="getByDeptId" resultType="com.yiie.entity.Gym">
+        select * from gym
+        where deptId=#{deptId} and deleted=1
+    </select>
+    <select id="selectAllNameById" resultType="java.lang.String">
+        SELECT DISTINCT gymName FROM gym
+        where deleted=1 AND deptId = #{deptId}
+    </select>
+    <select id="getAllGym" resultType="com.yiie.entity.Gym">
+        select * from gym
+        where deleted=1
+        and gymName=#{name}
+    </select>
+    <select id="getGymOTByDeptId" resultType="com.yiie.vo.data.GymOpenTimeVO">
+        SELECT DISTINCT gymId,gymName,monday,saturday
+        from gym
+        WHERE deleted=1 and deptId=#{deptId}
+    </select>
+    <select id="getAll" resultType="com.yiie.entity.Gym">
+        select * from gym
+        where deleted=1
+    </select>
+    <select id="getTypesByDeptId" resultType="java.lang.String">
+        select gymTypes
+        from gym
+        where deleted=1 and deptId=#{deptId}
+    </select>
+    <select id="getGymByDeptId" resultType="com.yiie.entity.Gym">
+        select * from gym
+        where deleted=1 and deptId=#{deptId}
     </select>
 
     <insert id="insertSelective" parameterType="com.yiie.entity.Gym">

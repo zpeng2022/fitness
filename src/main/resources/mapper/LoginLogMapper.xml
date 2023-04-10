@@ -15,12 +15,12 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-    id, username, login_time, location, `status`, ip, system, browser,
+    id, username, login_time, location, status, ip, system, browser,
     msg, code
   </sql>
     
     <insert id="saveLoginLog" parameterType="com.yiie.entity.LoginLog">
-        insert into loginlog(username, login_time, location, `status`, ip, system, browser,
+        insert into loginlog(username, login_time, location, status, ip, system, browser,
     msg, code) values(#{username},#{loginTime},#{location},#{status},#{ip},#{system},#{browser},#{msg},#{code}
     )
     </insert>
@@ -55,26 +55,26 @@
     </delete>
 
     <select id="getTotalSuccessLoginCnt" resultType="INT">
-        select count(DISTINCT(ip)) successLoginCnt from loginlog WHERE `code` = 0
+        select count(DISTINCT(ip)) successLoginCnt from loginlog WHERE code = 0
     </select>
 
     <select id="getTodaySuccessLoginCnt" resultType="INT">
-        SELECT COUNT(DISTINCT(ip)) successLoginCnt FROM loginlog where TO_DAYS(login_time)=TO_DAYS(CURDATE()) AND `code` = 0
+        SELECT COUNT(DISTINCT(ip)) successLoginCnt FROM loginlog where TO_DAYS(login_time)=TO_DAYS(CURDATE()) AND code = 0
     </select>
 
     <select id="getWeekSuccessLoginCnt" resultType="INT">
-        select count(DISTINCT(ip)) successLoginCnt from loginlog where login_time > DATE_SUB(CURDATE(),INTERVAL 7 DAY) AND `code` = 0
+        select count(DISTINCT(ip)) successLoginCnt from loginlog where login_time > DATE_SUB(CURDATE(),INTERVAL 7 DAY) AND code = 0
     </select>
 
     <select id="getTodayFailLoginCnt" resultType="INT">
-        select count(1) failLoginCnt from loginlog where TO_DAYS(login_time)=TO_DAYS(CURDATE()) AND `code` != 0
+        select count(1) failLoginCnt from loginlog where TO_DAYS(login_time)=TO_DAYS(CURDATE()) AND code != 0
     </select>
 
     <select id="getTotalFailLoginCnt" resultType="INT">
-        select count(1) failLoginCnt from loginlog where `code` != 0
+        select count(1) failLoginCnt from loginlog where code != 0
     </select>
 
     <select id="getDateAndCntList" resultType="com.yiie.vo.response.NameAndCntVO">
-        SELECT DATE_FORMAT(login_time,"%Y/%m/%d") date7,count(DISTINCT(ip)) successLoginCnt FROM loginlog where login_time > DATE_SUB(CURDATE(),INTERVAL 7 Day) AND `code` = 0 GROUP BY(DATE_FORMAT(login_time,"%Y/%m/%d")) ORDER BY DATE_FORMAT(login_time,"%Y/%m/%d") DESC
+        SELECT DATE_FORMAT(login_time,"%Y/%m/%d") date7,count(DISTINCT(ip)) successLoginCnt FROM loginlog where login_time > DATE_SUB(CURDATE(),INTERVAL 7 Day) AND code = 0 GROUP BY(DATE_FORMAT(login_time,"%Y/%m/%d")) ORDER BY DATE_FORMAT(login_time,"%Y/%m/%d") DESC
     </select>
 </mapper>

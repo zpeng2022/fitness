@@ -1,5 +1,7 @@
 package com.yiie.entity;
 
+import io.swagger.annotations.ApiModelProperty;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -20,6 +22,17 @@ public class BlackUser implements Serializable {
      *  if deleted == 0, and we will delete it.
      */
     private Integer deleted;
+
+    @ApiModelProperty("机关单位")
+    private Dept dept;
+
+    public Dept getDept() {
+        return dept;
+    }
+
+    public void setDept(Dept dept) {
+        this.dept = dept;
+    }
 
     public Integer getDeleted() {
         return deleted;

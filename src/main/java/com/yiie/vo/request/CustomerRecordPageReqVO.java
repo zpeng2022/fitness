@@ -55,5 +55,6 @@ public class CustomerRecordPageReqVO {
     @ApiModelProperty(value = "最后一条记录的时间")
     private Date finalRecordTime;
 
+    private Integer deleted;
     // deleted...
 }

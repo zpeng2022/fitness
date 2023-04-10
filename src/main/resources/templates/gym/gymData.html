@@ -22,6 +22,9 @@
     <script src="/static/echart/echarts.min.js"></script>
   </head>
   <style>
+    body::-webkit-scrollbar {
+      display: none;
+    }
     body{
 
       /*width: 100%;*/
@@ -31,14 +34,35 @@
       /*left: -43%;*/
       /*全屏版*/
       background-color: rgb(0,8,54);
-      transform: scale(0.65);
+      /*transform: scale(0.65);*/
       position: absolute;
-      top: -10%;
+      top: 0px;
       /*left: -20%;*/
     }
   </style>
   <body>
-  <div class="layui-containe co layui-anim" style="position:absolute;z-index:999;width:200px;z-index: 999">
+  <script type="text/javascript">
+    var width=document.body.clientWidth;
+    var high=document.body.clientHeight;
+    var width3=document.body.offsetWidth;
+    var width1=window.screen.availWidth;
+    // var high1=window.screen.availHeight ;
+
+    var width_y=1960;
+    console.log("长宽：");
+    console.log("width - high："+width+"-"+high);
+    console.log("width1："+width1);
+    console.log("width3："+width3);
+    console.log("r："+width/width_y);
+    console.log("r1："+width3/width_y);
+    var raito=width1/width_y;
+    // body.style.transform="scale (" + ratio + ")";
+    // body.setAttribute("style","transform: scale(0.63)");
+    // document.body.style.cssText += '; -moz-transform: scale(' + size + ');-moz-transform-origin: 0 0; ';
+    document.body.style.transform="scale("+raito+")";
+    console.log("body:"+JSON.stringify(document.body.style.transform))
+  </script>
+  <div class="layui-containe co layui-anim" style="position:absolute;z-index:999;top: 0px !important;">
 
     <div class="layui-form" action="" lay-filter="" style="width: 100%">
       <div class="layui-form-item">
@@ -65,7 +89,7 @@
       <div class="box_1 flex-col">
         <div class="box_2 flex-col">
           <div class="text-wrapper_1 flex-col">
-            <span class="text_1" id="gymName">体育场馆预约驾驶舱</span>
+            <span class="text_1" id="gymName" style="vertical-align: center;text-align:center">体育场馆预约驾驶舱</span>
           </div>
           <div class="box_3 flex-col">
             <div class="group_1 flex-row">
@@ -123,9 +147,9 @@
         </div>
       </div>
     </div>
-    <div class="layui-container 1" id="huan4" style="width:100%;min-height:400px;margin-top:5%">
+    <!--<div class="layui-container 1" id="huan4" style="width:100%;min-height:400px;margin-top:5%">
 
-    </div>
+    </div>-->
 
 
     <!--<div class="layui-container 6" id="zhu3" style="width:100%;height:300px;margin-top: 15%">
@@ -148,7 +172,6 @@
     var fontSize_legend=25;
     var legendMarginTop=10;
     var tuMarginTop=40;
-
     //联想搜索
     $("#searchName").mousedown(function () {
       //2.获取输入的用户名
@@ -184,7 +207,7 @@
 
     function InitChart(gymname) {
       console.log("初始化图表，先清空");
-      var myChart9 = echarts.init(document.getElementById('huan4'));
+      // var myChart9 = echarts.init(document.getElementById('huan4'));
       var myChart1 = echarts.init(document.getElementById('huan1'));
       var myChart2 = echarts.init(document.getElementById('huan2'));
       var myChart3 = echarts.init(document.getElementById('zhu1'));
@@ -194,7 +217,7 @@
       // var myChart7 = echarts.init(document.getElementById('zhu3'));
       // var myChart8 = echarts.init(document.getElementById('zhu4'));
       myChart1.clear();
-      myChart9.clear();
+      // myChart9.clear();
       myChart2.clear();
       myChart3.clear();
       myChart4.clear();
@@ -203,6 +226,8 @@
       myChart7.clear();
       myChart8.clear();*/
       // echarts.init(document.getElementById('zhu4')).clear;
+      // var selectName=[[${selectName}]];//放大转递值
+
       CoreUtil.sendAjax("/sys/containData/"+gymname,null,function (res) {
         if(res.data != null){
           console.log("ajax请求完成:"+res.data.gymName)
@@ -221,6 +246,8 @@
 
           $(".headTitle").html("场馆名称："+res.data.gymName)
           $("#gymName").html(res.data.gymName)
+
+
           //图9上下线人数比绘制
           var t9_s1=[]
           var t9_s2=['名称','数值']
@@ -955,7 +982,14 @@
     $(function () {
       console.log("调用初始化方法")
       // gymname="303050b2-2c89-4cbf-899f-cc7af8cedadb";//默认场馆id
-      gymname="杭州电子科技大学";//默认场馆id
+      gymname="诸暨市";//默认场馆id
+      var selectName=window.opener["select"];
+      console.log("selectName:"+selectName);
+      var sn=selectName["select"];
+      if(sn!=null){
+        console.log("select:"+sn);
+        gymname=sn;
+      }
       InitChart(gymname);
     })
     $("#search").click(function () {

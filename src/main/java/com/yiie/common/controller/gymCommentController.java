@@ -109,8 +109,10 @@ public class gymCommentController {
     public DataResult<PageVO<GymComments>> pageInfo(@RequestBody GymCommentPageReqVO vo, HttpServletRequest request){
         DataResult<PageVO<GymComments>> result= DataResult.success();
         String userId = JwtTokenUtil.getUserId(request.getHeader(Constant.ACCESS_TOKEN));
-        String deptID = userService.getDeptIdFromUserId(userId);
-        vo.setDeptId(deptID);
+        String deptId= userService.getDeptIdFromUserId(userId);
+        if(deptId!=null&&deptId.length()!=0&&deptId!="")
+            vo.setDeptId(deptId);
+        System.out.print("\n\n\n\n评论分页查询："+vo.toString()+"\n\n\n");
         result.setData(gymCommentService.pageInfo(vo));
         return result;
     }

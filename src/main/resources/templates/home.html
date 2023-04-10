@@ -18,6 +18,11 @@
         .first-tab i.layui-tab-close{
             display:none!important;
         }
+
+        /*隐藏滚动条*/
+        body::-webkit-scrollbar {
+            display: none;
+        }
     </style>
 </head>
 <body class="layui-layout-body">
@@ -25,15 +30,42 @@
         <!-- 头部区域 -->
         <div class="layui-header">
             <a href="#" class="logo">健身场馆共享通</a>
+
+            <!--菜单修改测试-->
+            <ul class="top-menu layui-nav layui-layout-left" style="margin-left: 0%">
+                <!--测试数据-->
+                <!--<li class="layui-nav-item layui-hide-xs">
+                    <a href="javascript:;" data-url="/index/allGymsDate" data-title="总场馆数据"
+                       data-id="e087b063-e8e8-4a82-ad01-1889f70fe6cf" class="menuNvaBar">总场馆数据
+                    </a>
+                </li>
+                <li class="layui-nav-item layui-hide-xs"><a href="">nav 2</a></li>
+                <li class="layui-nav-item layui-hide-xs"><a href="">nav 3</a></li>
+                <li class="layui-nav-item">
+                    <a href="javascript:;">nav groups
+                        <i class="layui-icon layui-icon-down layui-nav-more"></i>
+                    </a>
+                    <dl class="layui-nav-child layui-anim layui-anim-upbit">
+                        <dd><a href="">menu 11</a></dd>
+                        <dd><a href="">menu 22</a></dd>
+                        <dd><a href="">menu 33</a></dd>
+                    </dl>
+                </li>-->
+<!--        这个要注释掉，因为是动态生成的，不注释掉效果失效
+            <span class="layui-nav-bar" style="left: 168.5px; top: 55px; width: 0px; opacity: 0;"></span>-->
+            </ul>
+
             <!--头部右侧-->
             <ul class="layui-nav layui-layout-right">
-                <li class="layui-nav-item"><a id="deptName" href="javascript:;"></a></li>
+
+                <li class="layui-nav-item"><a id="deptName" href="javascript:;"></a></li><!--所属部门的动态填充-->
+
                 <li class="layui-nav-item">
-                    <a href="javascript:;" style="margin-right: 15px">
+                    <a href="javascript:;" style="margin-right: 15px;">
                         <i class="layui-icon layui-icon-username" style="font-size: 25px; color: #fff;"></i>
-                        <span id="nickName"></span>
+                        <span id="nickName"></span><!--用户名称的动态填充-->
                     </a>
-                    <dl class="layui-nav-child">
+                    <dl class="layui-nav-child"><!--用户名称下方选项的动态填充-->
                         <dd><a href="javascript:;" data-id="userProper" data-title="基本资料" data-url="/index/users/info"
                                class="menuNvaBar">基本资料</a></dd>
                         <dd><a href="javascript:;" data-id="userSafe" data-title="安全设置" data-url="/index/users/password"
@@ -43,26 +75,43 @@
                 </li>
             </ul>
         </div>
-        <!-- 左侧菜单-->
-         <div id="mainmenu" class="layui-side layui-bg-black">
-                <div class="layui-side-scroll">
-                    <div class="navBar layui-side-scroll" id="navBarId"></div>
-             </div>
-        </div>
+
+        <!-- 左侧菜单取消-->
+        <!--<div id="mainmenu" class="layui-side layui-bg-black">
+            <div class="layui-side-scroll">
+                &lt;!&ndash;下方div是左侧菜单内容核心&ndash;&gt;
+                <div class="navBar layui-side-scroll" id="navBarId">
+
+                </div>
+            </div>
+        </div>-->
         <!-- 内容主体区域 -->
-        <div class="layui-body" style="height: 100%;">
-            <div class="layui-tab" lay-filter="tab" lay-allowclose="true">
-                <ul class="layui-tab-title">
+        <div class="layui-body" style="height: 100%;left: 0px !important;"><!--修改布局--><!--修改2：left:25->0-->
+            <div class="layui-tab" lay-filter="tab" lay-allowclose="true" style="margin: 0px !important;height: 100% !important;"><!--修改4：增加style-->
+                <ul class="layui-tab-title" style="display: none"><!--修改1：去掉顶部小导航栏-->
                     <li class="first-tab layui-this">
                         <i class="layui-icon layui-icon-vercode" style="margin-right: 6px"></i>
                         数智驾驶舱
                     </li>
                 </ul>
                 <!-- 中间内容区域 -->
-                <div class="layui-tab-content">
-                    <div class="layui-tab-item layui-show"  >
-                        <iframe th:src="@{/index/contain}" frameborder="0" name="content" width="100%" id="home"></iframe>
+                <div class="layui-tab-content" style="padding: 0px 0px 0px 0px !important;height: 100% !important;"><!--修改布局--><!--修改3：padding: 10px 25px 0px 0px ->0px 0px 0px 0px，增加height-->
+                    <div class="layui-tab-item layui-show"  style="height: 100%"><!--修改5：增加style-->
+                        <iframe th:src="@{/index/contain}"  frameborder="0" onload="adjustIframe();" name="content" width="100%" id="home"></iframe>
                     </div>
+                    <script>//修改6：iframe自适应
+                        function adjustIframe(){
+                            console.log("iframe更新--------------------------------------------------------")
+                            var ifm= document.getElementById("home");
+                            var h1=document.documentElement.clientHeight;
+                            var w1=document.documentElement.clientWidth;
+                            var h2=window.screen.availHeight;
+                            var w2=window.screen.availWidth;
+                            console.log("长款1："+h1+"-"+w1)
+                            console.log("长款2："+h2+"-"+w2)
+                            ifm.style.height=(h1-60)+"px";
+                        }
+                    </script>
                 </div>
             </div>
         </div>

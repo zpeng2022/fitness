@@ -84,6 +84,12 @@ public class GymHistoryPageReqVO {
     @ApiModelProperty(value = "记录创建的时间")
     private String createTime;
 
+    @ApiModelProperty(value = "记录创建的时间")
+    private String startTime;
+
+    @ApiModelProperty(value = "记录创建的时间")
+    private String endTime;
+
     @ApiModelProperty(value = "记录更新的时间")
     private String updateTime;
 

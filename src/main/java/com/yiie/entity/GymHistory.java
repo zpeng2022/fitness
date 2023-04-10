@@ -1,7 +1,12 @@
 package com.yiie.entity;
 
+import com.yiie.vo.response.GymHistoryFollow;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 进出历史
@@ -18,6 +23,15 @@ public class GymHistory implements Serializable {
      */
     private String deptId;
     private String orderId;
+
+    public String getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
+    }
+
 
     private String customerName;
     private String customerPhone;
@@ -57,12 +71,35 @@ public class GymHistory implements Serializable {
     private Date updateTime;
     private Integer deleted;
 
-    public String getOrderId() {
-        return orderId;
+    private GymHistoryFollow follows;
+
+    private Gym gym;
+
+    @ApiModelProperty("机关单位")
+    private Dept dept;
+
+    public Dept getDept() {
+        return dept;
     }
 
-    public void setOrderId(String orderId) {
-        this.orderId = orderId == null ? null : orderId.trim();;
+    public void setDept(Dept dept) {
+        this.dept = dept;
+    }
+
+    public Gym getGym() {
+        return gym;
+    }
+
+    public void setGym(Gym gym) {
+        this.gym = gym;
+    }
+
+    public GymHistoryFollow getFollows() {
+        return follows;
+    }
+
+    public void setFollows(GymHistoryFollow follows) {
+        this.follows = follows;
     }
 
     public String getHistoryId() {
@@ -213,6 +250,7 @@ public class GymHistory implements Serializable {
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +
                 ", deleted=" + deleted +
+                ", follows=" + follows +
                 '}';
     }
 }

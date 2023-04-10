@@ -58,7 +58,9 @@ public class ShiroConfig {
 
     @Bean
     public ShiroFilterFactoryBean shiroFilterFactoryBean(SecurityManager securityManager){
+        //新建
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
+        // Shiro的核心安全接口,这个属性是必须的
         shiroFilterFactoryBean.setSecurityManager(securityManager);
         //自定义拦截器限制并发人数,参考博客：
         LinkedHashMap<String, Filter> filtersMap = new LinkedHashMap<>();
@@ -68,6 +70,9 @@ public class ShiroConfig {
         Map<String, String> filterChainDefinitionMap = new LinkedHashMap<>();
         // 配置不会被拦截的链接 顺序判断
         filterChainDefinitionMap.put("/sys/user/login", "anon");
+        // customer
+        filterChainDefinitionMap.put("/customer/user/register", "anon");
+        filterChainDefinitionMap.put("/customer/user/login", "anon");
 
         filterChainDefinitionMap.put("/sys/loadPicture", "anon");
         filterChainDefinitionMap.put("/sys/loadPicture2", "anon");
@@ -75,10 +80,12 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("/sys/loadGymPicture", "anon");
         filterChainDefinitionMap.put("/index/loadGymPicture", "anon");
         filterChainDefinitionMap.put("/sys/gym/getPicture/**", "anon");
+        //黑名单模板下载
+        filterChainDefinitionMap.put("/sys/downloadModel", "anon");
+        filterChainDefinitionMap.put("/sys/download", "anon");
+
         //开发所有静态资源
         filterChainDefinitionMap.put("/static/**", "anon");
-//        filterChainDefinitionMap.put("/static/pic/*", "anon");
-        filterChainDefinitionMap.put("/pic/**", "anon");
         filterChainDefinitionMap.put("/css/**", "anon");
 
         filterChainDefinitionMap.put("/index/**", "anon");
@@ -87,6 +94,45 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("/sys/user/token", "anon");
         //Gym名称联想
         filterChainDefinitionMap.put("/sys/searchGymName", "anon");
+        //gymInfo
+//        filterChainDefinitionMap.put("/sys/gymInfo", "anon");
+
+        //h5
+        filterChainDefinitionMap.put("/sys/H5GymOrders", "anon");
+        filterChainDefinitionMap.put("/sys/H5CustomerRecords", "anon");
+        filterChainDefinitionMap.put("/sys/H5CancelGymOrder", "anon");
+        filterChainDefinitionMap.put("/sys/H5GymComments", "anon");
+        filterChainDefinitionMap.put("/sys/H5CustomerOtherInfo", "anon");
+        filterChainDefinitionMap.put("/sys/H5CustomerUpdateBasicInfo", "anon");
+        filterChainDefinitionMap.put("/sys/H5CustomerBasicInfo", "anon");
+        filterChainDefinitionMap.put("/sys/H5AddGymComment", "anon");
+        filterChainDefinitionMap.put("/sys/H5CustomerContactInfo", "anon");
+        filterChainDefinitionMap.put("/sys/H5CustomerAddContactInfo", "anon");
+        filterChainDefinitionMap.put("/sys/H5AddGymOrders", "anon");
+        filterChainDefinitionMap.put("/sys/H5CustomerDeleteContactInfo", "anon");
+        filterChainDefinitionMap.put("/sys/H5Gyms", "anon");
+        filterChainDefinitionMap.put("/sys/H5GymCommentTags", "anon");
+        filterChainDefinitionMap.put("/sys/H5SearchGyms", "anon");
+        filterChainDefinitionMap.put("/banner/36kr", "anon");
+        //2023/1/18开放
+        filterChainDefinitionMap.put("/H5/getH5Background", "anon");
+        filterChainDefinitionMap.put("/H5/changeH5Background", "anon");
+        filterChainDefinitionMap.put("/H5/getSportIndex", "anon");
+        filterChainDefinitionMap.put("/H5/getTodaySportData", "anon");
+        filterChainDefinitionMap.put("/H5/getSportData", "anon");
+        filterChainDefinitionMap.put("/H5/getSportTestData", "anon");
+        //2023/3/6开放
+        filterChainDefinitionMap.put("/H5/CustomerBackground", "anon");
+        filterChainDefinitionMap.put("/index/customerChangeBackground", "anon");
+
+        //取消的预约提醒接口
+        filterChainDefinitionMap.put("/sys/H5UnreadCancelOrders", "anon");
+        filterChainDefinitionMap.put("/sys/H5AllCancelOrders", "anon");
+        filterChainDefinitionMap.put("/sys/H5ReadCancelOrders", "anon");
+        filterChainDefinitionMap.put("/sys/H5DelCancelOrders", "anon");
+
+        //达梦
+        filterChainDefinitionMap.put("/queryDbVersion", "anon");
 
         //放开swagger-ui地址
         filterChainDefinitionMap.put("/swagger/**", "anon");
@@ -101,11 +147,19 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("/","user");
         filterChainDefinitionMap.put("/csrf","anon");
         filterChainDefinitionMap.put("/images/**", "anon");
+        filterChainDefinitionMap.put("/pic/**", "anon");
+        filterChainDefinitionMap.put("/var/**", "anon");
         filterChainDefinitionMap.put("/js/**", "anon");
         filterChainDefinitionMap.put("/layui/**", "anon");
+        filterChainDefinitionMap.put("/editormd/**", "anon");
+        filterChainDefinitionMap.put("/layuimini/**", "anon");
+        //下拉多选框静态资源
+        filterChainDefinitionMap.put("/layui-select-ext-master/**", "anon");
 
         //添加lanhu资源
         filterChainDefinitionMap.put("/lanhu/**", "anon");
+        //layuimini
+//        filterChainDefinitionMap.put("/static/layuimini/**", "anon");
 
         filterChainDefinitionMap.put("/login/**", "anon");
         filterChainDefinitionMap.put("/css/**", "anon");

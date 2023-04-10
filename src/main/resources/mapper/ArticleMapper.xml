@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yiie.common.mapper.ArticleMapper">
+
+    <resultMap id="BaseResultMap" type="com.yiie.entity.Article">
+        <id column="id" jdbcType="VARCHAR" property="id"/>
+        <id column="title" jdbcType="VARCHAR" property="title"/>
+        <result column="deptId" jdbcType="VARCHAR" property="deptId"/>
+        <result column="author_id" jdbcType="VARCHAR" property="authorId"/>
+        <result column="summary" jdbcType="VARCHAR" property="summary"/>
+        <result column="content" jdbcType="VARCHAR" property="content"/>
+        <result column="text_content" jdbcType="VARCHAR" property="textContent"/>
+        <result column="cover" jdbcType="TINYINT" property="cover"/>
+        <result column="views" jdbcType="TINYINT" property="views"/>
+        <result column="collections" jdbcType="VARCHAR" property="collections"/>
+        <result column="likes" jdbcType="VARCHAR" property="likes"/>
+        <result column="comments" jdbcType="VARCHAR" property="comments"/>
+        <result column="commentable" jdbcType="VARCHAR" property="commentable"/>
+        <result column="top" jdbcType="VARCHAR" property="top"/>
+        <result column="recommend" jdbcType="VARCHAR" property="recommend"/>
+        <result column="sort" jdbcType="VARCHAR" property="sort"/>
+        <result column="create_time" jdbcType="TINYINT" property="createTime"/>
+        <result column="update_time" jdbcType="TINYINT" property="updateTime"/>
+        <result column="deleted" jdbcType="TINYINT" property="deleted"/>
+        <collection property="author" resultMap="author">
+
+        </collection>
+        <collection property="dept" resultMap="Dept">
+
+        </collection>
+    </resultMap>
+    <resultMap id="Dept" type="com.yiie.entity.Dept">
+        <id column="deptId" jdbcType="VARCHAR" property="id"/>
+        <result column="deptNo" jdbcType="VARCHAR" property="deptNo"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="pid" jdbcType="VARCHAR" property="pid"/>
+        <result column="pidName" jdbcType="VARCHAR" property="pidName"/>
+        <result column="ds" jdbcType="VARCHAR" property="status"/>
+        <result column="relationCode" jdbcType="VARCHAR" property="relationCode"/>
+        <result column="deptManagerId" jdbcType="VARCHAR" property="deptManagerId"/>
+        <result column="managerName" jdbcType="VARCHAR" property="managerName"/>
+        <result column="dp" jdbcType="TINYINT" property="phone"/>
+        <result column="createTime" jdbcType="TINYINT" property="createTime"/>
+        <result column="updateTime" jdbcType="VARCHAR" property="updateTime"/>
+    </resultMap>
+    <resultMap id="author" type="com.yiie.entity.User">
+        <id column="authorId" jdbcType="VARCHAR" property="id"/>
+        <result column="username" jdbcType="VARCHAR" property="username"/>
+        <result column="salt" jdbcType="VARCHAR" property="salt"/>
+        <result column="password" jdbcType="VARCHAR" property="password"/>
+        <result column="ap" jdbcType="VARCHAR" property="phone"/>
+        <result column="dept_id" jdbcType="VARCHAR" property="deptId"/>
+        <result column="real_name" jdbcType="VARCHAR" property="realName"/>
+        <result column="nick_name" jdbcType="VARCHAR" property="nickName"/>
+        <result column="email" jdbcType="VARCHAR" property="email"/>
+        <result column="us" jdbcType="TINYINT" property="status"/>
+        <result column="sex" jdbcType="TINYINT" property="sex"/>
+        <result column="authorDeleted" jdbcType="TINYINT" property="deleted"/>
+        <result column="create_id" jdbcType="VARCHAR" property="createId"/>
+        <result column="update_id" jdbcType="VARCHAR" property="updateId"/>
+        <result column="create_where" jdbcType="TINYINT" property="createWhere"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+    </resultMap>
+    <insert id="addArticle" parameterType="com.yiie.entity.Article">
+        insert into gym_article
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="title != null">
+                title,
+            </if>
+            <if test="authorId != null">
+                author_id,
+            </if>
+            <if test="deptId!=null">
+                deptId,
+            </if>
+            <if test="summary != null">
+                summary,
+            </if>
+            <if test="content != null">
+                content,
+            </if>
+            <if test="textContent != null">
+                text_content,
+            </if>
+            <if test="cover != null">
+                cover,
+            </if>
+            <if test="views != null">
+                views,
+            </if>
+            <if test="collections!=null">
+                collections,
+            </if>
+            <if test="likes != null">
+                likes,
+            </if>
+            <if test="comments != null">
+                comments,
+            </if>
+            <if test="commentable != null">
+                commentable,
+            </if>
+            <if test="top!=null">
+                top,
+            </if>
+            <if test="recommend != null">
+                recommend,
+            </if>
+            <if test="sort != null">
+                sort,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime!=null">
+                update_time,
+            </if>
+            <if test="deleted != null">
+                deleted,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id},
+            </if>
+            <if test="title != null">
+                #{title},
+            </if>
+            <if test="authorId != null">
+                #{authorId},
+            </if>
+            <if test="deptId!=null">
+                #{deptId},
+            </if>
+            <if test="summary != null">
+                #{summary},
+            </if>
+            <if test="content != null">
+                #{content},
+            </if>
+            <if test="textContent != null">
+                #{textContent},
+            </if>
+            <if test="cover != null">
+                #{cover},
+            </if>
+            <if test="views != null">
+                #{views},
+            </if>
+            <if test="collections!=null">
+                #{collections},
+            </if>
+            <if test="likes != null">
+                #{likes},
+            </if>
+            <if test="comments != null">
+                #{comments},
+            </if>
+            <if test="commentable != null">
+                #{commentable},
+            </if>
+            <if test="top!=null">
+                #{top},
+            </if>
+            <if test="recommend != null">
+                #{recommend},
+            </if>
+            <if test="sort != null">
+                #{sort},
+            </if>
+            <if test="createTime != null">
+                #{createTime},
+            </if>
+            <if test="updateTime!=null">
+                #{updateTime},
+            </if>
+            <if test="deleted != null">
+                #{deleted},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.yiie.entity.Article">
+        update gym_article
+        <set>
+            <if test="title != null">
+                title = #{title,jdbcType=VARCHAR},
+            </if>
+            <if test="summary != null">
+                summary = #{summary,jdbcType=VARCHAR},
+            </if>
+
+            <if test="content != null">
+                content = #{content,jdbcType=TINYINT},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
+    <delete id="deletedArticle" parameterType="com.yiie.entity.Article">
+        update gym_article
+        <set>
+            deleted = 0,
+            <if test="article.updateTime != null">
+                update_time = #{article.updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id in
+        <foreach collection="list" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+    </delete>
+
+    <select id="selectAllArticle" resultMap="BaseResultMap">
+        select ga.id,title,ga.deptId,author_id,summary,content,text_content,cover,views,
+        collections,likes,comments,commentable,'top',recommend,sort,ga.create_time,ga.update_time,ga.deleted,
+        "user".id as authorId, username, 'salt', 'password', "user".phone as ap, real_name, nick_name, email, "user".status as us,
+        sex, "user".deleted authorDeleted,        dept.dept_no,dept.name,dept.pid,dept.relation_code,dept.dept_manager_id,dept.manager_name
+        from gym_article ga  left join "user"         on ga.author_id="user".id         left join dept         on ga.deptId=dept.id
+        <where>
+            ga.deleted=1
+            <if test="articleId!=null and articleId!=''">
+                AND ga.id=#{articleId}
+            </if>
+            <if test="title!=null and title!=''">
+                AND title like CONCAT("%", #{title},"%")
+            </if>
+            <if test="deptId!=null and deptId!=''">
+                AND ga.deptId=#{deptId}
+            </if>
+            <if test="authorId!=null and authorId!=''">
+                AND author_id=#{authorId}
+            </if>
+            <if test="authorName!=null and authorName!=''">
+                AND user.username like CONCAT("%", #{authorName},"%")
+            </if>
+            <if test="startTime!=null and startTime!='' and endTime!=null and endTime!=''">
+                AND ga.create_time between #{startTime} and #{endTime}
+            </if>
+        </where>
+    </select>
+    <select id="selectByPrimaryKey" resultType="com.yiie.entity.Article">
+        select * from gym_article
+        where id=#{articleId}
+    </select>
+
+</mapper>

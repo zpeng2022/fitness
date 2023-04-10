@@ -10,6 +10,7 @@ package com.yiie.enums;
  */
 public enum BaseResponseCode implements ResponseCodeInterface {
 
+    IdNULL(-4,"查询不到id"),
     CLOSE(-3,"今日场馆已闭馆"),
 
     READ_YES(-1,"该评论已为已读状态"),

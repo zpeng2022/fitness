@@ -21,4 +21,20 @@ public interface GymOrderService {
     List<SportAndValue> getAllTypeAndValue();
 
     List<SportAndValue> getGymPeopleNum();
+
+    void passOrder(String orderId);
+
+    void refuseOrder(String replaceAll);
+
+    void refuseOrder2(OrderCancelVO cancelVO);
+
+    void cancelOrder(OrderCancelVO cancelVO);
+
+    List<GymOrder> getCanceledOrderByCustomerId(String userId);
+
+    void readCanceledOrder(String userId);
+
+    void delCanceledOrder(String userId);
+
+    List<GymOrder> getUnreadCanceledOrderByCustomerId(String userId);
 }

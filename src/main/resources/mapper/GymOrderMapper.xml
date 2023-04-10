@@ -1,6 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.yiie.common.mapper.GymOrderMapper">
+    <resultMap id="Gym" type="com.yiie.entity.Gym">
+        <id column="gymId" jdbcType="VARCHAR" property="gymId" />
+        <result column="deptId" jdbcType="VARCHAR" property="deptId" />
+        <result column="gymName" jdbcType="VARCHAR" property="gymName" />
+        <result column="monday" jdbcType="VARCHAR" property="monday" />
+        <result column="saturday" jdbcType="VARCHAR" property="saturday" />
+        <result column="gymPhone" jdbcType="VARCHAR" property="gymPhone" />
+        <result column="gymCapacity" jdbcType="INTEGER" property="gymCapacity" />
+        <result column="gymPicturesPath" jdbcType="VARCHAR" property="gymPicturesPath" />
+        <result column="openOnHoliday" jdbcType="TINYINT" property="openOnHoliday" />
+        <result column="gymTypes" jdbcType="VARCHAR" property="gymTypes" />
+        <result column="gymPosition" jdbcType="VARCHAR" property="gymPosition" />
+        <result column="gymDetails" jdbcType="VARCHAR" property="gymDetails" />
+        <result column="gymGps" jdbcType="VARCHAR" property="gymGps" />
+        <result column="createTime" jdbcType="VARCHAR" property="createTime" />
+        <result column="updateTime" jdbcType="VARCHAR" property="updateTime" />
+        <result column="deleted" jdbcType="TINYINT" property="deleted" />
+    </resultMap>
+    <resultMap id="Dept" type="com.yiie.entity.Dept">
+        <id column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="deptNo" jdbcType="VARCHAR" property="deptNo"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="pid" jdbcType="VARCHAR" property="pid"/>
+        <result column="pidName" jdbcType="VARCHAR" property="pidName"/>
+        <result column="status" jdbcType="VARCHAR" property="status"/>
+        <result column="relationCode" jdbcType="VARCHAR" property="relationCode"/>
+        <result column="deptManagerId" jdbcType="VARCHAR" property="deptManagerId"/>
+        <result column="managerName" jdbcType="VARCHAR" property="managerName"/>
+        <result column="phone" jdbcType="TINYINT" property="phone"/>
+        <result column="createTime" jdbcType="TINYINT" property="createTime"/>
+        <result column="updateTime" jdbcType="VARCHAR" property="updateTime"/>
+    </resultMap>
+
     <resultMap id="BaseResultMap" type="com.yiie.entity.GymOrder">
         <id column="orderId" jdbcType="VARCHAR" property="orderId" />
         <result column="gymId" jdbcType="VARCHAR" property="gymId" />
@@ -16,20 +49,33 @@
         <result column="otherCustomerIdentityCards" jdbcType="VARCHAR" property="otherCustomerIdentityCards" />
         <result column="otherCustomerNames" jdbcType="VARCHAR" property="otherCustomerNames" />
         <result column="otherCustomerPhones" jdbcType="VARCHAR" property="otherCustomerPhones" />
+        <result column="otherIsBlack" jdbcType="VARCHAR" property="otherIsBlack" />
         <result column="orderStartTime" jdbcType="VARCHAR" property="orderStartTime" />
         <result column="orderEndTime" jdbcType="VARCHAR" property="orderEndTime" />
         <result column="createTime" jdbcType="VARCHAR" property="createTime" />
         <result column="updateTime" jdbcType="VARCHAR" property="updateTime" />
         <result column="deleted" jdbcType="TINYINT" property="deleted" />
+        <result column="readStatus" jdbcType="TINYINT" property="readStatus" />
+        <result column="cancelReason" jdbcType="TINYINT" property="cancelReason" />
+
+        <collection property="gym" resultMap="Gym">
+
+        </collection>
+        <collection property="dept" resultMap="Dept">
+
+        </collection>
     </resultMap>
+
     <resultMap id="SprotAndValue" type="com.yiie.vo.data.SportAndValue">
         <result column="sport" property="sport" />
         <result column="value" property="value" />
     </resultMap>
 
     <sql id="Base_Column_List">
-        orderId, gymId, deptId, customerId, customerName, customerPhone, customerIdentityCard, exerciseType, existBlackUser, orderStatus, orderFailComment, otherCustomerIdentityCards, otherCustomerNames, otherCustomerPhones, orderStartTime, orderEndTime, createTime, updateTime, deleted
+        orderId, gymId, deptId, customerId, customerName, customerPhone, customerIdentityCard, exerciseType, existBlackUser, orderStatus, orderFailComment, otherCustomerIdentityCards, otherCustomerNames, otherCustomerPhones,otherIsBlack, orderStartTime, orderEndTime, createTime, updateTime, deleted,readStatus,cancelReason
     </sql>
+
+
 
     <select id="getAllGymOrderByDeptID" resultMap="BaseResultMap">
         SELECT <include refid="Base_Column_List"></include>
@@ -52,65 +98,76 @@
         where orderId = #{orderId,jdbcType=VARCHAR}
     </select>
 
+    <!--除去 gym.gymPicturesPath-->
     <select id="selectAllGymOrderByDeptID" resultMap="BaseResultMap" parameterType="com.yiie.vo.request.GymOrderPageReqVO">
-        select <include refid="Base_Column_List"></include>
-        from gym_order
+        select
+        go.orderId ,go.gymId ,go.deptId ,go.customerId ,go.customerName ,go.customerPhone ,go.customerIdentityCard ,go.exerciseType ,go.existBlackUser ,go.orderStatus ,go.orderFailComment ,go.otherCustomerIdentityCards ,go.otherCustomerNames ,go.otherCustomerPhones,otherIsBlack ,go.orderStartTime ,go.orderEndTime ,go.createTime ,go.updateTime ,go.deleted,go.readStatus,go.cancelReason
+        ,gym.gymId ,gym.deptId ,gym.gymName ,gym.monday ,gym.saturday ,gym.gymPhone ,gym.gymCapacity  ,gym.openOnHoliday ,gym.gymTypes ,gym.gymPosition ,gym.gymDetails ,gym.gymGps ,gym.createTime ,gym.updateTime ,gym.deleted
+        ,
+        dept.id,dept.dept_no,dept.name,dept.pid,dept.status,dept.relation_code,dept.dept_manager_id,dept.manager_name,dept.phone,dept.create_time,dept.update_time,dept.deleted
+        from gym_order go
+        left join gym
+        on go.gymId=gym.gymId
+        left join dept
+        on go.deptId=dept.id
         <where>
-            deleted=1
-            AND deptId = #{deptId}
+            go.deleted=1
+            <if test="deptId != null and deptId != ''">
+                AND go.deptId = #{deptId}
+            </if>
             <if test="orderId != null and orderId != ''">
-                AND orderId = #{orderId}
+                AND go.orderId = #{orderId}
             </if>
             <if test="gymId != null and gymId != ''">
-                AND gymId = #{gymId}
+                AND go.gymId = #{gymId}
             </if>
             <if test="deptId != null and deptId != ''">
-                AND deptId = #{deptId}
+                AND go.deptId = #{deptId}
             </if>
             <if test="customerId != null and customerId != ''">
-                AND customerId = #{customerId}
+                AND go.customerId = #{customerId}
             </if>
             <if test="customerName != null and customerName != ''">
-                AND customerName = #{customerName}
+                AND go.customerName = #{customerName}
             </if>
             <if test="customerPhone != null and customerPhone != ''">
-                AND customerPhone = #{customerPhone}
+                AND go.customerPhone = #{customerPhone}
             </if>
             <if test="customerIdentityCard != null and customerIdentityCard != ''">
-                AND customerIdentityCard = #{customerIdentityCard}
+                AND go.customerIdentityCard = #{customerIdentityCard}
             </if>
             <if test="exerciseType != null and exerciseType != ''">
-                AND exerciseType = #{exerciseType}
+                AND go.exerciseType = #{exerciseType}
             </if>
             <if test="existBlackUser != null and existBlackUser != ''">
-                AND existBlackUser = #{existBlackUser}
+                AND go.existBlackUser = #{existBlackUser}
             </if>
             <if test="orderStatus != null and orderStatus != ''">
-                AND orderStatus = #{orderStatus}
+                AND go.orderStatus = #{orderStatus}
             </if>
             <if test="orderFailComment != null and orderFailComment != ''">
-                AND orderFailComment = #{orderFailComment}
+                AND go.orderFailComment = #{orderFailComment}
             </if>
             <if test="otherCustomerIdentityCards != null and otherCustomerIdentityCards != ''">
-                AND otherCustomerIdentityCards = #{otherCustomerIdentityCards}
+                AND go.otherCustomerIdentityCards = #{otherCustomerIdentityCards}
             </if>
             <if test="otherCustomerNames != null and otherCustomerNames != ''">
-                AND otherCustomerNames = #{otherCustomerNames}
+                AND go.otherCustomerNames = #{otherCustomerNames}
             </if>
             <if test="otherCustomerPhones != null and otherCustomerPhones != ''">
-                AND otherCustomerPhones = #{otherCustomerPhones}
+                AND go.otherCustomerPhones = #{otherCustomerPhones}
             </if>
             <if test="orderStartTime != null and orderStartTime != ''">
-                AND orderStartTime = #{orderStartTime}
+                AND go.orderStartTime = #{orderStartTime}
             </if>
             <if test="orderEndTime != null and orderEndTime != ''">
-                AND orderEndTime = #{orderEndTime}
+                AND go.orderEndTime = #{orderEndTime}
             </if>
             <if test="createTime != null and createTime != ''">
-                AND createTime = #{createTime}
+                AND go.createTime = #{createTime}
             </if>
             <if test="updateTime != null and updateTime != ''">
-                AND updateTime = #{updateTime}
+                AND go.updateTime = #{updateTime}
             </if>
         </where>
     </select>
@@ -229,6 +286,14 @@
                 AND updateTime = #{updateTime}
             </if>
         </where>
+    </select>
+    <select id="getCanceledOrderByCustomerId" resultType="com.yiie.entity.GymOrder">
+        select * from gym_order
+        where orderStatus=5 and readStatus!=2 and customerId=#{userId}
+    </select>
+    <select id="getUnreadCanceledOrderByCustomerId" resultType="com.yiie.entity.GymOrder">
+        select * from gym_order
+        where orderStatus=5 and readStatus=0 and customerId=#{userId}
     </select>
 
 
@@ -438,5 +503,31 @@
         <foreach collection="list" open="(" close=")" separator="," item="item">
             #{item}
         </foreach>
+    </update>
+    <update id="passOrder">
+        update gym_order
+        set orderStatus=1
+        where orderId=#{orderId}
+    </update>
+    <update id="refuseOrder">
+        update gym_order
+        set orderStatus=3
+        where orderId=#{orderId}
+    </update>
+    <update id="refuseOrder2">
+         update gym_order
+        set orderStatus=3,cancelReason=#{reason}
+        where orderId=#{orderId}
+    </update>
+    <update id="cancelOrder">
+         update gym_order
+        set orderStatus=5,cancelReason=#{reason},readStatus=0
+        where gymId=#{gymId} and orderStartTime between #{start} and #{end} and orderStatus = 2
+    </update>
+    <update id="readCanceledOrder">
+        update gym_order set readStatus=1 where orderId=#{userId}
+    </update>
+    <update id="delCanceledOrder">
+        update gym_order set readStatus=2 where orderId=#{userId}
     </update>
 </mapper>

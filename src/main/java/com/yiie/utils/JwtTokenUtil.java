@@ -151,9 +151,12 @@ public class JwtTokenUtil {
      */
     public static String getUserId(String token){
         String userId=null;
+        System.out.print("getUserId - token:\n"+token+"\n");
         try {
             if(token == null) return "h5users";
+//            System.out.print("getUserId - token:\n"+token+"\n");
             Claims claims = getClaimsFromToken(token);
+//            System.out.print("Claims:\n"+claims+"\n");
             userId = claims.getSubject();
         } catch (Exception e) {
             log.error("eror={}",e);

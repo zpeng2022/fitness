@@ -19,7 +19,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-    id, code, `name`, perms, url, `method`, pid, order_num, `type`, `status`, create_time,icon,
+    id, code, name, perms, url, method, pid, order_num, type, status, create_time,icon,
     update_time, deleted
   </sql>
 
@@ -44,10 +44,10 @@
     where id = #{id,jdbcType=VARCHAR}
   </delete>
     <insert id="insert" parameterType="com.yiie.entity.Permission">
-    insert into permission (id, code, `name`, 
-      perms, icon,url, `method`,
-      pid, order_num, `type`, 
-      `status`, create_time, update_time, 
+    insert into permission (id, code, name,
+      perms, icon,url, method,
+      pid, order_num, type,
+      status, create_time, update_time,
       deleted)
     values (#{id,jdbcType=VARCHAR}, #{code,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
       #{perms,jdbcType=VARCHAR},#{icon,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR}, #{method,jdbcType=VARCHAR},
@@ -65,7 +65,7 @@
                 code,
             </if>
             <if test="name != null">
-                `name`,
+                name,
             </if>
             <if test="perms != null">
                 perms,
@@ -74,7 +74,7 @@
                 url,
             </if>
             <if test="method != null">
-                `method`,
+                method,
             </if>
             <if test="icon != null">
                 icon,
@@ -86,10 +86,10 @@
                 order_num,
             </if>
             <if test="type != null">
-                `type`,
+                type,
             </if>
             <if test="status != null">
-                `status`,
+                status,
             </if>
             <if test="createTime != null">
                 create_time,
@@ -153,7 +153,7 @@
                 code = #{code,jdbcType=VARCHAR},
             </if>
             <if test="name != null">
-                `name` = #{name,jdbcType=VARCHAR},
+                name = #{name,jdbcType=VARCHAR},
             </if>
             <if test="perms != null">
                 perms = #{perms,jdbcType=VARCHAR},
@@ -162,7 +162,7 @@
                 url = #{url,jdbcType=VARCHAR},
             </if>
             <if test="method != null">
-                `method` = #{method,jdbcType=VARCHAR},
+                method = #{method,jdbcType=VARCHAR},
             </if>
             <if test="icon != null">
                 icon = #{icon,jdbcType=VARCHAR},
@@ -174,10 +174,10 @@
                 order_num = #{orderNum,jdbcType=INTEGER},
             </if>
             <if test="type != null">
-                `type` = #{type,jdbcType=TINYINT},
+                type = #{type,jdbcType=TINYINT},
             </if>
             <if test="status != null">
-                `status` = #{status,jdbcType=TINYINT},
+                status = #{status,jdbcType=TINYINT},
             </if>
             <if test="createTime != null">
                 create_time = #{createTime,jdbcType=TIMESTAMP},
@@ -194,15 +194,15 @@
     <update id="updateByPrimaryKey" parameterType="com.yiie.entity.Permission">
     update permission
     set code = #{code,jdbcType=VARCHAR},
-      `name` = #{name,jdbcType=VARCHAR},
+      name = #{name,jdbcType=VARCHAR},
       perms = #{perms,jdbcType=VARCHAR},
       icon = #{icon,jdbcType=VARCHAR},
       url = #{url,jdbcType=VARCHAR},
-      `method` = #{method,jdbcType=VARCHAR},
+      method = #{method,jdbcType=VARCHAR},
       pid = #{pid,jdbcType=VARCHAR},
       order_num = #{orderNum,jdbcType=INTEGER},
-      `type` = #{type,jdbcType=TINYINT},
-      `status` = #{status,jdbcType=TINYINT},
+      type = #{type,jdbcType=TINYINT},
+      status = #{status,jdbcType=TINYINT},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
       deleted = #{deleted,jdbcType=TINYINT}

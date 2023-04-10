@@ -36,4 +36,10 @@ public interface DeptService {
     PageVO<User> pageDeptUserInfo(UserPageUserByDeptReqVO vo);
 
     List<Dept> selectAll();
+
+    List<Dept> getAllDept();
+
+    Dept getByName(String deptName);
+
+    Dept getById(String deptId);
 }

@@ -1,16 +1,21 @@
 package com.yiie.common.controller;
 
 //import com.sun.org.apache.xpath.internal.operations.Mod;
+//import com.sun.org.apache.xpath.internal.operations.Mod;
 import com.yiie.aop.annotation.LogAnnotation;
+import com.yiie.common.service.CustomerService;
 import com.yiie.common.service.GymService;
 import com.yiie.constant.Constant;
 import com.yiie.entity.Gym;
+import com.yiie.entity.H5Background;
 import com.yiie.enums.BaseResponseCode;
 import com.yiie.utils.DataResult;
+import com.yiie.utils.JwtTokenUtil;
 import com.yiie.utils.OSS;
 import com.yiie.vo.request.GymUpdateReqVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,6 +28,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -41,12 +47,101 @@ public class IndexController {
 
     @Autowired
     private GymService gymService;
+    @Autowired
+    private CustomerService customerService;
+
+    @GetMapping("/physical")
+    public String physical(){
+        return "physical/physical";
+    }
+
+    @GetMapping("/H5_background")
+    public String H5_background(){
+        return "h5/background";
+    }
+
+    @PostMapping("/changeH5Background")
+    @ApiOperation(value = "修改主页背景接口")
+    @LogAnnotation(title = "修改主页背景",action = "修改主页背景")
+    public String changeH5Background(@RequestParam("picture") MultipartFile[] files){
+        H5Background h5Background=customerService.getBackground();
+        for(MultipartFile file:files){
+            if(file.isEmpty()){
+                throw new IllegalArgumentException("文件为空");
+            }
+            //转base64存储
+            String base64EncoderImg = "";
+            try {
+                base64EncoderImg = Base64.encodeBase64String(file.getBytes());
+                base64EncoderImg = "data:image/png;base64," + base64EncoderImg;
+//                System.out.println(base64EncoderImg);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            String picPath=base64EncoderImg;
+            if(h5Background==null){//初始无记录
+                h5Background=new H5Background();
+                h5Background.setId("1");
+                h5Background.setBackground(picPath);
+                h5Background.setCreatetime(new Date());
+                customerService.insetBackground(h5Background);
+            }else {
+                h5Background.setBackground(picPath);
+                h5Background.setUpdatetime(new Date());
+                customerService.changeBackground(h5Background);
+            }
+        }
+        return "h5/background";
+    }
+
+    @PostMapping("/customerChangeBackground")
+    @ApiOperation(value = "修改主页背景接口")
+    @LogAnnotation(title = "修改主页背景",action = "修改主页背景")
+    public String customerChangeBackground(@RequestParam("picture") MultipartFile[] files,HttpServletRequest request){
+        String userId = JwtTokenUtil.getUserId(request.getHeader(Constant.ACCESS_TOKEN));
+        if(userId==null)
+            throw new IllegalArgumentException("无法获取用户参数");
+        H5Background h5Background=customerService.getBackground();
+        for(MultipartFile file:files){
+            if(file.isEmpty()){
+                throw new IllegalArgumentException("文件为空");
+            }
+            //转base64存储
+            String base64EncoderImg = "";
+            try {
+                base64EncoderImg = Base64.encodeBase64String(file.getBytes());
+                base64EncoderImg = "data:image/png;base64," + base64EncoderImg;
+//                System.out.println(base64EncoderImg);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            String picPath=base64EncoderImg;
+            if(h5Background==null){//初始无记录
+                h5Background=new H5Background();
+                h5Background.setId(userId);
+                h5Background.setBackground(picPath);
+                h5Background.setCreatetime(new Date());
+                customerService.customerInsetBackground(h5Background);
+            }else {
+                h5Background.setBackground(picPath);
+                h5Background.setUpdatetime(new Date());
+                customerService.customerChangeBackground(h5Background);
+            }
+        }
+        return "h5/background";
+    }
+
+    @GetMapping("/gym_articleList")
+    public String gym_articles(){
+        return "gym/gym_articlelist";
+    }
 
     @GetMapping("/toPictureLoad/{gymId}")
     public String toPictureLoad(@PathVariable("gymId") String gymId,Model model){
         System.out.print("跳转gymId:"+gymId+"\n");
         model.addAttribute("gymId",gymId);
-        return "/gym/pictureLoad";
+        return "gym/pictureLoad";
+
     }
     @PostMapping("/loadGymPicture")
     public String loadGP(@RequestParam("picture") MultipartFile[] files, @RequestParam("gymId") String gymId, @RequestParam("pictureId") int id, Model model) throws IOException {
@@ -55,22 +150,27 @@ public class IndexController {
         model.addAttribute("gymId",gymId);
         Gym gym=gymService.getById(gymId);
         String path=gym.getGymPicturesPath();
-        System.out.print("已有路径:"+path+"\n");
+//        System.out.print("已有路径:"+path+"\n");
 
         List<String> existence=new ArrayList<>();
+        if(path==null)
+            path="";
         while(path.length()>0){
-            existence.add(path.substring(0,path.indexOf(";")));
-            path=path.substring(path.indexOf(";")+1);
+            /*existence.add(path.substring(0,path.indexOf(";")));
+            path=path.substring(path.indexOf(";")+1);*/
+            existence.add(path.substring(0,path.indexOf("|")));
+            path=path.substring(path.indexOf("|")+1);
         }
         while(existence.size()<3){//填充
-            existence.add(Constant.gym_defaultPicture);
+//            existence.add(Constant.gym_defaultPicture);
+            existence.add(Constant.gym_defaultPictureBase64);
         }
-        if(existence.size()>0){
+        /*if(existence.size()>0){
             System.out.print("当前已存在路径：\n");
             for(String s:existence){
                 System.out.print(s+"\n");
             }
-        }
+        }*/
         System.out.print("文件集："+files.length+"\n");
 
         for(MultipartFile file:files){
@@ -85,9 +185,21 @@ public class IndexController {
                 break;
             }
             System.out.print("图片非空\n");
-            OSS oss=new OSS();
-            String picPath=oss.saveLocal(file);
-            System.out.print("图片存储地址:"+picPath+"\n");
+           /* OSS oss=new OSS();
+            String picPath=oss.saveLocal(file);*/
+            //转base64存储
+            String base64EncoderImg = "";
+            try {
+                base64EncoderImg = Base64.encodeBase64String(file.getBytes());
+                base64EncoderImg = "data:image/png;base64," + base64EncoderImg;
+//                System.out.println(base64EncoderImg);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            String picPath=base64EncoderImg;
+
+
+//            System.out.print("图片存储地址:"+picPath+"\n");
             if(id-1>=existence.size()){
                 existence.add(picPath);
             }else
@@ -96,8 +208,11 @@ public class IndexController {
             // 文件上传后的路径
 //            String fileName = file.getOriginalFilename();
 //            String picturePath="D:\\研究生\\学习\\2022暑假项目\\预约平台项目\\整体项目\\2022917\\fitness\\src\\main\\resources\\static\\pic\\";
-            System.out.print("picPath:"+picPath+"\n");
-            String originPath=System.getProperty("user.dir")+"\\src\\main\\resources\\static\\pic\\";
+//            System.out.print("picPath:"+picPath+"\n");
+//            String originPath=System.getProperty("user.dir")+"\\src\\main\\resources\\static\\pic\\";
+            //原存储代码
+            /*String originPath="/var/bgman/upload/";
+            System.out.println("\n\n图片路径：" + originPath+picPath+"\n\n\n");
             File dest = new File(originPath+picPath);
             // 检测是否存在目录
             if (!dest.getParentFile().exists()) {
@@ -110,22 +225,40 @@ public class IndexController {
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
-            }
+            }*/
         }
         String newPath="";
         for(String s:existence){
-            if(s.length()>0)
-                newPath+=s+";";
+            if(s.length()>0){
+//                newPath+=s+";";
+                newPath+=s+"|";
+            }
         }
         //路径更新
         GymUpdateReqVO gymUpdateReqVO=new GymUpdateReqVO();
         BeanUtils.copyProperties(gym,gymUpdateReqVO);
         gymUpdateReqVO.setGymPicturesPath(newPath);
-        System.out.print("更新存储:"+newPath+"\n");
+//        System.out.print("更新存储:"+newPath+"\n");
+//        System.out.print("\n\n更新存储:"+gymUpdateReqVO.toString()+"\n\n");
         gymService.updateGymInfo(gymUpdateReqVO);
-        return "/gym/pictureLoad";
+        return "gym/pictureLoad";
     }
 
+    @GetMapping("/exerciseTypeList")
+    public String exerciseTypeList(){
+        System.out.print("运动类型信息\n");
+        return "exercise/exerciseTypeList";
+    }
+    @GetMapping("/blackTypeList")
+    public String blackTypeList(){
+        System.out.print("黑名单类型信息\n");
+        return "black/blackTypeList";
+    }
+    @GetMapping("/gymInformation")
+    public String gymInformation(){
+        System.out.print("场馆信息\n");
+        return "gym/gymInfo";
+    }
 
     @GetMapping("/login")
     public String login(){
@@ -134,6 +267,10 @@ public class IndexController {
 
     @GetMapping("/home")
     public String home(Model model, HttpServletRequest request){
+        return "show/sz_main";
+    }
+    @GetMapping("/tohome")
+    public String tohome(Model model, HttpServletRequest request){
         return "home";
     }
 
@@ -176,7 +313,13 @@ public class IndexController {
     }
     @GetMapping("/gymData_full")
     public String sz_main(){
+        return "gym/gymData";
+    }
+
+    @GetMapping("/gymData_full/{gymName}")
+    public String sz_main22(@PathVariable("gymName") String GymName,Model model){
 //        return "show/contain";
+        model.addAttribute("selectName",GymName);
         return "gym/gymData";
     }
 

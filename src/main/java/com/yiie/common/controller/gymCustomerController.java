@@ -41,10 +41,13 @@ public class gymCustomerController {
     @PostMapping("/H5CustomerBasicInfo")
     @ApiOperation(value = "获取用户基本信息接口")
     @LogAnnotation(title = "线上用户接口",action = "分页获取用户基本信息")
-    public DataResult<PageVO<Customer>> h5CustomerPageInfo(@RequestBody CustomerPageReqVO vo, HttpServletRequest request){
+    public DataResult<PageVO<Customer>> h5CustomerPageInfo(@RequestBody CustomerPageReqVO customerPageReqVO, HttpServletRequest request){
+        String id=request.getHeader(Constant.ACCESS_TOKEN);
+        System.out.print("\n\n\n\nid:"+id+"\n\n\n\n");
         DataResult<PageVO<Customer>> h5Result= DataResult.success();
         // we need the customer id.
-        h5Result.setData(customerService.pageInfo(vo));
+        customerPageReqVO.setCustomer_identity_card(id);
+        h5Result.setData(customerService.pageInfo(customerPageReqVO));
         return h5Result;
     }
 

@@ -1,9 +1,11 @@
 package com.yiie.vo.request;
 
+import com.yiie.vo.response.FollowsInfo;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 public class GymOrderPageReqVO {
@@ -39,6 +41,7 @@ public class GymOrderPageReqVO {
     @ApiModelProperty(value = "customer身份证号码")
     private String customerIdentityCard;
 
+
     @ApiModelProperty(value = "运动类型")
     private String exerciseType;
     /**
@@ -72,6 +75,8 @@ public class GymOrderPageReqVO {
 
     @ApiModelProperty(value = "其他用户电话")
     private String otherCustomerPhones;
+    @ApiModelProperty(value = "随行是否禁入")
+    private String otherIsBlack;
 
     @ApiModelProperty(value = "预约的开始时间")
     private String orderStartTime;
@@ -87,4 +92,7 @@ public class GymOrderPageReqVO {
 
     @ApiModelProperty(value = "0表示删除, 1表示不删除")
     private Integer deleted;
+
+    @ApiModelProperty(value = "随行者的数据总和")
+    private List<FollowsInfo> followsInfo;
 }

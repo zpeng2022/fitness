@@ -22,4 +22,6 @@ public interface BlackUserMapper {
     int insertSelective(BlackUser record);
     int updateByPrimaryKeySelective(BlackUser record);
     int deletedBlackUsers(@Param("sysUser") BlackUser sysUser, @Param("list") List<String> list);
+
+    BlackUser getByIdentityCard(String identityCard);
 }
