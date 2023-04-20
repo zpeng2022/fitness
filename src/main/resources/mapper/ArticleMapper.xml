@@ -237,7 +237,7 @@
                 AND author_id=#{authorId}
             </if>
             <if test="authorName!=null and authorName!=''">
-                AND user.username like '%'||#{authorName}||'%'
+                AND "user".username like '%'||#{authorName}||'%'
             </if>
             <if test="startTime!=null and startTime!='' and endTime!=null and endTime!=''">
                 AND ga.create_time between #{startTime} and #{endTime}

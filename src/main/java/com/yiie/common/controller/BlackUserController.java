@@ -310,7 +310,7 @@ public class BlackUserController {
         }
         System.out.print("\n\n黑名单分页查询："+vo.toString()+"\n\n");
         PageVO<BlackUser> list=blackUserService.pageInfo(vo);
-//        System.out.print("list："+list.toString());
+        System.out.print("\n\n\n\n\nlist："+list.toString());
 
         result.setData(list);
         return result;

@@ -1,5 +1,6 @@
 package com.yiie.vo.request;
 
+import com.yiie.entity.BlackUserType;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -50,4 +51,6 @@ public class BlackUserPageReqVO {
 
     @ApiModelProperty(value = "性别(0.已删除 1.未删除 ")
     private Integer deleted;
+
+
 }

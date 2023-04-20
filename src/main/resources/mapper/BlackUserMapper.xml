@@ -15,6 +15,9 @@
         <collection property="dept" resultMap="Dept">
 
         </collection>
+        <collection property="blackUserType" resultMap="blacktype">
+
+        </collection>
     </resultMap>
     <resultMap id="Dept" type="com.yiie.entity.Dept">
         <id column="id" jdbcType="VARCHAR" property="id"/>
@@ -44,6 +47,18 @@
         <collection property="dept" resultMap="Dept2">
 
         </collection>
+        <collection property="blackUserType" resultMap="blacktype">
+
+        </collection>
+    </resultMap>
+    <resultMap id="blacktype" type="com.yiie.entity.BlackUserType">
+        <id column="typeId" jdbcType="VARCHAR" property="typeId"/>
+        <id column="deptId" jdbcType="VARCHAR" property="deptId"/>
+        <id column="typeName" jdbcType="VARCHAR" property="typeName"/>
+        <result column="description" jdbcType="VARCHAR" property="description"/>
+        <result column="create_time" jdbcType="TINYINT" property="createTime"/>
+        <result column="update_time" jdbcType="TINYINT" property="updateTime"/>
+        <result column="deleted" jdbcType="TINYINT" property="deleted"/>
     </resultMap>
     <resultMap id="Dept2" type="com.yiie.entity.Dept">
         <id column="Did" jdbcType="VARCHAR" property="id"/>
@@ -90,10 +105,13 @@
     <select id="selectAllBlackUserWithDeptID" resultMap="BaseResultMap" parameterType="com.yiie.vo.request.BlackUserPageReqVO">
         select
         b.id, b.identityCard, b.username, b.deptID, b.phone, b.typeInfo, b.importTime, b.updateTime, b.sex, b.deleted,
-        dept.dept_no,dept.name,dept.pid,dept.status,dept.relation_code,dept.dept_manager_id,dept.manager_name,dept.create_time,dept.update_time
+        dept.dept_no,dept.name,dept.pid,dept.status,dept.relation_code,dept.dept_manager_id,dept.manager_name,dept.create_time,dept.update_time,
+        bt.typeId,bt.typename
         from blacklists b
         left join dept
         on b.deptID=dept.id
+        left join BLACKUSERTYPE bt
+        on b.TYPEINFO=bt.TYPEID
         <where>
             b.deleted=1
             <if test="deptId!=null and deptId!=''">

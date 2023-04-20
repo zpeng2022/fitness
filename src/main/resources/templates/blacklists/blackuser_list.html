@@ -388,6 +388,9 @@
                         {field: 'username', align: 'center', title: '姓名', width: 100},
                         {field: 'identityCard', align: 'center', title: '身份证号码', width: 200},
                         {field: 'typeInfo', align: 'center', title: '类型id', width: 100, templet: '#sourceTpl'},
+                        {field: 'typeName', align: 'center', title: '类型名称', width: 100, align: 'center', templet: function (data) {
+                                return data.blackUserType.typeName;}
+                        },
                         {field: 'phone', align: 'center', title: '手机号', width: 120},
 
                         {field: 'sex', title: '性别', align: 'center', width: 60, templet: '#sexTpl'},

@@ -26,6 +26,18 @@ public class BlackUser implements Serializable {
     @ApiModelProperty("机关单位")
     private Dept dept;
 
+    @ApiModelProperty(value = "黑名单类型数据")
+    private BlackUserType blackUserType;
+
+    public BlackUserType getBlackUserType() {
+        return blackUserType;
+    }
+
+    public void setBlackUserType(BlackUserType blackUserType) {
+        this.blackUserType = blackUserType;
+    }
+
+
     public Dept getDept() {
         return dept;
     }
